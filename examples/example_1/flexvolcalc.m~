@@ -1,0 +1,26 @@
+clear all; close all; clc;
+
+if exist('faccept.dat')
+    delimiterIn1 = '\t';
+    ini_pos = importdata('testmin.dat',delimiterIn1);
+    sad_pos = importdata('testsad.dat',delimiterIn1);
+    av_atoms = importdata('testav.dat');
+    
+    %%
+    for i = 1:length(ini_pos)
+        dist(i,1) = (sad_pos(i,3)-ini_pos(i,3))^2 + ...
+       (sad_pos(i,4)-ini_pos(i,4))^2 + (sad_pos(i,5)-ini_pos(i,5))^2;
+    end
+    
+    msd = sum(dist)/length(ini_pos);
+    ave_av = sum(av_atoms(:,3))/length(av_atoms);
+    
+    a = (ave_av)^(1/3);
+    vflex = msd/(a^2)*ave_av;
+    
+    %%
+    fid = fopen('vflex.dat', 'wt'); % Open for writing
+    fprintf(fid, '%10.6e \n', vflex);
+    %fprintf(fid, '\n');
+    fclose(fid);
+end

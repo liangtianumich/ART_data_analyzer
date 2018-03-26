@@ -1,0 +1,2151 @@
+[compute-2-5.local:25393] mca: base: component_find: unable to open /share/apps/openmpi/Intel/1.6.4/lib/openmpi/mca_ess_lsf: libbat.so: cannot open shared object file: No such file or directory (ignored)
+[compute-2-5.local:25390] mca: base: component_find: unable to open /share/apps/openmpi/Intel/1.6.4/lib/openmpi/mca_ess_lsf: libbat.so: cannot open shared object file: No such file or directory (ignored)
+[compute-2-5.local:25392] mca: base: component_find: unable to open /share/apps/openmpi/Intel/1.6.4/lib/openmpi/mca_ess_lsf: libbat.so: cannot open shared object file: No such file or directory (ignored)
+[compute-2-5.local:25391] mca: base: component_find: unable to open /share/apps/openmpi/Intel/1.6.4/lib/openmpi/mca_ess_lsf: libbat.so: cannot open shared object file: No such file or directory (ignored)
+[compute-2-5.local:25389] mca: base: component_find: unable to open /share/apps/openmpi/Intel/1.6.4/lib/openmpi/mca_ess_lsf: libbat.so: cannot open shared object file: No such file or directory (ignored)
+[compute-2-5.local:25394] mca: base: component_find: unable to open /share/apps/openmpi/Intel/1.6.4/lib/openmpi/mca_ess_lsf: libbat.so: cannot open shared object file: No such file or directory (ignored)
+[compute-2-5.local:25395] mca: base: component_find: unable to open /share/apps/openmpi/Intel/1.6.4/lib/openmpi/mca_ess_lsf: libbat.so: cannot open shared object file: No such file or directory (ignored)
+[compute-2-5.local:25396] mca: base: component_find: unable to open /share/apps/openmpi/Intel/1.6.4/lib/openmpi/mca_ess_lsf: libbat.so: cannot open shared object file: No such file or directory (ignored)
+ Mpi_group_creation done check if the nproc and iproc are correct
+           0           8
+ Mpi_group_creation done check if the nproc and iproc are correct
+           1           8
+ Mpi_group_creation done check if the nproc and iproc are correct
+           2           8
+ Mpi_group_creation done check if the nproc and iproc are correct
+ Mpi_group_creation done check if the nproc and iproc are correct
+           4           8
+ Mpi_group_creation done check if the nproc and iproc are correct
+           5           8
+ Mpi_group_creation done check if the nproc and iproc are correct
+           6           8
+ Mpi_group_creation done check if the nproc and iproc are correct
+           7           8
+           3           8
+ init_potential_lammps
+ init_potential_lammps
+ init_potential_lammps
+ init_potential_lammps
+ init_potential_lammps
+ init_potential_lammps
+ init_potential_lammps
+ init_potential_lammps
+ reading INPUT_LAMMPS_FILE file in.lammps                               
+ reading INPUT_LAMMPS_FILE file in.lammps                               
+ reading INPUT_LAMMPS_FILE file in.lammps                               
+ reading INPUT_LAMMPS_FILE file in.lammps                               
+ reading INPUT_LAMMPS_FILE file in.lammps                               
+ reading INPUT_LAMMPS_FILE file in.lammps                               
+ reading INPUT_LAMMPS_FILE file in.lammps                               
+ reading INPUT_LAMMPS_FILE file in.lammps                               
+ Box size - as given in lammps (realize that if X_BOX, Y_BOX, Z_BOX are defined 
+ Box size - as given in lammps (realize that if X_BOX, Y_BOX, Z_BOX are defined 
+ in the inputfile, they will be ignored):
+ Lx = (xhi - xlo) =   31.8302504796213     
+ Ly = (yhi - ylo) =   31.8302504796213     
+ Lz = (zhi - zlo) =   31.8302504796213     
+ Init done
+ Box size - as given in lammps (realize that if X_BOX, Y_BOX, Z_BOX are defined 
+ in the inputfile, they will be ignored):
+ Lx = (xhi - xlo) =   31.8302504796213     
+ Ly = (yhi - ylo) =   31.8302504796213     
+ Lz = (zhi - zlo) =   31.8302504796213     
+ Init done
+ Box size - as given in lammps (realize that if X_BOX, Y_BOX, Z_BOX are defined 
+ in the inputfile, they will be ignored):
+ Lx = (xhi - xlo) =   31.8302504796213     
+ Ly = (yhi - ylo) =   31.8302504796213     
+ Lz = (zhi - zlo) =   31.8302504796213     
+ Init done
+ Box size - as given in lammps (realize that if X_BOX, Y_BOX, Z_BOX are defined 
+ in the inputfile, they will be ignored):
+ Lx = (xhi - xlo) =   31.8302504796213     
+ Ly = (yhi - ylo) =   31.8302504796213     
+ Lz = (zhi - zlo) =   31.8302504796213     
+ Init done
+ Box size - as given in lammps (realize that if X_BOX, Y_BOX, Z_BOX are defined 
+ in the inputfile, they will be ignored):
+ Lx = (xhi - xlo) =   31.8302504796213     
+ Ly = (yhi - ylo) =   31.8302504796213     
+ Lz = (zhi - zlo) =   31.8302504796213     
+ Init done
+ Box size - as given in lammps (realize that if X_BOX, Y_BOX, Z_BOX are defined 
+ in the inputfile, they will be ignored):
+ Lx = (xhi - xlo) =   31.8302504796213     
+ Ly = (yhi - ylo) =   31.8302504796213     
+ Lz = (zhi - zlo) =   31.8302504796213     
+ Init done
+ Box size - as given in lammps (realize that if X_BOX, Y_BOX, Z_BOX are defined 
+ in the inputfile, they will be ignored):
+ Lx = (xhi - xlo) =   31.8302504796213     
+ Ly = (yhi - ylo) =   31.8302504796213     
+ Lz = (zhi - zlo) =   31.8302504796213     
+ Init done
+ in the inputfile, they will be ignored):
+ Lx = (xhi - xlo) =   31.8302504796213     
+ Ly = (yhi - ylo) =   31.8302504796213     
+ Lz = (zhi - zlo) =   31.8302504796213     
+ Init done
+ (1) I am the proc :           0
+ before initialize_potential
+ Number of atoms=        2000
+ simulation box   31.8302510000000     
+ Number of atoms=        2000
+ Number of atoms=        2000
+ simulation box   31.8302510000000     
+ Number of atoms=        2000
+ simulation box   31.8302510000000     
+ Number of atoms=        2000
+ simulation box   31.8302510000000     
+ Number of atoms=        2000
+ simulation box   31.8302510000000     
+ Number of atoms=        2000
+ simulation box   31.8302510000000     
+ Number of atoms=        2000
+ simulation box   31.8302510000000     
+ simulation box   31.8302510000000     
+ after initialize_potential this is ok for this test
+ FIRE: minimization successful
+ fnrm:   2.207137441133155E-004   , fmax:   9.287172550143356E-004  , iter: 
+           1
+ Final energy:   -8891.24847584959     
+ BART: Relaxed energy : -8.8912484758E+03
+  Writing to file : min1000
+ BART: Configuration stored in file min1000             
+ (2) I am the proc :           0
+ (3) I am the proc :           0
+ BART: Simulation :            1
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1000
+ BART: Reference Energy (eV) :   -8891.24847584959     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =           12
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.185019   0.00
+ BART:   0  K=   0 -8.8907259506E+03   5  7    2.201758   -2.115395    0.610609    0.185019     0.6649   9    25
+ BART:   1  K=   1 -8.8862908049E+03   5  7    5.446888   -4.401952    3.208023   -0.316570     2.2820  34    50
+ BART:   7  L=   1 -8.8851600407E+03   0  0    5.329500   -1.173478    5.197449   -1.197099     2.8119  34    74
+ BART:  18  L=   2 -8.8849963261E+03   0  0    4.758193   -0.318718    4.750399   -1.024237     3.2499  36   103
+ BART:  34  L=   3 -8.8858384434E+03   0  0    3.099195   -0.128038    3.099020   -0.926765     3.4932  43   137
+ BART:  55  L=   4 -8.8869579824E+03   0  0    1.594610   -0.054069    1.594610   -0.288940     3.3959  41   176
+ BART:  81  L=   5 -8.8877454761E+03   0  0    0.625024   -0.157011    0.624106   -0.319277     3.6070  52   220
+ BART: 112  L=   6 -8.8879059544E+03   0  0    0.335040   -0.165607    0.291333   -0.045736     3.7303  55   269
+ BART: 148  L=   7 -8.8879298001E+03   0  0    0.205740   -0.122473    0.161821   -0.064758     3.7379  63   323
+ BART: 189  L=   8 -8.8879465179E+03   0  0    0.152552   -0.127003    0.106536   -0.017442     3.9946  70   382
+
+ BART: SADDLE 1001    FAILED |ret  50189 |delta energy=    3.2677 |force_(tot,par,perp)=     0.1526   -0.1270    0.1065 |eigenval=  -0.0174 |npart=   70 |delr=    3.995 |evalf=   382 |
+ BART: Simulation :            1
+ BART: Attempt    :            2
+ BART: Starting from minconf :         1000
+ BART: Reference Energy (eV) :   -8891.24847584959     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1024
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.173422   0.00
+ BART:   0  K=   0 -8.8907316012E+03   5  7    2.182036   -2.050874    0.745115    0.173422     0.7078  11   407
+ BART:   1  K=   1 -8.8872249272E+03   5  7    4.698335   -4.140075    2.221289   -0.764179     2.4506  38   432
+ BART:   7  L=   1 -8.8862664297E+03   0  0    4.659925   -0.721710    4.599890   -0.881769     3.0752  40   456
+ BART:  18  L=   2 -8.8863487183E+03   0  0    4.351197   -0.231890    4.341415   -0.169119     3.3437  41   485
+ BART:  34  L=   3 -8.8871682490E+03   0  0    2.995824   -0.019250    2.995763   -0.468449     3.1317  40   519
+ BART:  55  L=   4 -8.8881172225E+03   0  0    1.414028   -0.120483    1.403426   -0.109445     3.2438  43   558
+ BART:  81  L=   5 -8.8886791622E+03   0  0    0.580648   -0.037081    0.578051   -0.215830     3.2036  53   602
+ BART: 112  L=   6 -8.8889390079E+03   0  0    0.336453   -0.040863    0.334837   -0.267771     3.1764  51   651
+ BART: 148  L=   7 -8.8890887885E+03   0  0    0.167648   -0.017680    0.166711   -0.387885     3.2239  42   705
+ BART: 189  L=   8 -8.8891609753E+03   0  0    0.086988   -0.006187    0.086523   -0.183796     3.5147  56   764
+
+ BART: SADDLE 1001    FAILED |ret  50189 |delta energy=    2.0576 |force_(tot,par,perp)=     0.0870   -0.0062    0.0865 |eigenval=  -0.1838 |npart=   56 |delr=    3.515 |evalf=   764 |
+ BART: Simulation :            1
+ BART: Attempt    :            3
+ BART: Starting from minconf :         1000
+ BART: Reference Energy (eV) :   -8891.24847584959     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1581
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.203580   0.00
+ BART:   0  K=   0 -8.8908113773E+03   5  8    1.896632   -1.764799    0.694766    0.203580     0.6398  11   790
+ BART:   1  K=   1 -8.8869420391E+03   5  6    4.710619   -4.277350    1.973375   -0.612562     2.1845  37   814
+ BART:   7  L=   1 -8.8868397793E+03   0  0    4.653688   -0.183188    4.650268   -0.631818     2.3120  35   838
+ BART:  18  L=   2 -8.8862554525E+03   0  0    4.549053   -1.152267    4.380124   -0.350567     2.9287  44   867
+ BART:  34  L=   3 -8.8861882663E+03   0  0    3.507767   -1.120206    3.324351   -0.012804     3.2576  61   901
+ BART:  55  L=   4 -8.8867570320E+03   0  0    2.275806   -0.878207    2.024237   -0.135688     3.5610  80   940
+ BART:  81  L=   5 -8.8868583424E+03   0  0    1.628280   -0.712642    1.177763   -0.484122     4.3022 123   984
+ BART: 112  L=   6 -8.8867015965E+03   0  0    1.900771   -0.370314    1.536285   -0.011584     4.8589 128  1033
+ BART: 148  L=   7 -8.8872239168E+03   0  0    0.586914   -0.515526    0.585662   -0.721050     3.9755 125  1087
+ BART: 189  L=   8 -8.8872517921E+03   0  0    1.503471   -0.153780    1.244344   -0.052458     4.8780 140  1146
+
+ BART: SADDLE 1001    FAILED |ret  50189 |delta energy=    3.7050 |force_(tot,par,perp)=     1.5035   -0.1538    1.2443 |eigenval=  -0.0525 |npart=  140 |delr=    4.878 |evalf=  1146 |
+ BART: Simulation :            1
+ BART: Attempt    :            4
+ BART: Starting from minconf :         1000
+ BART: Reference Energy (eV) :   -8891.24847584959     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          315
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.175640   0.00
+ BART:   0  K=   0 -8.8906744744E+03   5  8    2.299212   -2.210998    0.630766    0.175640     0.6256  13  1172
+ BART:   1  K=   1 -8.8857086046E+03   5  6    6.110305   -5.694999    2.214230   -0.010325     2.1296  40  1196
+ BART:   7  L=   1 -8.8842109500E+03   0  0    6.169239   -1.636319    5.946940   -0.383889     2.6409  51  1220
+ BART:  18  L=   2 -8.8829737407E+03   0  0    5.696610   -1.591187    5.461878   -0.461294     3.2146  59  1249
+ BART:  34  L=   3 -8.8823850478E+03   0  0    4.893998   -2.181765    4.212448   -0.370248     3.7014  94  1283
+ PERP_FIRE: problem with explosion, trying a smaller dt-delr: 
+  0.272370872775165     
+ BART:  56  L=   4 -8.8839059622E+03   0  0    3.360193    0.011539    3.310080   -0.714349     3.5552  88  1322
+ BART:  82  L=   5 -8.8869537722E+03   0  0    1.924997   -0.934604    1.921392   -1.436881     2.4283  38  1366
+ BART: 113  L=   6 -8.8884512622E+03   0  0    1.272537   -0.016988    1.268492   -0.946751     2.7894  49  1415
+ BART: 142  L=   7 -8.8888231866E+03   0  0    0.376425    0.021130    0.376424   -0.634522     2.9092  51  1462
+ BART: 183  L=   8 -8.8888995702E+03   0  0    0.134796   -0.010693    0.134796   -0.643799     3.0148  62  1521
+
+ BART: SADDLE 1001    FAILED |ret  50183 |delta energy=    2.3291 |force_(tot,par,perp)=     0.1348   -0.0107    0.1348 |eigenval=  -0.6438 |npart=   62 |delr=    3.015 |evalf=  1521 |
+ BART: Simulation :            1
+ BART: Attempt    :            5
+ BART: Starting from minconf :         1000
+ BART: Reference Energy (eV) :   -8891.24847584959     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1886
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.180977   0.00
+ BART:   0  K=   0 -8.8907309564E+03   5  8    2.129997   -2.099857    0.357059    0.180977     0.6451  12  1547
+ BART:   1  K=   1 -8.8865652186E+03   5  6    4.976750   -4.287898    2.526256   -0.901018     2.2895  42  1571
+ BART:   7  L=   1 -8.8855724587E+03   0  0    4.912603   -1.116405    4.783013   -1.001613     2.7946  51  1595
+ BART:  18  L=   2 -8.8847849431E+03   0  0    5.003619   -1.309411    4.758652   -0.442599     3.4183  55  1624
+ BART:  34  L=   3 -8.8853243393E+03   0  0    3.907680   -0.782477    3.768381   -0.092211     3.5880  56  1658
+ BART:  55  L=   4 -8.8870124852E+03   0  0    2.221662    0.041848    2.218878   -0.014326     2.9793  43  1697
+ BART:  81  L=   5 -8.8885811250E+03   0  0    1.166073    0.010401    1.164016   -0.475873     2.3312  35  1741
+ BART: 112  L=   6 -8.8887312769E+03   0  0    1.622012   -0.501574    1.307333    0.036185     3.1718  53  1790
+
+ BART: SADDLE 1001    FAILED |ret  60112 |delta energy=    2.2524 |force_(tot,par,perp)=     1.6220   -0.5016    1.3073 |eigenval=   0.0362 |npart=   53 |delr=    3.172 |evalf=  1790 |
+ BART: Simulation :            1
+ BART: Attempt    :            6
+ BART: Starting from minconf :         1000
+ BART: Reference Energy (eV) :   -8891.24847584959     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1795
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.141460   0.00
+ BART:   0  K=   0 -8.8906066437E+03   5  8    2.654623   -2.634294    0.327900    0.141460     0.6316  13  1816
+ BART:   1  K=   1 -8.8846927376E+03   5  7    6.954201   -6.855900    1.165140   -0.371839     2.0307  34  1841
+ BART:   7  L=   1 -8.8846494751E+03   0  0    6.916498   -0.084148    6.916145   -0.449131     1.9844  33  1865
+ BART:  18  L=   2 -8.8842268250E+03   0  0    6.330293   -0.872949    6.274356   -0.741163     2.2954  38  1894
+ BART:  34  L=   3 -8.8847708492E+03   0  0    4.823453   -0.851562    4.662586   -1.027972     2.8545  52  1928
+ BART:  55  L=   4 -8.8871791936E+03   0  0    2.363226   -0.417292    2.359895   -0.903745     2.8973  53  1967
+ BART:  81  L=   5 -8.8883295622E+03   0  0    1.295654   -0.102194    1.271869   -0.560714     3.4584  56  2011
+ BART: 111  L=   6 -8.8887296627E+03   0  0    0.422813    0.022579    0.422207   -0.613588     3.6758  62  2059
+ BART: 147  L=   7 -8.8888266174E+03   0  0    0.134665   -0.006175    0.134665   -0.514428     3.7935  73  2113
+ BART: 188  L=   8 -8.8888561216E+03   0  0    0.040189   -0.000534    0.040189   -0.491012     3.8630  83  2172
+  Writing to file : sad1001
+
+ BART: SADDLE 1001 CONVERGED |ret  20188 |delta energy=    2.3865 |force_(tot,par,perp)=     0.0402   -0.0005    0.0402 |eigenval=  -0.4910 |npart=   83 |delr=    3.863 |evalf=  2172 |
+ BART: Configuration stored in file sad1001             
+ BART: 193  M=   5 -8.8872223494E+03   0  0    6.294706   -0.000534    0.040189   -0.491012     5.1752  87  2178
+ fnrm   39.6233278847332      fmax   4.13939168392633     
+ BART: 198  M=  10 -8.8883396786E+03   0  0    2.779600   -0.000534    0.040189   -0.491012     5.0211  86  2183
+ fnrm   7.72617402921377      fmax   1.80718301338910     
+ BART: 203  M=  15 -8.8888293350E+03   0  0    2.126043   -0.000534    0.040189   -0.491012     4.6957  78  2188
+ fnrm   4.52005717022308      fmax   1.30365670850442     
+ BART: 208  M=  20 -8.8888927561E+03   0  0    1.793469   -0.000534    0.040189   -0.491012     4.6968  77  2193
+ fnrm   3.21652998482269      fmax   1.09161138739970     
+ BART: 213  M=  25 -8.8890319643E+03   0  0    0.822125   -0.000534    0.040189   -0.491012     4.6992  78  2198
+ fnrm  0.675890047650878      fmax  0.383475725397905     
+ BART: 218  M=  30 -8.8890747610E+03   0  0    0.930536   -0.000534    0.040189   -0.491012     4.6852  78  2203
+ fnrm  0.865897103134004      fmax  0.451303002042883     
+ BART: 223  M=  35 -8.8890932347E+03   0  0    0.713056   -0.000534    0.040189   -0.491012     4.6769  78  2208
+ fnrm  0.508448279458922      fmax  0.322410024806299     
+ BART: 228  M=  40 -8.8891228889E+03   0  0    0.381309   -0.000534    0.040189   -0.491012     4.6518  78  2213
+ fnrm  0.145396472969908      fmax  0.163131982793741     
+ BART: 233  M=  45 -8.8891542500E+03   0  0    0.451533   -0.000534    0.040189   -0.491012     4.6146  79  2218
+ fnrm  0.203881641588328      fmax  0.217970864068176     
+ BART: 238  M=  50 -8.8892057714E+03   0  0    0.376760   -0.000534    0.040189   -0.491012     4.6090  81  2223
+ fnrm  0.141947909084548      fmax  0.162642852207242     
+ BART: 243  M=  55 -8.8892584073E+03   0  0    0.333811   -0.000534    0.040189   -0.491012     4.6566  77  2228
+ fnrm  0.111429505178154      fmax  0.104478043421521     
+ BART: 248  M=  60 -8.8893357277E+03   0  0    0.382117   -0.000534    0.040189   -0.491012     4.7475  77  2233
+ fnrm  0.146013441886365      fmax  0.234333049975351     
+ BART: 253  M=  65 -8.8895096920E+03   0  0    0.473103   -0.000534    0.040189   -0.491012     4.8557  78  2238
+ fnrm  0.223826526005375      fmax  0.263480684700817     
+ BART: 258  M=  70 -8.8896670703E+03   0  0    0.452175   -0.000534    0.040189   -0.491012     5.0478  80  2243
+ fnrm  0.204462270625829      fmax  0.143810517636351     
+ BART: 263  M=  75 -8.8896865097E+03   0  0    0.440680   -0.000534    0.040189   -0.491012     5.1290  86  2248
+ fnrm  0.194199072720917      fmax  0.200185854330459     
+ BART: 268  M=  80 -8.8897101725E+03   0  0    0.269285   -0.000534    0.040189   -0.491012     5.1202  85  2253
+ fnrm  7.251433156330118E-002 fmax  0.122442167805148     
+ BART: 273  M=  85 -8.8897339530E+03   0  0    0.198809   -0.000534    0.040189   -0.491012     5.1118  87  2258
+ fnrm  3.952516716482559E-002 fmax  6.080464202354957E-002
+ BART: 278  M=  90 -8.8897500939E+03   0  0    0.185913   -0.000534    0.040189   -0.491012     5.1470  87  2263
+ fnrm  3.456349276207919E-002 fmax  8.491618841767194E-002
+ BART: 283  M=  95 -8.8897657186E+03   0  0    0.135582   -0.000534    0.040189   -0.491012     5.2096  91  2268
+ fnrm  1.838241609071558E-002 fmax  4.188579034113331E-002
+ BART: 288  M= 100 -8.8897753852E+03   0  0    0.110372   -0.000534    0.040189   -0.491012     5.2652  96  2273
+ fnrm  1.218188452626672E-002 fmax  1.945499713751020E-002
+ FIRE: minimization successful
+ fnrm:   1.218188452626672E-002   , fmax:   1.945499713751020E-002  , iter: 
+         100
+ Final energy:   -8889.77538516011     
+ BART: Relaxed energy : -8.8897753852E+03
+ BART: Mincounter is         1001 , scounter is 1001
+  Writing to file : min1001
+ BART: Configuration stored in file min1001             
+ BART: MINIMUM 1001 ACCEPTED |E(fin-ini)=    1.4731 |E(fin-sad)=   -0.9134 |npart=   96 |delr=    5.265 |evalf=  2273 |   3.863   0.57  -0.00   0.00
+ BART: Simulation :            2
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1001
+ BART: Reference Energy (eV) :   -8889.77538516011     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          697
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.201481   0.00
+ BART:   0  K=   0 -8.8892706076E+03   5  8    2.131943   -2.032304    0.644145    0.201481     0.6410  12    26
+ BART:   1  K=   1 -8.8851695007E+03   5  6    5.143827   -4.600331    2.301284   -1.092978     2.1797  37    50
+ BART:   7  L=   1 -8.8851679680E+03   0  0    5.143477   -0.001486    5.143477   -1.010433     2.1451  37    74
+ BART:  18  L=   2 -8.8854410338E+03   0  0    4.750227   -0.048742    4.750217   -0.825306     1.9996  35   103
+ BART:  34  L=   3 -8.8860275257E+03   0  0    3.677777   -0.454865    3.602258   -0.371708     2.2271  37   137
+ BART:  55  L=   4 -8.8875525150E+03   0  0    1.896627   -0.110491    1.895574   -0.457230     2.1335  19   176
+ BART:  81  L=   5 -8.8884134047E+03   0  0    0.733874   -0.026311    0.733323   -0.138702     2.1796  19   220
+ BART: 112  L=   6 -8.8885999775E+03   0  0    0.261403   -0.016324    0.260439   -0.124414     2.2848  18   269
+ BART: 115  L=   7 -8.8886789098E+03   8 13    0.104182    0.034606    0.098267   -0.391625     2.1584  19   303
+ BART: 146  L=   8 -8.8886789061E+03   0  0    0.104165    0.010978    0.104164   -0.613589     2.1555  20   352
+ BART: 173  L=   9 -8.8887102061E+03   0  0    0.096083    0.009411    0.096078   -0.664725     2.1200  21   397
+
+ BART: SADDLE 1002    FAILED |ret  50173 |delta energy=    1.0487 |force_(tot,par,perp)=     0.0961    0.0094    0.0961 |eigenval=  -0.6647 |npart=   21 |delr=    2.120 |evalf=   397 |
+ BART: Simulation :            2
+ BART: Attempt    :            2
+ BART: Starting from minconf :         1001
+ BART: Reference Energy (eV) :   -8889.77538516011     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          665
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.172508   0.00
+ BART:   0  K=   0 -8.8892945373E+03   5  8    2.011603   -1.958173    0.460547    0.172508     0.6627  11   423
+ BART:   1  K=   1 -8.8857454620E+03   5  6    4.539394   -4.039204    2.071455   -1.150972     2.3565  33   447
+ BART:   7  L=   1 -8.8850426501E+03   0  0    4.452474   -0.897115    4.360268   -0.634186     2.9863  43   471
+ BART:  18  L=   2 -8.8850096090E+03   0  0    4.249656   -0.307373    4.231712   -0.568286     3.3205  42   500
+ BART:  34  L=   3 -8.8858099725E+03   0  0    3.091261   -0.015366    3.091261   -0.521471     3.1436  40   534
+ BART:  55  L=   4 -8.8870159701E+03   0  0    1.740058   -0.056006    1.740057   -0.488484     3.0290  25   573
+ BART:  81  L=   5 -8.8879110884E+03   0  0    0.656381    0.030792    0.656320   -0.658072     3.1803  23   617
+ BART: 112  L=   6 -8.8880920734E+03   0  0    0.219772   -0.017909    0.219771   -0.749892     3.1672  24   666
+ BART: 148  L=   7 -8.8881546840E+03   0  0    0.112414   -0.014694    0.112414   -0.636194     3.2873  36   720
+ BART: 180  L=   8 -8.8881859382E+03   0  0    0.038382    0.000489    0.038382   -0.669452     3.3216  37   770
+  Writing to file : sad1002
+
+ BART: SADDLE 1002 CONVERGED |ret  20180 |delta energy=    1.5863 |force_(tot,par,perp)=     0.0384    0.0005    0.0384 |eigenval=  -0.6695 |npart=   37 |delr=    3.322 |evalf=   770 |
+ BART: Configuration stored in file sad1002             
+ BART: 185  M=   5 -8.8873828467E+03   0  0    3.483368    0.000489    0.038382   -0.669452     4.5323  43   776
+ fnrm   12.1338511914488      fmax   2.27283583930066     
+ BART: 190  M=  10 -8.8877979612E+03   0  0    2.324200    0.000489    0.038382   -0.669452     4.4384  43   781
+ fnrm   5.40190697511389      fmax   1.57173675674323     
+ BART: 195  M=  15 -8.8882199483E+03   0  0    1.030654    0.000489    0.038382   -0.669452     4.1984  41   786
+ fnrm   1.06224815485084      fmax  0.376053714885477     
+ BART: 200  M=  20 -8.8882568772E+03   0  0    1.079623    0.000489    0.038382   -0.669452     4.0750  40   791
+ fnrm   1.16558487012307      fmax  0.387110929411336     
+ BART: 205  M=  25 -8.8883058440E+03   0  0    0.648950    0.000489    0.038382   -0.669452     4.0835  40   796
+ fnrm  0.421136593981163      fmax  0.264587858048155     
+ BART: 210  M=  30 -8.8883428718E+03   0  0    0.457865    0.000489    0.038382   -0.669452     4.0945  39   801
+ fnrm  0.209640552424569      fmax  0.205150385239769     
+ BART: 215  M=  35 -8.8883624633E+03   0  0    0.404730    0.000489    0.038382   -0.669452     4.0537  40   806
+ fnrm  0.163806137837684      fmax  0.138358765178949     
+ BART: 220  M=  40 -8.8883727295E+03   0  0    0.319501    0.000489    0.038382   -0.669452     4.0143  42   811
+ fnrm  0.102080790555618      fmax  0.134649036464048     
+ BART: 225  M=  45 -8.8883802567E+03   0  0    0.142178    0.000489    0.038382   -0.669452     4.0275  44   816
+ fnrm  2.021468749988326E-002 fmax  3.313503390866975E-002
+ BART: 230  M=  50 -8.8883853021E+03   0  0    0.144928    0.000489    0.038382   -0.669452     4.0522  45   821
+ fnrm  2.100425365388433E-002 fmax  4.544806646708439E-002
+ BART: 235  M=  55 -8.8883904519E+03   0  0    0.138789    0.000489    0.038382   -0.669452     4.0750  49   826
+ fnrm  1.926228487471055E-002 fmax  3.273115175953828E-002
+ BART: 240  M=  60 -8.8883976265E+03   0  0    0.100161    0.000489    0.038382   -0.669452     4.0897  51   831
+ fnrm  1.003216014895208E-002 fmax  3.159633852274745E-002
+ FIRE: minimization successful
+ fnrm:   8.291893111530129E-003   , fmax:   1.907333977631930E-002  , iter: 
+          61
+ Final energy:   -8888.39899861581     
+ BART: Relaxed energy : -8.8883989986E+03
+ BART: Mincounter is         1002 , scounter is 1002
+  Writing to file : min1002
+ BART: Configuration stored in file min1002             
+ BART: MINIMUM 1002 ACCEPTED |E(fin-ini)=    1.3764 |E(fin-sad)=   -0.2099 |npart=   52 |delr=    4.090 |evalf=   832 |   3.322   0.63   0.00   0.01
+ BART: Simulation :            3
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1002
+ BART: Reference Energy (eV) :   -8888.39899861581     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          721
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.187859   0.00
+ BART:   0  K=   0 -8.8879741347E+03   5  8    1.769573   -1.723927    0.399327    0.187859     0.6417  11    26
+ BART:   1  K=   1 -8.8842318011E+03   5  6    4.721234   -4.423499    1.650063   -0.036370     2.1917  43    50
+ BART:   7  L=   1 -8.8841772831E+03   0  0    4.716201   -0.180016    4.712818   -0.027665     2.2047  46    74
+ BART:  18  L=   2 -8.8844073711E+03   0  0    4.435056   -0.070839    4.434535   -0.012923     2.0557  49   103
+ BART:  34  L=   3 -8.8852788354E+03   0  0    3.427665   -0.142245    3.424443   -0.149424     1.7268  53   137
+ BART:  55  L=   4 -8.8867103534E+03   0  0    2.016999   -0.511778    1.980659   -0.046601     1.4700  41   176
+ BART:  81  L=   5 -8.8878961292E+03   0  0    0.931068   -0.125509    0.913330   -0.111634     1.5256  30   220
+ BART: 112  L=   6 -8.8882686877E+03   0  0    0.436572   -0.010126    0.436271   -0.138853     1.3908  23   269
+ BART: 148  L=   7 -8.8883804702E+03   0  0    0.106788   -0.006954    0.106543   -0.167995     1.4353  25   323
+ BART: 189  L=   8 -8.8883940892E+03   0  0    0.036230   -0.004986    0.035906   -0.176108     1.5437  26   382
+  Writing to file : sad1003
+
+ BART: SADDLE 1003 CONVERGED |ret  20189 |delta energy=   -0.0027 |force_(tot,par,perp)=     0.0362   -0.0050    0.0359 |eigenval=  -0.1761 |npart=   26 |delr=    1.544 |evalf=   382 |
+ BART: Configuration stored in file sad1003             
+ BART: 194  M=   5 -8.8882516131E+03   0  0    1.174245   -0.004986    0.035906   -0.176108     2.1385  42   388
+ fnrm   1.37885167134902      fmax  0.862580889268328     
+ BART: 199  M=  10 -8.8882992902E+03   0  0    0.811170   -0.004986    0.035906   -0.176108     2.1127  42   393
+ fnrm  0.657997104214039      fmax  0.606486698756057     
+ BART: 204  M=  15 -8.8883555928E+03   0  0    0.419156   -0.004986    0.035906   -0.176108     2.0425  44   398
+ fnrm  0.175691885092936      fmax  0.206013150073083     
+ BART: 209  M=  20 -8.8883761518E+03   0  0    0.374625   -0.004986    0.035906   -0.176108     1.9312  41   403
+ fnrm  0.140344020742944      fmax  0.143888487053086     
+ BART: 214  M=  25 -8.8883877448E+03   0  0    0.332163   -0.004986    0.035906   -0.176108     1.8261  36   408
+ fnrm  0.110332137385656      fmax  7.284255460397296E-002
+ BART: 219  M=  30 -8.8883943319E+03   0  0    0.283011   -0.004986    0.035906   -0.176108     1.7661  35   413
+ fnrm  8.009531637973480E-002 fmax  6.525338841826436E-002
+ BART: 224  M=  35 -8.8883991476E+03   0  0    0.228835   -0.004986    0.035906   -0.176108     1.7399  33   418
+ fnrm  5.236553843104509E-002 fmax  5.498598493059476E-002
+ BART: 229  M=  40 -8.8884030329E+03   0  0    0.189858   -0.004986    0.035906   -0.176108     1.7374  34   423
+ fnrm  3.604597137850329E-002 fmax  3.369044786619985E-002
+ BART: 234  M=  45 -8.8884066725E+03   0  0    0.160904   -0.004986    0.035906   -0.176108     1.7537  34   428
+ fnrm  2.588995134472348E-002 fmax  2.885731014986254E-002
+ BART: 239  M=  50 -8.8884108732E+03   0  0    0.141079   -0.004986    0.035906   -0.176108     1.7841  35   433
+ fnrm  1.990337960151922E-002 fmax  3.690580296839961E-002
+ BART: 244  M=  55 -8.8884162197E+03   0  0    0.127816   -0.004986    0.035906   -0.176108     1.8286  37   438
+ fnrm  1.633691650052924E-002 fmax  4.263206546219845E-002
+ BART: 249  M=  60 -8.8884234634E+03   0  0    0.115707   -0.004986    0.035906   -0.176108     1.8874  42   443
+ fnrm  1.338809352506521E-002 fmax  4.611689014766628E-002
+ BART: 254  M=  65 -8.8884329311E+03   0  0    0.110251   -0.004986    0.035906   -0.176108     1.9624  43   448
+ fnrm  1.215533184365091E-002 fmax  5.096261281388723E-002
+ BART: 259  M=  70 -8.8884438368E+03   0  0    0.097053   -0.004986    0.035906   -0.176108     2.0536  49   453
+ fnrm  9.419235952420531E-003 fmax  2.422566597411708E-002
+ BART: 264  M=  75 -8.8884493547E+03   0  0    0.094475   -0.004986    0.035906   -0.176108     2.1452  50   458
+ fnrm  8.925590210266751E-003 fmax  4.114046276687335E-002
+ BART: 269  M=  80 -8.8884504646E+03   0  0    0.101868   -0.004986    0.035906   -0.176108     2.2063  50   463
+ fnrm  1.037702022028705E-002 fmax  5.340498898502628E-002
+ BART: 274  M=  85 -8.8884526464E+03   0  0    0.088268   -0.004986    0.035906   -0.176108     2.2333  50   468
+ fnrm  7.791251089385257E-003 fmax  2.267703314070790E-002
+ FIRE: minimization successful
+ fnrm:   7.791251089385257E-003   , fmax:   2.267703314070790E-002  , iter: 
+          85
+ Final energy:   -8888.45264642662     
+ BART: Relaxed energy : -8.8884526464E+03
+ BART: Mincounter is         1003 , scounter is 1003
+  Writing to file : min1003
+ BART: Configuration stored in file min1003             
+ BART: MINIMUM 1003 ACCEPTED |E(fin-ini)=   -0.0536 |E(fin-sad)=   -0.0510 |npart=   50 |delr=    2.233 |evalf=   468 |   1.544   0.68  -0.01   0.01
+ BART: Simulation :            4
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          404
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.186079   0.00
+ BART:   0  K=   0 -8.8879717172E+03   5  8    2.077824   -2.027732    0.453490    0.186079     0.6414  10    26
+ BART:   1  K=   1 -8.8834464892E+03   5  7    5.475407   -5.384619    0.992956   -0.168917     2.1419  35    51
+ BART:   7  L=   1 -8.8834177309E+03   0  0    5.470521   -0.113781    5.469395   -0.245469     2.0960  34    75
+ BART:  18  L=   2 -8.8827364469E+03   0  0    5.363241   -1.270984    5.188081   -0.184043     2.4335  49   104
+ BART:  34  L=   3 -8.8831401383E+03   0  0    4.241888   -1.306335    4.033102   -0.232040     2.5506  63   138
+ BART:  55  L=   4 -8.8839894052E+03   0  0    2.910373   -0.906620    2.586162   -0.225892     2.8984  93   177
+ BART:  81  L=   5 -8.8849624597E+03   0  0    1.770132   -0.774433    1.490854   -0.408135     3.4490 139   221
+ BART: 112  L=   6 -8.8850518751E+03   0  0    2.046456   -1.087820    1.354291   -0.722188     3.9221 156   270
+ BART: 148  L=   7 -8.8850151867E+03   0  0    1.857016   -0.815907    1.467685    0.127681     3.4760 127   324
+
+ BART: SADDLE 1004    FAILED |ret  60148 |delta energy=    1.9902 |force_(tot,par,perp)=     1.8570   -0.8159    1.4677 |eigenval=   0.1277 |npart=  127 |delr=    3.476 |evalf=   324 |
+ BART: Simulation :            4
+ BART: Attempt    :            2
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          289
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.164136   0.00
+ BART:   0  K=   0 -8.8880008401E+03   5  7    1.967728   -1.673554    1.034974    0.164136     0.6745  12   349
+ BART:   1  K=   1 -8.8840873062E+03   5  7    5.460893   -4.503555    3.088582   -0.581287     2.2658  37   374
+ BART:   7  L=   1 -8.8831594285E+03   0  0    5.565926   -1.241515    5.421934   -0.217976     2.7164  43   398
+ BART:  18  L=   2 -8.8826730941E+03   0  0    5.272222   -0.973907    5.145456   -0.231653     3.1575  46   427
+ BART:  34  L=   3 -8.8837840770E+03   0  0    3.621751   -0.193308    3.621416   -0.648822     2.8816  45   461
+ BART:  55  L=   4 -8.8850783921E+03   0  0    2.080456   -0.101180    2.000594   -0.269263     3.1581  42   500
+ BART:  81  L=   5 -8.8857383523E+03   0  0    0.871783   -0.147786    0.827575   -0.444376     3.5919  50   544
+ BART: 112  L=   6 -8.8859300461E+03   0  0    0.320921    0.027323    0.318111   -0.386466     3.7348  59   593
+ BART: 148  L=   7 -8.8861114459E+03   0  0    0.307126    0.053231    0.305610   -0.320001     4.0699  70   647
+ BART: 151  L=   8 -8.8864210526E+03   8 13    0.236165    0.138302    0.191433    0.007504     4.0068  77   681
+
+ BART: SADDLE 1004    FAILED |ret  60151 |delta energy=    2.0221 |force_(tot,par,perp)=     0.2362    0.1383    0.1914 |eigenval=   0.0075 |npart=   77 |delr=    4.007 |evalf=   681 |
+ BART: Simulation :            4
+ BART: Attempt    :            3
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1793
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.167336   0.00
+ BART:   0  K=   0 -8.8878337289E+03   5  8    2.585517   -2.551924    0.415429    0.167336     0.6530  12   707
+ BART:   1  K=   1 -8.8826465465E+03   5  6    6.078292   -5.975771    1.111664   -0.924541     2.2103  37   731
+ BART:   7  L=   1 -8.8815968675E+03   0  0    5.892390   -1.212992    5.766096   -1.069559     2.7433  37   755
+ BART:  18  L=   2 -8.8808350178E+03   0  0    5.477906   -1.211877    5.311230   -0.883848     3.2241  45   784
+ BART:  34  L=   3 -8.8820169384E+03   0  0    4.120465   -0.261832    4.113650   -0.454777     2.9982  48   818
+ BART:  55  L=   4 -8.8837247483E+03   0  0    2.659984   -0.380543    2.515046   -0.338774     3.1096  65   857
+ BART:  81  L=   5 -8.8850687563E+03   0  0    1.767252    0.185060    1.685201   -0.547685     3.7417  54   901
+ BART: 112  L=   6 -8.8861872021E+03   0  0    0.832639   -0.056838    0.832105   -0.709401     3.8676  46   950
+ BART: 139  L=   7 -8.8865536636E+03   0  0    0.309931    0.015755    0.309925   -0.747344     3.8765  48   995
+ BART: 180  L=   8 -8.8866065514E+03   0  0    0.120818    0.000988    0.120818   -0.653104     3.8992  44  1054
+
+ BART: SADDLE 1004    FAILED |ret  50180 |delta energy=    1.8118 |force_(tot,par,perp)=     0.1208    0.0010    0.1208 |eigenval=  -0.6531 |npart=   44 |delr=    3.899 |evalf=  1054 |
+ BART: Simulation :            4
+ BART: Attempt    :            4
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1657
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.200139   0.00
+ BART:   0  K=   0 -8.8878831426E+03   5  8    2.307295   -2.203013    0.685816    0.200139     0.6033  10  1080
+ BART:   1  K=   1 -8.8831635250E+03   5  7    5.267569   -5.110638    1.276192   -0.723377     2.1031  33  1105
+ BART:   7  L=   1 -8.8830958065E+03   0  0    5.252852   -0.156503    5.250508   -0.494648     2.1026  31  1129
+ BART:  18  L=   2 -8.8825121228E+03   0  0    5.013114   -0.808466    4.932415   -0.038178     2.6188  40  1158
+ BART:  34  L=   3 -8.8835572532E+03   0  0    3.758973   -0.329898    3.751126   -0.260769     2.3971  40  1192
+ BART:  55  L=   4 -8.8852310473E+03   0  0    1.932435   -0.424827    1.929032   -1.045574     2.0428  24  1231
+ BART:  81  L=   5 -8.8857534601E+03   0  0    1.610114   -0.181683    1.262540   -0.850584     2.6782  28  1275
+ BART: 112  L=   6 -8.8861157214E+03   0  0    0.508009    0.008570    0.508006   -1.461412     2.2963  24  1324
+ BART: 148  L=   7 -8.8867623821E+03   0  0    0.720585   -0.474372    0.720568   -0.138346     2.2153  24  1378
+ BART: 189  L=   8 -8.8870559287E+03   0  0    0.929043   -0.141599    0.846243   -0.842605     2.5416  33  1437
+
+ BART: SADDLE 1004    FAILED |ret  50189 |delta energy=    1.2679 |force_(tot,par,perp)=     0.9290   -0.1416    0.8462 |eigenval=  -0.8426 |npart=   33 |delr=    2.542 |evalf=  1437 |
+ BART: Simulation :            4
+ BART: Attempt    :            5
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1129
+ BART: Number of displaced atoms initially:           13
+BART COLLINEAR:    0    0    1    0.161464   0.00
+ BART:   0  K=   0 -8.8879215587E+03   5  8    2.123342   -2.064702    0.495566    0.161464     0.6602  11  1463
+ BART:   1  K=   1 -8.8842055022E+03   5  6    5.507964   -3.879539    3.909839   -0.235077     2.3514  35  1487
+ BART:   7  L=   1 -8.8842054320E+03   0  0    5.508028   -0.003562    5.508027   -0.322460     2.3131  35  1511
+ BART:  18  L=   2 -8.8843787677E+03   0  0    4.966854   -0.375013    4.953601    0.081735     2.0399  36  1540
+
+ BART: SADDLE 1004    FAILED |ret  60018 |delta energy=    3.0492 |force_(tot,par,perp)=     4.9669   -0.3750    4.9536 |eigenval=   0.0817 |npart=   36 |delr=    2.040 |evalf=  1540 |
+ BART: Simulation :            4
+ BART: Attempt    :            6
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          187
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.155850   0.00
+ BART:   0  K=   0 -8.8877990825E+03   5  8    2.693255   -2.640338    0.531258    0.155850     0.6570  12  1566
+ BART:   1  K=   1 -8.8829088888E+03   5  6    5.647365   -5.456526    1.455699   -0.609867     2.2926  34  1590
+ BART:   7  L=   1 -8.8813533733E+03   0  0    5.906734   -2.113878    5.500501   -0.551650     3.0056  47  1614
+ BART:  18  L=   2 -8.8814062974E+03   0  0    5.475294    0.672077    5.432979   -0.544620     2.8807  52  1643
+ BART:  34  L=   3 -8.8817695506E+03   0  0    4.384970    1.013274    4.191092   -0.346382     3.0049  63  1677
+ BART:  53  L=   4 -8.8845279325E+03   8 13    1.876131    1.657317    0.879299   -0.417504     3.4644  90  1727
+ BART:  79  L=   5 -8.8834488412E+03   0  0    2.917015    0.789098    2.421617   -0.118629     3.7456 113  1771
+ BART: 110  L=   6 -8.8852016353E+03   0  0    1.534008    0.126378    1.534008   -0.123104     2.6422  79  1820
+ BART: 142  L=   7 -8.8870582861E+03   0  0    1.522680    0.213579    1.518450   -0.496923     2.0472  46  1870
+ BART: 149  L=   8 -8.8876274105E+03   8 13    0.278018    0.170633    0.219497   -0.031625     2.2951  48  1908
+ BART: 174  L=   9 -8.8876267951E+03   0  0    0.278165    0.048456    0.277660   -0.154046     2.1179  41  1951
+
+ BART: SADDLE 1004    FAILED |ret  50174 |delta energy=    0.7462 |force_(tot,par,perp)=     0.2782    0.0485    0.2777 |eigenval=  -0.1540 |npart=   41 |delr=    2.118 |evalf=  1951 |
+ BART: Simulation :            4
+ BART: Attempt    :            7
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1228
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.165303   0.00
+ BART:   0  K=   0 -8.8880749937E+03   5  8    1.573400   -1.526673    0.380599    0.165303     0.6345  12  1977
+ BART:   1  K=   1 -8.8851823572E+03   5  6    4.238071   -3.387283    2.547069    0.039061     2.2541  32  2001
+ BART:   2  K=   2 -8.8810788703E+03   5  7    5.261236   -5.056526    1.453322   -0.825563     3.8184  58  2026
+ BART:   8  L=   1 -8.8796912765E+03   0  0    5.787464   -2.149322    5.345201   -0.517291     4.1438  65  2050
+ BART:  19  L=   2 -8.8792623897E+03   0  0    5.374307   -0.869062    5.300526   -0.798603     4.3391  74  2079
+ BART:  35  L=   3 -8.8797620998E+03   0  0    4.199684   -0.545798    4.131767   -2.291007     4.3043  76  2113
+ BART:  56  L=   4 -8.8819060341E+03   0  0    2.375222    0.011106    2.374933   -1.677025     3.8909  68  2152
+ BART:  82  L=   5 -8.8839571451E+03   0  0    1.346906   -0.172648    1.346852   -1.499776     3.2963  58  2196
+ BART: 113  L=   6 -8.8851031657E+03   0  0    0.791180   -0.007514    0.789920   -1.845330     3.3803  44  2245
+ BART: 149  L=   7 -8.8857418164E+03   0  0    0.583692    0.006868    0.583691   -0.430224     3.2665  36  2299
+ BART: 190  L=   8 -8.8861568562E+03   0  0    0.385768   -0.222071    0.384565   -0.267168     3.5750  33  2358
+
+ BART: SADDLE 1004    FAILED |ret  50190 |delta energy=    2.0332 |force_(tot,par,perp)=     0.3858   -0.2221    0.3846 |eigenval=  -0.2672 |npart=   33 |delr=    3.575 |evalf=  2358 |
+ BART: Simulation :            4
+ BART: Attempt    :            8
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1946
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.135944   0.00
+ BART:   0  K=   0 -8.8879121139E+03   5  8    2.246188   -2.219001    0.348423    0.135944     0.6232  14  2384
+ BART:   1  K=   1 -8.8834660396E+03   5  6    5.599722   -4.474024    3.367491   -0.361739     2.2693  42  2408
+ BART:   7  L=   1 -8.8833729254E+03   0  0    5.585528   -0.207339    5.581703   -0.031573     2.4295  45  2432
+ BART:  18  L=   2 -8.8825685246E+03   0  0    5.020363   -1.173967    4.886046   -1.109816     3.0474  59  2461
+ BART:  34  L=   3 -8.8819865813E+03   0  0    4.416820   -1.921702    3.572077   -1.982349     3.5370  67  2495
+ BART:  55  L=   4 -8.8832806752E+03   0  0    2.472508   -0.698493    2.468461   -0.933768     3.1277  59  2534
+ BART:  81  L=   5 -8.8843169666E+03   0  0    1.735408   -0.565255    1.433060   -0.138276     3.4029  70  2578
+ BART: 112  L=   6 -8.8846537909E+03   0  0    1.392478   -0.532621    1.183320   -0.012156     3.8082  87  2627
+ BART: 148  L=   7 -8.8852851394E+03   0  0    0.694804   -0.221507    0.692639   -1.083934     2.7937  67  2681
+ BART: 189  L=   8 -8.8856608212E+03   0  0    1.032453   -0.395999    0.805834   -0.336549     3.2258  72  2740
+
+ BART: SADDLE 1004    FAILED |ret  50189 |delta energy=    2.7018 |force_(tot,par,perp)=     1.0325   -0.3960    0.8058 |eigenval=  -0.3365 |npart=   72 |delr=    3.226 |evalf=  2740 |
+ BART: Simulation :            4
+ BART: Attempt    :            9
+ BART: Starting from minconf :         1003
+ BART: Reference Energy (eV) :   -8888.45264642662     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1580
+ BART: Number of displaced atoms initially:           18
+BART COLLINEAR:    0    0    1    0.166148   0.00
+ BART:   0  K=   0 -8.8879461738E+03   5  8    2.141340   -2.116681    0.324036    0.166148     0.6199  13  2766
+ BART:   1  K=   1 -8.8835039745E+03   5  6    5.544586   -4.629548    3.051182   -1.341502     2.2244  35  2790
+ BART:   7  L=   1 -8.8834988932E+03   0  0    5.538094   -0.008678    5.538094   -1.226987     2.2028  36  2814
+ BART:  18  L=   2 -8.8838189011E+03   0  0    5.054384   -0.024028    5.054383   -1.007260     2.0618  35  2843
+ BART:  34  L=   3 -8.8848821303E+03   0  0    3.603043   -0.285118    3.601654   -0.495420     1.8529  29  2877
+ BART:  55  L=   4 -8.8865195073E+03   0  0    2.058678   -0.180725    2.057740   -0.195766     1.9245  26  2916
+ BART:  81  L=   5 -8.8877528165E+03   0  0    0.942779   -0.102719    0.940227   -0.494873     1.6400  28  2960
+ BART: 112  L=   6 -8.8880274207E+03   0  0    0.451411   -0.024556    0.448900   -0.551552     2.1160  38  3009
+ BART: 148  L=   7 -8.8881117145E+03   0  0    0.147541   -0.020539    0.146708   -0.329881     2.3794  42  3063
+ BART: 189  L=   8 -8.8881368090E+03   0  0    0.046230   -0.011336    0.045307   -0.225862     2.4491  45  3122
+  Writing to file : sad1004
+
+ BART: SADDLE 1004 CONVERGED |ret  20189 |delta energy=    0.3108 |force_(tot,par,perp)=     0.0462   -0.0113    0.0453 |eigenval=  -0.2259 |npart=   45 |delr=    2.449 |evalf=  3122 |
+ BART: Configuration stored in file sad1004             
+ BART: 194  M=   5 -8.8873255518E+03   0  0    2.883981   -0.011336    0.045307   -0.225862     3.1398  73  3128
+ fnrm   8.31734492943599      fmax   1.97654964774127     
+ BART: 199  M=  10 -8.8875960545E+03   0  0    1.760077   -0.011336    0.045307   -0.225862     3.0804  73  3133
+ fnrm   3.09786989313737      fmax   1.27523817224596     
+ BART: 204  M=  15 -8.8878625860E+03   0  0    1.142933   -0.011336    0.045307   -0.225862     2.9289  73  3138
+ fnrm   1.30629509645133      fmax  0.577953156770510     
+ BART: 209  M=  20 -8.8880431211E+03   0  0    0.816450   -0.011336    0.045307   -0.225862     2.7001  68  3143
+ fnrm  0.666589966987330      fmax  0.277726091505853     
+ BART: 214  M=  25 -8.8880719865E+03   0  0    0.658727   -0.011336    0.045307   -0.225862     2.6514  66  3148
+ fnrm  0.433920883380240      fmax  0.179247455107122     
+ BART: 219  M=  30 -8.8881064204E+03   0  0    0.361457   -0.011336    0.045307   -0.225862     2.6439  65  3153
+ fnrm  0.130651323010895      fmax  0.151790420081911     
+ BART: 224  M=  35 -8.8881219336E+03   0  0    0.276722   -0.011336    0.045307   -0.225862     2.6293  62  3158
+ fnrm  7.657516082530891E-002 fmax  0.101708959548314     
+ BART: 229  M=  40 -8.8881254238E+03   0  0    0.199824   -0.011336    0.045307   -0.225862     2.6260  61  3163
+ fnrm  3.992945695110667E-002 fmax  7.894231136663979E-002
+ BART: 234  M=  45 -8.8881305976E+03   0  0    0.109174   -0.011336    0.045307   -0.225862     2.6143  61  3168
+ fnrm  1.191889567711368E-002 fmax  2.900645091965827E-002
+ BART: 239  M=  50 -8.8881340531E+03   0  0    0.121629   -0.011336    0.045307   -0.225862     2.5889  57  3173
+ fnrm  1.479362196277133E-002 fmax  2.844498719216400E-002
+ FIRE: final energy higher than initial energy, try steepest descent instead
+ initial energy :   -8887.23863891986     
+ BART: 241  M=   5 -8.8872462823E+03   0  0    0.086392   -0.011336    0.045307   -0.225862     2.5776  56  3181
+ BART: 241  M=  10 -8.8872647430E+03   0  0    0.086392   -0.011336    0.045307   -0.225862     2.5776  56  3186
+ BART: 241  M=  15 -8.8873074649E+03   0  0    0.086392   -0.011336    0.045307   -0.225862     2.5776  56  3191
+ BART: 241  M=  20 -8.8873970159E+03   0  0    0.086392   -0.011336    0.045307   -0.225862     2.5776  56  3196
+ BART: 241  M=  25 -8.8875496009E+03   0  0    0.086392   -0.011336    0.045307   -0.225862     2.5776  56  3201
+ BART: 241  M=  30 -8.8877355965E+03   0  0    0.086392   -0.011336    0.045307   -0.225862     2.5776  56  3206
+ BART: 241  M=  35 -8.8879154378E+03   0  0    0.086392   -0.011336    0.045307   -0.225862     2.5776  56  3211
+ BART: 241  M=  40 -8.8880691189E+03   0  0    0.086392   -0.011336    0.045307   -0.225862     2.5776  56  3216
+ Minimization successful   ftot :   0.297627802535284     
+ final energy :  -8888.08723662155     
+ BART: Relaxed energy : -8.8880872366E+03
+ BART: Mincounter is         1004 , scounter is 1004
+  Writing to file : min1004
+ BART: Configuration stored in file min1004             
+ BART: MINIMUM 1004 ACCEPTED |E(fin-ini)=    0.3654 |E(fin-sad)=    0.0546 |npart=   69 |delr=    2.740 |evalf=  3217 |   2.449   0.41  -0.01  -0.00
+ BART: Simulation :            5
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1004
+ BART: Reference Energy (eV) :   -8888.08723662155     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          567
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.168121   0.00
+ BART:   0  K=   0 -8.8875707399E+03   5  8    2.226565   -2.137680    0.622831    0.168121     0.6605  12    26
+ BART:   1  K=   1 -8.8829527779E+03   5  6    5.703329   -5.470791    1.611956   -0.026464     2.2281  42    50
+ BART:   7  L=   1 -8.8829249941E+03   0  0    5.698910   -0.108099    5.697931   -0.299607     2.2158  42    74
+ BART:  18  L=   2 -8.8832772048E+03   0  0    5.392445    0.005987    5.392444   -0.315196     2.0238  42   103
+ BART:  34  L=   3 -8.8846262890E+03   0  0    4.071748    0.014591    4.071744   -0.274624     1.5418  37   137
+ BART:  55  L=   4 -8.8866095479E+03   0  0    2.047703    0.020908    2.047683   -0.247191     0.8393  16   176
+ BART:  81  L=   5 -8.8878562887E+03   0  0    0.893121   -0.027334    0.892629    0.020343     0.4827   1   220
+
+ BART: SADDLE 1005    FAILED |ret  60081 |delta energy=   -0.0234 |force_(tot,par,perp)=     0.8931   -0.0273    0.8926 |eigenval=   0.0203 |npart=    1 |delr=    0.483 |evalf=   220 |
+ BART: Simulation :            5
+ BART: Attempt    :            2
+ BART: Starting from minconf :         1004
+ BART: Reference Energy (eV) :   -8888.08723662155     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          938
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.138297   0.00
+ BART:   0  K=   0 -8.8876098568E+03   5  7    2.122511   -2.038102    0.592615    0.138297     0.6671  11   245
+ BART:   1  K=   1 -8.8829482028E+03   5  7    6.140908   -5.171679    3.311267   -1.418942     2.3084  42   270
+ BART:   7  L=   1 -8.8822039085E+03   0  0    5.549848   -0.861159    5.481444   -1.154528     2.6387  47   294
+ BART:  18  L=   2 -8.8822211749E+03   0  0    5.163046   -0.541665    5.120326   -0.295142     2.8582  45   323
+ BART:  34  L=   3 -8.8825313199E+03   0  0    3.624221    0.754132    3.518199   -0.311444     2.9672  53   357
+ BART:  55  L=   4 -8.8839061834E+03   0  0    1.917353    0.277188    1.906225   -0.902486     2.6006  46   396
+ BART:  81  L=   5 -8.8846457527E+03   0  0    1.934742    0.532852    1.535796   -0.256986     2.7287  49   440
+ BART:  95  L=   6 -8.8857586789E+03   8 13    0.696238    0.530582    0.450811   -0.110125     2.7228  56   485
+ BART: 106  L=   7 -8.8855373041E+03   8 13    0.464567    0.372131    0.278103   -0.592807     3.1871  70   527
+ BART: 147  L=   8 -8.8855133258E+03   0  0    0.517233    0.014706    0.513511   -0.253088     2.9622  51   586
+ BART: 171  L=   9 -8.8857623976E+03   0  0    0.215221    0.006036    0.215070   -0.285482     2.9708  44   628
+
+ BART: SADDLE 1005    FAILED |ret  50171 |delta energy=    2.3066 |force_(tot,par,perp)=     0.2152    0.0060    0.2151 |eigenval=  -0.2855 |npart=   44 |delr=    2.971 |evalf=   628 |
+ BART: Simulation :            5
+ BART: Attempt    :            3
+ BART: Starting from minconf :         1004
+ BART: Reference Energy (eV) :   -8888.08723662155     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          142
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.177497   0.00
+ BART:   0  K=   0 -8.8874953939E+03   5  7    2.516395   -2.441361    0.609918    0.177497     0.6398  11   653
+ BART:   1  K=   1 -8.8823668648E+03   5  7    6.477149   -5.648336    3.170135   -0.010486     2.2417  39   678
+ BART:   7  L=   1 -8.8823646793E+03   0  0    6.476737   -0.035487    6.476654   -0.111433     2.1948  39   702
+ BART:  18  L=   2 -8.8824529011E+03   0  0    5.796321   -0.542002    5.771446   -0.198679     2.2058  43   731
+ BART:  34  L=   3 -8.8828949423E+03   0  0    3.944360   -0.822227    3.836977   -0.766254     2.4562  59   765
+ BART:  55  L=   4 -8.8830525204E+03   0  0    3.272847   -1.352055    2.365056   -0.427114     3.1419  79   804
+ PERP_FIRE: problem with explosion, trying a smaller dt-delr: 
+  0.256278989357737     
+ BART:  82  L=   5 -8.8838602794E+03   0  0    2.175426   -0.770495    1.995144   -0.453367     2.9708  74   848
+ BART: 113  L=   6 -8.8847656384E+03   0  0    1.828843   -0.707606    1.585097   -0.536126     3.6157 105   897
+ BART: 149  L=   7 -8.8842327344E+03   0  0    2.655074    0.126599    2.021780    0.113759     4.7720 138   951
+
+ BART: SADDLE 1005    FAILED |ret  60149 |delta energy=    2.9636 |force_(tot,par,perp)=     2.6551    0.1266    2.0218 |eigenval=   0.1138 |npart=  138 |delr=    4.772 |evalf=   951 |
+ BART: Simulation :            5
+ BART: Attempt    :            4
+ BART: Starting from minconf :         1004
+ BART: Reference Energy (eV) :   -8888.08723662155     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          976
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.173005   0.00
+ BART:   0  K=   0 -8.8875201867E+03   5  8    2.407164   -2.372340    0.407974    0.173005     0.6412  11   977
+ BART:   1  K=   1 -8.8826316631E+03   5  6    5.672406   -4.928086    2.808941   -0.753722     2.2268  41  1001
+ BART:   7  L=   1 -8.8817652018E+03   0  0    5.368611   -0.709323    5.322805   -0.945990     2.7452  53  1025
+ BART:  18  L=   2 -8.8820178467E+03   0  0    4.934886   -0.116843    4.934715   -0.513515     2.6829  54  1054
+ BART:  34  L=   3 -8.8823237506E+03   0  0    4.138349   -1.112401    3.846533   -0.247908     3.0705  63  1088
+ BART:  55  L=   4 -8.8840777534E+03   0  0    2.430716   -0.079906    2.428530   -0.531302     2.2803  48  1127
+ BART:  81  L=   5 -8.8847614350E+03   0  0    3.052637   -0.353680    2.197757   -0.541626     3.1799  33  1171
+ BART: 112  L=   6 -8.8855961653E+03   0  0    0.756278   -0.015079    0.756218   -0.427170     3.0335  26  1220
+ BART: 148  L=   7 -8.8857777235E+03   0  0    0.214676   -0.009883    0.214668   -0.255301     3.0483  25  1274
+ BART: 189  L=   8 -8.8858006765E+03   0  0    0.046067   -0.004314    0.045847   -0.229079     3.0683  29  1333
+  Writing to file : sad1005
+
+ BART: SADDLE 1005 CONVERGED |ret  20189 |delta energy=    2.2845 |force_(tot,par,perp)=     0.0461   -0.0043    0.0458 |eigenval=  -0.2291 |npart=   29 |delr=    3.068 |evalf=  1333 |
+ BART: Configuration stored in file sad1005             
+ BART: 194  M=   5 -8.8847227826E+03   0  0    3.784581   -0.004314    0.045847   -0.229079     4.2950  44  1339
+ fnrm   14.3230509045041      fmax   2.29532840927003     
+ BART: 199  M=  10 -8.8851698699E+03   0  0    2.139999   -0.004314    0.045847   -0.229079     4.1993  43  1344
+ fnrm   4.57959380304571      fmax   1.23689599396118     
+ BART: 204  M=  15 -8.8855360059E+03   0  0    1.348163   -0.004314    0.045847   -0.229079     3.9597  41  1349
+ fnrm   1.81754439290398      fmax  0.797831914599971     
+ BART: 209  M=  20 -8.8856311462E+03   0  0    1.236300   -0.004314    0.045847   -0.229079     3.6339  32  1354
+ fnrm   1.52843706180651      fmax  0.468842932466463     
+ BART: 214  M=  25 -8.8856798192E+03   0  0    0.869143   -0.004314    0.045847   -0.229079     3.6367  30  1359
+ fnrm  0.755408738605840      fmax  0.271527108421234     
+ BART: 219  M=  30 -8.8857494029E+03   0  0    0.415560   -0.004314    0.045847   -0.229079     3.6451  30  1364
+ fnrm  0.172689727018867      fmax  0.170533869942880     
+ BART: 224  M=  35 -8.8857601389E+03   0  0    0.368278   -0.004314    0.045847   -0.229079     3.6437  29  1369
+ fnrm  0.135628403029865      fmax  0.114201886191074     
+ BART: 229  M=  40 -8.8857678154E+03   0  0    0.219328   -0.004314    0.045847   -0.229079     3.6321  29  1374
+ fnrm  4.810456170867806E-002 fmax  9.237624190890524E-002
+ BART: 234  M=  45 -8.8857758100E+03   0  0    0.206363   -0.004314    0.045847   -0.229079     3.5966  31  1379
+ fnrm  4.258556289650997E-002 fmax  6.246412166893889E-002
+ BART: 239  M=  50 -8.8857894977E+03   0  0    0.137221   -0.004314    0.045847   -0.229079     3.5291  31  1384
+ fnrm  1.882954623793190E-002 fmax  4.715975092661261E-002
+ BART: 244  M=  55 -8.8857986187E+03   0  0    0.106515   -0.004314    0.045847   -0.229079     3.4413  30  1389
+ fnrm  1.134545335362040E-002 fmax  4.140014199372803E-002
+ FIRE: final energy higher than initial energy, try steepest descent instead
+ initial energy :   -8884.56740457513     
+ BART: 248  M=   5 -8.8845813002E+03   0  0    0.085045   -0.004314    0.045847   -0.229079     3.3756  29  1399
+ BART: 248  M=  10 -8.8846145922E+03   0  0    0.085045   -0.004314    0.045847   -0.229079     3.3756  29  1404
+ BART: 248  M=  15 -8.8846902372E+03   0  0    0.085045   -0.004314    0.045847   -0.229079     3.3756  29  1409
+ BART: 248  M=  20 -8.8848430946E+03   0  0    0.085045   -0.004314    0.045847   -0.229079     3.3756  29  1414
+ BART: 248  M=  25 -8.8850893882E+03   0  0    0.085045   -0.004314    0.045847   -0.229079     3.3756  29  1419
+ BART: 248  M=  30 -8.8853715020E+03   0  0    0.085045   -0.004314    0.045847   -0.229079     3.3756  29  1424
+ BART: 248  M=  35 -8.8855938307E+03   0  0    0.085045   -0.004314    0.045847   -0.229079     3.3756  29  1429
+ Minimization successful   ftot :   0.343814681938735     
+ final energy :  -8885.71782127409     
+ BART: Relaxed energy : -8.8857178213E+03
+ BART: Mincounter is         1005 , scounter is 1005
+  Writing to file : min1005
+ BART: Configuration stored in file min1005             
+ BART: MINIMUM 1005 ACCEPTED |E(fin-ini)=    2.3694 |E(fin-sad)=    0.0849 |npart=   35 |delr=    3.796 |evalf=  1434 |   3.068   0.73  -0.00  -0.00
+ BART: Simulation :            6
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          849
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.116253   0.00
+ BART:   0  K=   0 -8.8852708598E+03   5  8    1.896555   -1.786433    0.636850    0.116253     0.6475  10    26
+ BART:   1  K=   1 -8.8817512692E+03   5  6    4.814335   -3.821563    2.928051   -1.194706     2.2576  29    50
+ BART:   7  L=   1 -8.8812372937E+03   0  0    4.880380   -0.667197    4.827894   -1.402211     2.6709  29    74
+ BART:  18  L=   2 -8.8814165485E+03   0  0    4.395552   -0.217209    4.391254   -0.413048     2.7348  29   103
+ BART:  34  L=   3 -8.8821950241E+03   0  0    2.817328    0.020144    2.817172   -0.310428     2.6873  29   137
+ BART:  55  L=   4 -8.8830923548E+03   0  0    1.390013   -0.119924    1.390011   -1.363298     2.4235  20   176
+ BART:  81  L=   5 -8.8835789801E+03   0  0    0.568273   -0.054735    0.567164   -0.948338     2.5734  20   220
+ BART: 112  L=   6 -8.8837154334E+03   0  0    0.159833   -0.006133    0.159691   -0.720261     2.6617  24   269
+ BART: 148  L=   7 -8.8837383810E+03   0  0    0.053911   -0.000252    0.053911   -0.684957     2.7125  28   323
+ BART: 189  L=   8 -8.8837534525E+03   0  0    0.096712   -0.000470    0.096712   -0.675524     2.9084  45   382
+
+ BART: SADDLE 1006    FAILED |ret  50189 |delta energy=    1.8919 |force_(tot,par,perp)=     0.0967   -0.0005    0.0967 |eigenval=  -0.6755 |npart=   45 |delr=    2.908 |evalf=   382 |
+ BART: Simulation :            6
+ BART: Attempt    :            2
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1111
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.084482   0.00
+ BART:   0  K=   0 -8.8852780237E+03   5  8    2.132047   -2.057426    0.559126    0.084482     0.6946  12   408
+ BART:   1  K=   1 -8.8813637868E+03   5  6    5.500424   -4.138983    3.622634   -0.599764     2.4599  43   432
+ BART:   7  L=   1 -8.8808190561E+03   0  0    5.584173   -0.940239    5.495879   -0.755470     3.0262  48   456
+ BART:  18  L=   2 -8.8808965378E+03   0  0    5.071618    0.313426    5.062167   -0.777787     2.9353  56   485
+ BART:  34  L=   3 -8.8819310412E+03   0  0    3.378781   -0.032048    3.378703   -0.896962     2.9412  61   519
+ BART:  55  L=   4 -8.8832531998E+03   0  0    1.727271   -0.168645    1.727269   -0.937381     2.7438  48   558
+ BART:  81  L=   5 -8.8840960410E+03   0  0    0.728226   -0.038648    0.727877   -1.012664     2.5660  48   602
+ BART: 112  L=   6 -8.8843702259E+03   0  0    0.272981   -0.025785    0.272981   -0.771722     2.5741  51   651
+ BART: 148  L=   7 -8.8845212558E+03   0  0    0.302623   -0.245349    0.302619   -0.383700     2.6281  55   705
+ BART: 189  L=   8 -8.8848471534E+03   0  0    0.474614    0.038545    0.474589   -0.101586     3.2543  72   764
+
+ BART: SADDLE 1006    FAILED |ret  50189 |delta energy=    0.5608 |force_(tot,par,perp)=     0.4746    0.0385    0.4746 |eigenval=  -0.1016 |npart=   72 |delr=    3.254 |evalf=   764 |
+ BART: Simulation :            6
+ BART: Attempt    :            3
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1032
+ BART: Number of displaced atoms initially:           13
+BART COLLINEAR:    0    0    1    0.142059   0.00
+ BART:   0  K=   0 -8.8850716517E+03   5  7    2.775289   -2.662774    0.782218    0.142059     0.6552  11   789
+ BART:   1  K=   1 -8.8805158353E+03   5  7    4.562152   -4.321457    1.462271   -0.573255     2.2226  41   814
+ BART:   7  L=   1 -8.8788055779E+03   0  0    4.781844   -1.905845    4.373505   -0.370527     3.0188  54   838
+ BART:  18  L=   2 -8.8777381860E+03   0  0    4.553685   -1.281909    4.350241   -0.576540     3.6194  70   867
+ BART:  34  L=   3 -8.8779207673E+03   0  0    3.517000   -0.835211    3.379763   -0.468679     3.8368  83   901
+ BART:  55  L=   4 -8.8793190284E+03   0  0    2.055251   -0.319252    2.053855   -0.960196     3.5554  88   940
+ BART:  81  L=   5 -8.8797222876E+03   0  0    2.451417   -0.319820    1.964398   -1.500687     4.3485  99   984
+ BART: 112  L=   6 -8.8807828332E+03   0  0    0.803854   -0.044406    0.803577   -1.223749     4.5362 123  1033
+ BART: 148  L=   7 -8.8810698949E+03   0  0    0.277726    0.009395    0.277725   -1.128398     4.8034 143  1087
+ PERP_FIRE: problem with explosion, trying a smaller dt-delr: 
+  0.261782275989939     
+ BART: 190  L=   8 -8.8812193817E+03   0  0    0.180413   -0.071608    0.180413   -0.485612     5.6238 179  1146
+
+ BART: SADDLE 1006    FAILED |ret  50190 |delta energy=    2.8389 |force_(tot,par,perp)=     0.1804   -0.0716    0.1804 |eigenval=  -0.4856 |npart=  179 |delr=    5.624 |evalf=  1146 |
+ BART: Simulation :            6
+ BART: Attempt    :            4
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1641
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.131047   0.00
+ BART:   0  K=   0 -8.8852893748E+03   5  8    1.998863   -1.944239    0.464101    0.131047     0.6634  13  1172
+ BART:   1  K=   1 -8.8812052497E+03   5  7    5.036169   -4.941443    0.972184   -0.130269     2.1481  36  1197
+ BART:   7  L=   1 -8.8802946363E+03   0  0    4.966945   -1.083260    4.847421   -0.774415     2.5931  43  1221
+ BART:  18  L=   2 -8.8793993004E+03   0  0    5.022678   -1.809131    4.624064    0.102611     3.0682  54  1250
+
+ BART: SADDLE 1006    FAILED |ret  60018 |delta energy=    5.3708 |force_(tot,par,perp)=     5.0227   -1.8091    4.6241 |eigenval=   0.1026 |npart=   54 |delr=    3.068 |evalf=  1250 |
+ BART: Simulation :            6
+ BART: Attempt    :            5
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          394
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.106365   0.00
+ BART:   0  K=   0 -8.8851678104E+03   5  7    2.548127   -2.474792    0.606926    0.106365     0.6810  14  1275
+ BART:   1  K=   1 -8.8792307655E+03   5  9    7.429824   -7.035888    2.387166   -1.599160     2.0605  32  1302
+ BART:   7  L=   1 -8.8792268107E+03   0  0    7.423913   -0.010931    7.423913   -1.420299     2.0172  32  1326
+ BART:  18  L=   2 -8.8798117990E+03   0  0    6.870243   -0.028871    6.870243   -0.936201     1.7973  34  1355
+ BART:  34  L=   3 -8.8818982371E+03   0  0    4.890691    0.067755    4.890685   -1.110119     1.3580  32  1389
+ BART:  55  L=   4 -8.8846177076E+03   0  0    2.297813    0.052798    2.295343   -0.420836     0.8029  10  1428
+ BART:  81  L=   5 -8.8856118621E+03   0  0    0.842914    0.030441    0.842914   -0.476484     0.6845   7  1472
+ BART: 107  L=   6 -8.8857661804E+03   0  0    0.248242    0.013237    0.248082   -0.360048     0.5998   4  1516
+ BART: 119  L=   7 -8.8857937224E+03   0  0    0.098727    0.007449    0.098446   -0.250257     0.5947   4  1546
+ BART: 137  L=   8 -8.8857942535E+03   0  0    0.086073    0.004827    0.085940   -0.192427     0.5928   4  1582
+ BART: 157  L=   9 -8.8857961168E+03   0  0    0.068907    0.003539    0.068818   -0.157356     0.5935   4  1620
+
+ BART: SADDLE 1006    FAILED |ret  50157 |delta energy=   -0.0804 |force_(tot,par,perp)=     0.0689    0.0035    0.0688 |eigenval=  -0.1574 |npart=    4 |delr=    0.593 |evalf=  1620 |
+ BART: Simulation :            6
+ BART: Attempt    :            6
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          298
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.116998   0.00
+ BART:   0  K=   0 -8.8852171871E+03   5  8    2.319209   -2.241340    0.595927    0.116998     0.6627  13  1646
+ BART:   1  K=   1 -8.8805568326E+03   5  6    5.710399   -5.122547    2.523524   -0.963881     2.2716  41  1670
+ BART:   7  L=   1 -8.8796011756E+03   0  0    5.546176   -1.053257    5.447247   -0.448354     2.8971  44  1694
+ BART:  18  L=   2 -8.8792980061E+03   0  0    5.155043   -0.706591    5.099370   -0.381044     3.3109  52  1723
+ BART:  34  L=   3 -8.8803054941E+03   0  0    3.746517   -0.156817    3.740006   -0.608628     3.2562  65  1757
+ BART:  55  L=   4 -8.8812596456E+03   0  0    2.673358   -0.452580    2.467580   -0.429945     3.5289  73  1796
+ BART:  81  L=   5 -8.8820982980E+03   0  0    1.912625   -0.434175    1.545677   -0.417113     3.8646  95  1840
+ BART: 112  L=   6 -8.8827623809E+03   0  0    1.700870   -0.478454    1.476347   -0.010841     4.3692 135  1889
+ BART: 148  L=   7 -8.8835927837E+03   0  0    0.958942   -0.246573    0.883602   -0.149266     4.3587 143  1943
+ BART: 189  L=   8 -8.8840462704E+03   0  0    0.407660    0.013445    0.406557   -0.157229     4.1758 152  2002
+
+ BART: SADDLE 1006    FAILED |ret  50189 |delta energy=    1.2970 |force_(tot,par,perp)=     0.4077    0.0134    0.4066 |eigenval=  -0.1572 |npart=  152 |delr=    4.176 |evalf=  2002 |
+ BART: Simulation :            6
+ BART: Attempt    :            7
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1756
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.093146   0.00
+ BART:   0  K=   0 -8.8852112441E+03   5  8    2.303200   -2.211897    0.642061    0.093146     0.6668  14  2028
+ BART:   1  K=   1 -8.8807067718E+03   5  6    5.458655   -5.073907    2.013051   -0.952404     2.2653  39  2052
+ BART:   7  L=   1 -8.8806951626E+03   0  0    5.441038   -0.026192    5.441023   -0.829356     2.2538  38  2076
+ BART:  18  L=   2 -8.8809308763E+03   0  0    4.946171   -0.095980    4.946169   -0.896867     2.2925  38  2105
+ BART:  34  L=   3 -8.8818631147E+03   0  0    3.653817   -0.314355    3.641304   -0.357166     2.3568  41  2139
+ BART:  55  L=   4 -8.8831317289E+03   0  0    2.489259   -0.146119    2.338184   -0.119076     2.9899  38  2178
+ BART:  81  L=   5 -8.8841201719E+03   0  0    0.988304   -0.146610    0.969430   -0.290414     3.0978  39  2222
+ BART: 112  L=   6 -8.8844212966E+03   0  0    0.372213   -0.053608    0.370586   -0.320911     3.3582  57  2271
+ BART: 138  L=   7 -8.8845853499E+03   0  0    0.210546    0.022385    0.210330   -0.431558     3.3669  59  2315
+ BART: 147  L=   8 -8.8846334987E+03   5 13    0.136510    0.017855    0.135337   -0.225247     3.3535  59  2355
+ BART: 193  L=   9 -8.8846332936E+03   0  0    0.136479    0.065036    0.136295   -0.472022     2.6946  66  2419
+
+ BART: SADDLE 1006    FAILED |ret  50193 |delta energy=    0.6743 |force_(tot,par,perp)=     0.1365    0.0650    0.1363 |eigenval=  -0.4720 |npart=   66 |delr=    2.695 |evalf=  2419 |
+ BART: Simulation :            6
+ BART: Attempt    :            8
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1275
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.188494   0.00
+ BART:   0  K=   0 -8.8854662799E+03   5  7    1.426646   -1.207382    0.759966    0.188494     0.6831  12  2444
+ BART:   1  K=   1 -8.8828967981E+03   5  7    4.277477   -3.486282    2.478437   -0.008079     2.2927  49  2469
+ BART:   2  K=   2 -8.8786188661E+03   5  7    5.377597   -4.840837    2.341975   -0.853166     3.8838  76  2494
+ BART:   8  L=   1 -8.8776917979E+03   0  0    5.684805   -0.908700    5.600681   -0.424501     4.3240  79  2518
+ BART:  19  L=   2 -8.8779328886E+03   0  0    5.024566   -0.101504    5.024387   -0.613855     4.4562  79  2547
+ BART:  35  L=   3 -8.8783937742E+03   0  0    3.816960   -0.854954    3.698886   -0.894567     4.9295  89  2581
+ BART:  56  L=   4 -8.8802165145E+03   0  0    2.343984   -0.243749    2.343980   -0.548515     4.3746  97  2620
+ BART:  82  L=   5 -8.8816087793E+03   0  0    1.962324   -0.844715    1.649232    0.042929     4.7673 103  2664
+
+ BART: SADDLE 1006    FAILED |ret  60082 |delta energy=    3.1050 |force_(tot,par,perp)=     1.9623   -0.8447    1.6492 |eigenval=   0.0429 |npart=  103 |delr=    4.767 |evalf=  2664 |
+ BART: Simulation :            6
+ BART: Attempt    :            9
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1289
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.085776   0.00
+ BART:   0  K=   0 -8.8851718859E+03   5  7    2.516247   -2.237890    1.150369    0.085776     0.6925  15  2689
+ BART:   1  K=   1 -8.8809413837E+03   5  7    6.003385   -4.637698    3.812137   -0.488170     2.5062  48  2714
+ BART:   7  L=   1 -8.8800845128E+03   0  0    5.963913   -1.242144    5.833399   -0.112482     3.0478  57  2738
+ BART:  18  L=   2 -8.8799849518E+03   0  0    5.254581   -0.701163    5.219210   -0.078697     3.3581  66  2767
+ BART:  34  L=   3 -8.8802163731E+03   0  0    3.449812   -0.920976    3.322523   -0.340033     3.7239  91  2801
+ BART:  55  L=   4 -8.8810249945E+03   0  0    2.552013   -0.644576    2.409020   -0.130627     3.8771 111  2840
+ BART:  81  L=   5 -8.8818473558E+03   0  0    1.963630   -0.633119    1.613368   -0.270720     4.3113 148  2884
+ BART: 112  L=   6 -8.8818849252E+03   0  0    2.223352   -0.882287    1.591967   -0.365676     5.0243 178  2933
+ BART: 148  L=   7 -8.8822530187E+03   0  0    0.963858   -0.436529    0.961842   -0.311792     4.8917 137  2987
+ BART: 189  L=   8 -8.8832249846E+03   0  0    0.750961   -0.153606    0.739281   -0.050943     5.3173 170  3046
+
+ BART: SADDLE 1006    FAILED |ret  50189 |delta energy=    1.9855 |force_(tot,par,perp)=     0.7510   -0.1536    0.7393 |eigenval=  -0.0509 |npart=  170 |delr=    5.317 |evalf=  3046 |
+ BART: Simulation :            6
+ BART: Attempt    :           10
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1408
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.070930   0.00
+ BART:   0  K=   0 -8.8852517811E+03   5  8    2.118952   -2.056031    0.512538    0.070930     0.6684  13  3072
+ BART:   1  K=   1 -8.8808648023E+03   5  6    5.249671   -4.995526    1.613617   -1.132955     2.2257  47  3096
+ BART:   7  L=   1 -8.8793127615E+03   0  0    5.516235   -2.545953    4.875609   -0.483951     2.8800  49  3120
+ BART:  18  L=   2 -8.8786721474E+03   0  0    4.927604   -1.328797    4.750098   -0.489251     3.2421  53  3149
+ BART:  34  L=   3 -8.8792415781E+03   0  0    3.905046   -0.326775    3.863500   -0.498691     3.4392  69  3183
+ BART:  55  L=   4 -8.8811295268E+03   0  0    2.199119    0.031638    2.198939   -0.691240     2.6841  60  3222
+ PERP_FIRE: problem with explosion, trying a smaller dt-delr: 
+  0.269954770171018     
+ BART:  82  L=   5 -8.8830998134E+03   0  0    1.660978   -0.278086    1.660954    0.035570     2.6155  53  3266
+
+ BART: SADDLE 1006    FAILED |ret  60082 |delta energy=   -0.0408 |force_(tot,par,perp)=     1.6610   -0.2781    1.6610 |eigenval=   0.0356 |npart=   53 |delr=    2.616 |evalf=  3266 |
+ BART: Simulation :            6
+ BART: Attempt    :           11
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          852
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.129886   0.00
+ BART:   0  K=   0 -8.8851221597E+03   5  8    2.704726   -2.661507    0.481588    0.129886     0.6919  14  3292
+ BART:   1  K=   1 -8.8797236286E+03   5  6    6.299923   -5.335545    3.349774   -0.984826     2.3898  45  3316
+ BART:   7  L=   1 -8.8787552712E+03   0  0    6.123961   -1.703644    5.878309   -0.598977     2.5982  49  3340
+ BART:  18  L=   2 -8.8778530697E+03   0  0    5.858625   -1.406889    5.658363   -0.640000     2.9784  52  3369
+ BART:  34  L=   3 -8.8782699374E+03   0  0    4.087910   -0.733394    3.964931   -1.263593     3.2634  65  3403
+ BART:  55  L=   4 -8.8802057610E+03   0  0    2.543091    0.002300    2.542505   -1.150694     2.9294  49  3442
+ BART:  81  L=   5 -8.8825412617E+03   0  0    1.469281   -0.320493    1.469242   -1.195256     2.4739  34  3486
+ BART: 111  L=   6 -8.8834184784E+03   0  0    0.897410    0.066064    0.897396   -1.311779     2.7925  42  3534
+ BART: 147  L=   7 -8.8836242666E+03   0  0    0.248792   -0.005873    0.248787   -1.340602     2.9505  55  3588
+ BART: 188  L=   8 -8.8836983140E+03   0  0    0.124596   -0.012114    0.124596   -1.323335     3.2343  73  3647
+
+ BART: SADDLE 1006    FAILED |ret  50188 |delta energy=    1.9713 |force_(tot,par,perp)=     0.1246   -0.0121    0.1246 |eigenval=  -1.3233 |npart=   73 |delr=    3.234 |evalf=  3647 |
+ BART: Simulation :            6
+ BART: Attempt    :           12
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1631
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.135861   0.00
+ BART:   0  K=   0 -8.8852014953E+03   5  8    2.336930   -2.268708    0.560543    0.135861     0.6558  15  3673
+ BART:   1  K=   1 -8.8803920458E+03   5  7    5.769910   -5.661634    1.112549   -0.307103     2.1812  47  3698
+ BART:   7  L=   1 -8.8789198846E+03   0  0    5.713971   -1.641698    5.473055   -0.560207     2.7649  57  3722
+ BART:  18  L=   2 -8.8780660830E+03   0  0    5.236203   -1.252791    5.069595   -0.903501     3.0498  61  3751
+ BART:  34  L=   3 -8.8785942638E+03   0  0    4.096805   -0.613788    4.022211   -0.784286     3.3123  74  3785
+ BART:  55  L=   4 -8.8804860374E+03   0  0    2.310000   -0.044380    2.304518   -0.846819     3.1762  61  3824
+ BART:  81  L=   5 -8.8812878902E+03   0  0    2.805045   -0.451913    2.237086   -0.243559     3.9313  66  3868
+ BART: 112  L=   6 -8.8824706068E+03   0  0    0.995660   -0.152808    0.995655   -1.189495     3.4829  60  3917
+ BART: 148  L=   7 -8.8827988036E+03   0  0    0.865114   -0.247454    0.717749   -0.415709     3.8455  77  3971
+ BART: 189  L=   8 -8.8828409564E+03   0  0    0.302868   -0.258610    0.293581    0.070427     3.2432  72  4030
+
+ BART: SADDLE 1006    FAILED |ret  60189 |delta energy=    1.7624 |force_(tot,par,perp)=     0.3029   -0.2586    0.2936 |eigenval=   0.0704 |npart=   72 |delr=    3.243 |evalf=  4030 |
+ BART: Simulation :            6
+ BART: Attempt    :           13
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          561
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.110147   0.00
+ BART:   0  K=   0 -8.8851467998E+03   5  7    2.516332   -2.279638    1.065447    0.110147     0.6662  11  4055
+ BART:   1  K=   1 -8.8809320984E+03   5  7    4.897868   -4.472645    1.996136   -0.524703     2.2856  36  4080
+ BART:   7  L=   1 -8.8805160640E+03   0  0    4.680447   -0.715042    4.626899   -0.931040     2.4141  45  4104
+ BART:  18  L=   2 -8.8797526518E+03   0  0    4.298499    1.061709    4.159628   -0.713001     2.9802  50  4133
+ BART:  34  L=   3 -8.8797992103E+03   0  0    3.557886    0.169426    3.506158   -0.290147     3.5383  51  4167
+ BART:  55  L=   4 -8.8812360626E+03   0  0    1.864624   -0.022027    1.864620   -0.465423     3.3389  42  4206
+ BART:  81  L=   5 -8.8822190100E+03   0  0    0.816066   -0.030247    0.816061   -0.845476     3.4040  40  4250
+ BART: 112  L=   6 -8.8826376601E+03   0  0    0.486858   -0.203466    0.485404   -0.468959     3.5688  41  4299
+ BART: 148  L=   7 -8.8829733286E+03   0  0    0.425384    0.044113    0.424697   -0.228876     3.8377  55  4353
+ BART: 158  L=   8 -8.8831679249E+03   7 13    0.122322    0.026127    0.119499   -0.287637     3.8309  52  4394
+
+ BART: SADDLE 1006    FAILED |ret  50158 |delta energy=    2.5474 |force_(tot,par,perp)=     0.1223    0.0261    0.1195 |eigenval=  -0.2876 |npart=   52 |delr=    3.831 |evalf=  4394 |
+ BART: Simulation :            6
+ BART: Attempt    :           14
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          828
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.140844   0.00
+ BART:   0  K=   0 -8.8850576643E+03   5  8    2.914016   -2.697926    1.101218    0.140844     0.6975  14  4420
+ BART:   1  K=   1 -8.8792782994E+03   5  7    6.945565   -6.783208    1.492972   -0.890630     2.3596  44  4445
+ BART:   7  L=   1 -8.8777605867E+03   0  0    6.894261   -1.739910    6.662529   -1.510242     2.8928  44  4469
+ BART:  18  L=   2 -8.8774592865E+03   0  0    5.906215   -0.405398    5.889777   -1.968699     3.4110  49  4498
+ BART:  34  L=   3 -8.8787121132E+03   0  0    4.081639   -0.157316    4.070738   -1.550936     3.5104  55  4532
+ BART:  55  L=   4 -8.8806017801E+03   0  0    2.060645    0.104953    2.060644   -1.405320     3.4023  53  4571
+ BART:  81  L=   5 -8.8821357503E+03   0  0    1.261910   -0.063360    1.261879   -0.935108     3.5766  64  4615
+ BART: 112  L=   6 -8.8831604584E+03   0  0    0.798369    0.059989    0.798368   -0.833884     3.6959  89  4664
+ BART: 148  L=   7 -8.8834732502E+03   0  0    0.341480   -0.233472    0.341480   -0.790403     3.9316 113  4718
+ BART: 179  L=   8 -8.8836640877E+03   0  0    0.270843    0.010129    0.270253   -0.848709     4.0584 116  4767
+
+ BART: SADDLE 1006    FAILED |ret  50179 |delta energy=    2.0217 |force_(tot,par,perp)=     0.2708    0.0101    0.2703 |eigenval=  -0.8487 |npart=  116 |delr=    4.058 |evalf=  4767 |
+ BART: Simulation :            6
+ BART: Attempt    :           15
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1531
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.075692   0.00
+ BART:   0  K=   0 -8.8853717364E+03   5  8    1.713439   -1.594407    0.627485    0.075692     0.6633  13  4793
+ BART:   1  K=   1 -8.8811369503E+03   5  8    5.934436   -5.651080    1.811859   -0.795931     1.9678  27  4819
+ BART:   7  L=   1 -8.8794460884E+03   0  0    5.862535   -1.678058    5.613737   -1.129094     2.6840  37  4843
+ BART:  18  L=   2 -8.8785570155E+03   0  0    7.558003   -0.505957    7.432453   -2.044944     3.0861  42  4872
+ BART:  34  L=   3 -8.8798589671E+03   0  0    3.342010    0.110790    3.341503   -2.643278     2.9606  43  4906
+ BART:  55  L=   4 -8.8811521239E+03   0  0    1.755765   -0.094167    1.755605   -2.208516     2.5110  38  4945
+ BART:  81  L=   5 -8.8823561162E+03   0  0    1.252155   -0.270859    1.252155   -2.018696     2.6393  32  4989
+ BART: 112  L=   6 -8.8836345652E+03   0  0    1.159572   -0.262507    1.159489   -0.062672     3.2761  44  5038
+ BART: 148  L=   7 -8.8842339453E+03   0  0    0.750408   -0.144649    0.721168   -0.363358     3.5016  52  5092
+ BART: 172  L=   8 -8.8843939668E+03   8 13    0.071359   -0.001061    0.071351   -0.476419     3.5726  51  5147
+
+ BART: SADDLE 1006    FAILED |ret  50172 |delta energy=    1.3229 |force_(tot,par,perp)=     0.0714   -0.0011    0.0714 |eigenval=  -0.4764 |npart=   51 |delr=    3.573 |evalf=  5147 |
+ BART: Simulation :            6
+ BART: Attempt    :           16
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          318
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.132394   0.00
+ BART:   0  K=   0 -8.8852422522E+03   5  8    2.202870   -2.146613    0.494659    0.132394     0.6615  11  5173
+ BART:   1  K=   1 -8.8803348666E+03   5  6    5.592174   -5.066117    2.367882   -0.717459     2.1892  36  5197
+ BART:   7  L=   1 -8.8801362797E+03   0  0    5.448998   -0.106548    5.448156   -0.755852     2.4285  44  5221
+ BART:  18  L=   2 -8.8804337372E+03   0  0    5.137464    0.000919    5.137464   -0.997341     2.4126  44  5250
+ BART:  34  L=   3 -8.8816521875E+03   0  0    3.966505   -0.042755    3.966389   -1.028276     1.9583  40  5284
+ BART:  55  L=   4 -8.8836885817E+03   0  0    2.246282   -0.509963    2.246190   -0.406146     1.3120  22  5323
+ BART:  77  L=   5 -8.8849196616E+03   0  0    1.712542    0.413920    1.696956   -0.804888     2.0237  34  5363
+ BART: 108  L=   6 -8.8852149087E+03   0  0    0.645603   -0.149472    0.645542   -0.770244     2.2185  39  5412
+ BART: 144  L=   7 -8.8855033587E+03   0  0    0.388426   -0.045702    0.387974   -0.611398     2.6101  51  5466
+ BART: 175  L=   8 -8.8855736524E+03   0  0    0.107381    0.005638    0.107380   -0.484827     2.7340  55  5515
+
+ BART: SADDLE 1006    FAILED |ret  50175 |delta energy=    0.1250 |force_(tot,par,perp)=     0.1074    0.0056    0.1074 |eigenval=  -0.4848 |npart=   55 |delr=    2.734 |evalf=  5515 |
+ BART: Simulation :            6
+ BART: Attempt    :           17
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1441
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.121320   0.00
+ BART:   0  K=   0 -8.8852016289E+03   5  8    2.246688   -2.175717    0.560233    0.121320     0.6641  13  5541
+ BART:   1  K=   1 -8.8801926877E+03   5  8    6.625087   -6.327976    1.961758   -0.251258     1.9616  29  5567
+ BART:   7  L=   1 -8.8801670842E+03   0  0    6.603080   -0.075028    6.602771   -0.459572     1.9433  31  5591
+ BART:  18  L=   2 -8.8799086922E+03   0  0    5.942028   -0.732360    5.910091   -0.760122     2.3204  45  5620
+ BART:  34  L=   3 -8.8808723723E+03   0  0    4.284861   -0.583701    4.201311   -0.715054     2.7163  51  5654
+ BART:  55  L=   4 -8.8824368548E+03   0  0    2.200831   -0.303653    2.110722   -0.355911     3.2106  54  5693
+ BART:  81  L=   5 -8.8836797036E+03   0  0    1.121733   -0.127755    1.115709   -0.467749     2.6717  57  5737
+ BART: 112  L=   6 -8.8843086762E+03   0  0    0.806015    0.067922    0.802267   -1.759059     3.5116  84  5786
+ BART: 115  L=   7 -8.8846930026E+03   8 13    0.184420    0.114620    0.144475   -0.463638     3.5479  84  5820
+ BART: 118  L=   8 -8.8847056271E+03   8 13    0.140103    0.038764    0.134634   -0.125605     3.6299  83  5854
+ BART: 147  L=   9 -8.8847050114E+03   0  0    0.138424    0.033887    0.137772   -0.994252     3.7735  88  5901
+ BART: 150  L=  10 -8.8847455649E+03   8 13    0.094474    0.054619    0.077084   -0.238196     3.8192  89  5935
+
+ BART: SADDLE 1006    FAILED |ret      0 |delta energy=    0.9705 |force_(tot,par,perp)=     0.0945    0.0546    0.0771 |eigenval=  -0.2382 |npart=   89 |delr=    3.819 |evalf=  5935 |
+ BART: Simulation :            6
+ BART: Attempt    :           18
+ BART: Starting from minconf :         1005
+ BART: Reference Energy (eV) :   -8885.71782127409     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1749
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1   -0.160314   0.00
+ BART:   0  K=   0 -8.8851887312E+03   5  8    2.379746   -2.280235    0.680968   -0.160314     0.6627  15  5961
+ BART:   6  L=   1 -8.8851886717E+03   0  0    2.379691   -0.003974    2.379688   -0.320201     0.6460  13  5985
+ BART:  17  L=   2 -8.8852492250E+03   0  0    2.203321   -0.000736    2.203320   -0.333799     0.5736   8  6014
+ BART:  33  L=   3 -8.8854612307E+03   0  0    1.504894    0.003411    1.504893   -0.286954     0.4381   2  6048
+ BART:  54  L=   4 -8.8856952420E+03   0  0    0.566969    0.004978    0.566961   -0.241874     0.3819   2  6087
+ BART:  80  L=   5 -8.8857741626E+03   0  0    0.193731    0.004040    0.193699   -0.186102     0.4840   3  6131
+ BART:  96  L=   6 -8.8857964891E+03   0  0    0.066124    0.003399    0.066038   -0.154120     0.4899   3  6165
+ BART: 114  L=   7 -8.8857972446E+03   0  0    0.058304    0.002745    0.058240   -0.129568     0.4999   3  6201
+ BART: 133  L=   8 -8.8857982148E+03   0  0    0.052416    0.002335    0.052365   -0.104864     0.5122   4  6238
+ BART: 144  L=   9 -8.8857992075E+03   0  0    0.047414    0.002199    0.047363   -0.086482     0.5137   4  6267
+  Writing to file : sad1006
+
+ BART: SADDLE 1006 CONVERGED |ret  20144 |delta energy=   -0.0815 |force_(tot,par,perp)=     0.0474    0.0022    0.0474 |eigenval=  -0.0865 |npart=    4 |delr=    0.514 |evalf=  6267 |
+ BART: Configuration stored in file sad1006             
+ BART :WARNING
+ BART :Projection and displacement vectors almost perpendicular
+ BART :to each other. Assuming projection points in right direction
+ BART: 149  M=   5 -8.8858078723E+03   0  0    0.128941    0.002199    0.047363   -0.086482     0.5767   5  6273
+ fnrm  1.662584167998853E-002 fmax  7.027801626506271E-002
+ BART: 154  M=  10 -8.8858085286E+03   0  0    0.116474    0.002199    0.047363   -0.086482     0.5792   5  6278
+ fnrm  1.356628125371767E-002 fmax  7.114928100073138E-002
+ BART: 159  M=  15 -8.8858102778E+03   0  0    0.108799    0.002199    0.047363   -0.086482     0.5879   5  6283
+ fnrm  1.183715519982590E-002 fmax  7.424381365573474E-002
+ BART: 164  M=  20 -8.8858150404E+03   0  0    0.115641    0.002199    0.047363   -0.086482     0.6157   5  6288
+ fnrm  1.337282284634249E-002 fmax  7.609088984177474E-002
+ BART: 169  M=  25 -8.8858277438E+03   0  0    0.119222    0.002199    0.047363   -0.086482     0.6941   6  6293
+ fnrm  1.421384694417527E-002 fmax  5.341955747047517E-002
+ BART: 174  M=  30 -8.8858458295E+03   0  0    0.111162    0.002199    0.047363   -0.086482     0.8248   9  6298
+ fnrm  1.235689465795646E-002 fmax  3.558030635675932E-002
+ BART: 179  M=  35 -8.8858642277E+03   0  0    0.087941    0.002199    0.047363   -0.086482     0.9902  13  6303
+ fnrm  7.733586673635752E-003 fmax  2.459641685206967E-002
+ FIRE: minimization successful
+ fnrm:   7.733586673635752E-003   , fmax:   2.459641685206967E-002  , iter: 
+          35
+ Final energy:   -8885.86422772860     
+ BART: Relaxed energy : -8.8858642277E+03
+ BART: Mincounter is         1006 , scounter is 1006
+  Writing to file : min1006
+ BART: Configuration stored in file min1006             
+ BART: MINIMUM 1006 ACCEPTED |E(fin-ini)=   -0.1464 |E(fin-sad)=   -0.0649 |npart=   13 |delr=    0.990 |evalf=  6303 |   0.514   0.01   0.00   0.03
+ BART: Simulation :            7
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1006
+ BART: Reference Energy (eV) :   -8885.86422772860     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1956
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.142704   0.00
+ BART:   0  K=   0 -8.8854233133E+03   5  8    1.809538   -1.764274    0.402198    0.142704     0.6226   9    26
+ BART:   1  K=   1 -8.8820943021E+03   5  6    5.101984   -3.881216    3.311557   -0.111862     2.2627  34    50
+ BART:   7  L=   1 -8.8818423603E+03   0  0    5.040036   -0.461790    5.019070   -0.499151     2.4775  41    74
+ BART:  18  L=   2 -8.8819507928E+03   0  0    4.600382   -0.391451    4.580148   -0.037616     2.6566  45   103
+ BART:  34  L=   3 -8.8828237324E+03   0  0    3.155351   -0.108676    3.153705   -0.020855     2.4168  50   137
+ BART:  55  L=   4 -8.8840686191E+03   0  0    1.702412   -0.115775    1.698173   -0.176646     2.2232  42   176
+ BART:  81  L=   5 -8.8848975780E+03   0  0    0.718095   -0.055765    0.713347   -0.556767     2.3495  46   220
+ BART: 112  L=   6 -8.8851034586E+03   0  0    0.361603   -0.016758    0.359947   -0.218939     2.5084  60   269
+ BART: 148  L=   7 -8.8851490665E+03   0  0    0.093557   -0.007238    0.093168   -0.244112     2.5763  65   323
+ BART: 189  L=   8 -8.8851582148E+03   0  0    0.025168   -0.003755    0.024869   -0.211824     2.6182  66   382
+  Writing to file : sad1007
+
+ BART: SADDLE 1007 CONVERGED |ret  20189 |delta energy=    0.7036 |force_(tot,par,perp)=     0.0252   -0.0038    0.0249 |eigenval=  -0.2118 |npart=   66 |delr=    2.618 |evalf=   382 |
+ BART: Configuration stored in file sad1007             
+ BART: 194  M=   5 -8.8847856871E+03   0  0    1.848554   -0.003755    0.024869   -0.211824     3.5248 100   388
+ fnrm   3.41715198189867      fmax   1.06222655255284     
+ BART: 199  M=  10 -8.8849028883E+03   0  0    1.260380   -0.003755    0.024869   -0.211824     3.4930 100   393
+ fnrm   1.58855730720845      fmax  0.733224328926126     
+ BART: 204  M=  15 -8.8850415691E+03   0  0    0.694085   -0.003755    0.024869   -0.211824     3.4083  97   398
+ fnrm  0.481753802762579      fmax  0.255653674577767     
+ BART: 209  M=  20 -8.8850980805E+03   0  0    0.629069   -0.003755    0.024869   -0.211824     3.2713  96   403
+ fnrm  0.395727686379518      fmax  0.186311143073892     
+ BART: 214  M=  25 -8.8851290251E+03   0  0    0.555615   -0.003755    0.024869   -0.211824     3.1260  94   408
+ fnrm  0.308708437083558      fmax  0.124219695589971     
+ BART: 219  M=  30 -8.8851379889E+03   0  0    0.471701   -0.003755    0.024869   -0.211824     3.0757  91   413
+ fnrm  0.222501490148553      fmax  0.104646086635081     
+ BART: 224  M=  35 -8.8851569281E+03   0  0    0.253898   -0.003755    0.024869   -0.211824     3.0812  89   418
+ fnrm  6.446398434159681E-002 fmax  8.243108627615676E-002
+ BART: 229  M=  40 -8.8851715991E+03   0  0    0.193368   -0.003755    0.024869   -0.211824     3.1005  91   423
+ fnrm  3.739107314084389E-002 fmax  4.317295508364950E-002
+ BART: 234  M=  45 -8.8851759442E+03   0  0    0.148961   -0.003755    0.024869   -0.211824     3.1220  90   428
+ fnrm  2.218923172787499E-002 fmax  5.956563436983543E-002
+ BART: 239  M=  50 -8.8851775423E+03   0  0    0.094292   -0.003755    0.024869   -0.211824     3.1196  89   433
+ fnrm  8.890979634430571E-003 fmax  4.219018449215762E-002
+ FIRE: minimization successful
+ fnrm:   6.964437657291978E-003   , fmax:   3.666711637130582E-002  , iter: 
+          51
+ Final energy:   -8885.17794944530     
+ BART: Relaxed energy : -8.8851779494E+03
+ BART: Mincounter is         1007 , scounter is 1007
+  Writing to file : min1007
+ BART: Configuration stored in file min1007             
+ BART: MINIMUM 1007 ACCEPTED |E(fin-ini)=    0.6863 |E(fin-sad)=   -0.0174 |npart=   89 |delr=    3.119 |evalf=   434 |   2.618   0.57  -0.00  -0.00
+ BART: Simulation :            8
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          560
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.145503   0.00
+ BART:   0  K=   0 -8.8845762697E+03   5  8    2.627860   -2.560599    0.590746    0.145503     0.7004  14    26
+ BART:   1  K=   1 -8.8792807959E+03   5  6    6.428255   -6.278625    1.378888   -0.995335     2.2727  43    50
+ BART:   7  L=   1 -8.8792185839E+03   0  0    6.364177   -0.115449    6.363501   -0.798013     2.2320  42    74
+ BART:  18  L=   2 -8.8783983938E+03   0  0    6.275692   -2.104022    5.865895   -0.213948     2.6270  53   103
+ BART:  34  L=   3 -8.8788399511E+03   0  0    5.080026   -1.217477    4.893165   -0.239991     2.5908  76   137
+ BART:  55  L=   4 -8.8811511030E+03   0  0    2.939363   -0.400844    2.832283   -0.638704     2.5656  69   176
+ BART:  81  L=   5 -8.8821364278E+03   0  0    2.293758   -0.853667    1.625818   -0.195397     3.4941 111   220
+ BART: 112  L=   6 -8.8824283917E+03   0  0    1.614186   -0.417157    1.423166   -0.274900     3.6386  86   269
+ BART: 148  L=   7 -8.8830996410E+03   0  0    1.010033   -0.718172    0.888986   -0.221195     3.9031 110   323
+ BART: 189  L=   8 -8.8833178297E+03   0  0    1.207023   -0.678727    0.969906   -0.079993     3.7950 116   382
+
+ BART: SADDLE 1008    FAILED |ret  50189 |delta energy=    1.4042 |force_(tot,par,perp)=     1.2070   -0.6787    0.9699 |eigenval=  -0.0800 |npart=  116 |delr=    3.795 |evalf=   382 |
+ BART: Simulation :            8
+ BART: Attempt    :            2
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          174
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.124300   0.00
+ BART:   0  K=   0 -8.8846168018E+03   5  7    2.250085   -2.112300    0.775288    0.124300     0.6145  11   407
+ BART:   1  K=   1 -8.8801459937E+03   5  7    5.390839   -4.729683    2.586745   -0.753914     2.1619  39   432
+ BART:   7  L=   1 -8.8800963546E+03   0  0    5.343851   -0.076666    5.343446   -1.008524     2.1324  37   456
+ BART:  18  L=   2 -8.8793786835E+03   0  0    5.275088   -1.147654    5.105135   -0.591879     2.7306  48   485
+ BART:  34  L=   3 -8.8795348982E+03   0  0    3.990524   -1.069683    3.787521   -0.164587     3.2823  68   519
+ BART:  55  L=   4 -8.8807677960E+03   0  0    2.250944   -0.449123    2.175122   -0.625159     3.7341  96   558
+ BART:  81  L=   5 -8.8817118231E+03   0  0    1.060411   -0.051482    1.046853   -0.460538     3.7465  94   602
+ BART: 112  L=   6 -8.8822856300E+03   0  0    0.545711    0.045503    0.545675   -0.671508     3.7045  93   651
+ BART: 148  L=   7 -8.8826779727E+03   0  0    0.541712   -0.009135    0.541711   -0.660981     3.6355  92   705
+ BART: 189  L=   8 -8.8827590351E+03   0  0    0.121837   -0.009722    0.121837   -0.678151     3.6226  84   764
+
+ BART: SADDLE 1008    FAILED |ret  50189 |delta energy=    2.3868 |force_(tot,par,perp)=     0.1218   -0.0097    0.1218 |eigenval=  -0.6782 |npart=   84 |delr=    3.623 |evalf=   764 |
+ BART: Simulation :            8
+ BART: Attempt    :            3
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1112
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.141735   0.00
+ BART:   0  K=   0 -8.8845684368E+03   5  7    2.607878   -2.313803    1.203054    0.141735     0.6890  11   789
+ BART:   1  K=   1 -8.8795521948E+03   5  8    5.859183   -5.665538    1.493889   -0.954790     2.3140  36   815
+ BART:   7  L=   1 -8.8774762101E+03   0  0    5.512061   -1.976604    5.140575   -2.769364     3.0764  42   839
+ BART:  18  L=   2 -8.8775029534E+03   0  0    4.970189   -0.104631    4.970044   -2.196181     3.2052  42   868
+ BART:  34  L=   3 -8.8785438310E+03   0  0    3.616172   -0.463313    3.614081   -1.508138     3.2119  48   902
+ BART:  55  L=   4 -8.8799387976E+03   0  0    1.887346    0.128300    1.885306   -1.444495     3.5957  41   941
+ BART:  81  L=   5 -8.8808893903E+03   0  0    1.021877    0.016441    1.021876   -1.098273     3.9217  47   985
+ BART: 112  L=   6 -8.8815274314E+03   0  0    0.569776   -0.036969    0.569776   -0.647490     4.1618  62  1034
+ BART: 138  L=   7 -8.8818629072E+03   0  0    0.368452    0.059717    0.368452   -0.538176     4.3112  65  1078
+ BART: 170  L=   8 -8.8819842357E+03   0  0    0.219246    0.012987    0.219239   -0.594291     4.3561  72  1128
+
+ BART: SADDLE 1008    FAILED |ret  50170 |delta energy=    3.1074 |force_(tot,par,perp)=     0.2192    0.0130    0.2192 |eigenval=  -0.5943 |npart=   72 |delr=    4.356 |evalf=  1128 |
+ BART: Simulation :            8
+ BART: Attempt    :            4
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1989
+ BART: Number of displaced atoms initially:           19
+BART COLLINEAR:    0    0    1    0.124615   0.00
+ BART:   0  K=   0 -8.8847324291E+03   5  8    1.821112   -1.771064    0.424003    0.124615     0.6283  12  1154
+ BART:   1  K=   1 -8.8808203105E+03   5  6    4.749876   -4.373750    1.852465   -0.112913     2.1316  39  1178
+ BART:   7  L=   1 -8.8801324548E+03   0  0    4.828994   -0.833339    4.755743   -0.715676     2.5038  49  1202
+ BART:  18  L=   2 -8.8797899761E+03   0  0    4.396568   -0.415922    4.372202   -0.413351     2.9270  53  1231
+ BART:  34  L=   3 -8.8801585822E+03   0  0    3.454571   -0.037541    3.414300   -2.931459     3.4064  64  1265
+ BART:  55  L=   4 -8.8816366623E+03   0  0    1.988399   -0.025452    1.988398   -2.238086     3.2805  42  1304
+ BART:  81  L=   5 -8.8828945899E+03   0  0    1.058659    0.035153    1.058659   -1.173424     3.6019  41  1348
+ BART: 110  L=   6 -8.8836226278E+03   0  0    0.563172    0.041332    0.563162   -1.454965     3.8330  53  1395
+ BART: 146  L=   7 -8.8838398757E+03   0  0    0.200960   -0.017909    0.200958   -1.639929     3.8965  58  1449
+ BART: 187  L=   8 -8.8838804929E+03   0  0    0.046929    0.000259    0.046929   -1.666032     3.9230  58  1508
+  Writing to file : sad1008
+
+ BART: SADDLE 1008 CONVERGED |ret  20187 |delta energy=    1.2886 |force_(tot,par,perp)=     0.0469    0.0003    0.0469 |eigenval=  -1.6660 |npart=   58 |delr=    3.923 |evalf=  1508 |
+ BART: Configuration stored in file sad1008             
+ BART: 192  M=   5 -8.8826916746E+03   0  0    4.502837    0.000259    0.046929   -1.666032     4.6726  64  1514
+ fnrm   20.2755414765738      fmax   2.45362622161553     
+ BART: 197  M=  10 -8.8827478422E+03   0  0    4.719724    0.000259    0.046929   -1.666032     4.5995  64  1519
+ fnrm   22.2757969392413      fmax   3.33006671044886     
+ BART: 202  M=  15 -8.8829308287E+03   0  0    4.264147    0.000259    0.046929   -1.666032     4.5881  64  1524
+ fnrm   18.1829463074847      fmax   3.01497375331583     
+ BART: 207  M=  20 -8.8833792276E+03   0  0    3.010905    0.000259    0.046929   -1.666032     4.5535  65  1529
+ fnrm   9.06554860462030      fmax   2.06776756168200     
+ BART: 212  M=  25 -8.8839185753E+03   0  0    1.508174    0.000259    0.046929   -1.666032     4.4706  65  1534
+ fnrm   2.27458830901819      fmax  0.950800446833332     
+ BART: 217  M=  30 -8.8840473248E+03   0  0    1.572520    0.000259    0.046929   -1.666032     4.3699  64  1539
+ fnrm   2.47281931230073      fmax  0.883562118384146     
+ BART: 222  M=  35 -8.8841001171E+03   0  0    1.199284    0.000259    0.046929   -1.666032     4.3712  64  1544
+ fnrm   1.43828318384119      fmax  0.645324644551575     
+ BART: 227  M=  40 -8.8841768549E+03   0  0    0.442288    0.000259    0.046929   -1.666032     4.3781  62  1549
+ fnrm  0.195618682792707      fmax  0.181889724488186     
+ BART: 232  M=  45 -8.8841839911E+03   0  0    0.588544    0.000259    0.046929   -1.666032     4.3851  62  1554
+ fnrm  0.346384214256708      fmax  0.319702757810142     
+ BART: 237  M=  50 -8.8841952097E+03   0  0    0.382814    0.000259    0.046929   -1.666032     4.3853  62  1559
+ fnrm  0.146546504927895      fmax  0.172814895732016     
+ BART: 242  M=  55 -8.8842077852E+03   0  0    0.319984    0.000259    0.046929   -1.666032     4.3860  62  1564
+ fnrm  0.102389549091586      fmax  0.152834311895592     
+ BART: 247  M=  60 -8.8842294450E+03   0  0    0.182947    0.000259    0.046929   -1.666032     4.3872  61  1569
+ fnrm  3.346969894514239E-002 fmax  7.850506928219701E-002
+ BART: 252  M=  65 -8.8842449449E+03   0  0    0.160748    0.000259    0.046929   -1.666032     4.3952  59  1574
+ fnrm  2.583984964961369E-002 fmax  4.635524914281396E-002
+ BART: 257  M=  70 -8.8842499711E+03   0  0    0.159179    0.000259    0.046929   -1.666032     4.3980  59  1579
+ fnrm  2.533789536760008E-002 fmax  5.410903415912948E-002
+ BART: 262  M=  75 -8.8842553134E+03   0  0    0.126985    0.000259    0.046929   -1.666032     4.3997  59  1584
+ fnrm  1.612531018814036E-002 fmax  2.437356174288117E-002
+ FIRE: minimization successful
+ fnrm:   1.171019755347500E-002   , fmax:   1.918456029339181E-002  , iter: 
+          79
+ Final energy:   -8884.25841248376     
+ BART: Relaxed energy : -8.8842584125E+03
+ BART: Mincounter is         1008 , scounter is 1008
+  Writing to file : min1008
+ BART: Configuration stored in file min1008             
+ BART: MINIMUM 1008 REJECTED |E(fin-ini)=    0.9195 |E(fin-sad)=   -0.3691 |npart=   59 |delr=    4.400 |evalf=  1588 |   3.923   0.36   0.00   0.00
+ BART: Simulation :            9
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          308
+ BART: Number of displaced atoms initially:           13
+BART COLLINEAR:    0    0    1    0.146059   0.00
+ BART:   0  K=   0 -8.8847370098E+03   5  8    1.822879   -1.771068    0.431519    0.146059     0.6526  10    26
+ BART:   1  K=   1 -8.8812856487E+03   5  6    4.407372   -3.654484    2.463670    0.006096     2.2657  35    50
+ BART:   2  K=   2 -8.8763327538E+03   5  9    5.594291   -5.218685    2.015297   -1.741795     3.6935  48    77
+ BART:   8  L=   1 -8.8760263382E+03   0  0    5.473965   -0.269474    5.467710   -1.279152     3.8302  54   101
+ BART:  19  L=   2 -8.8755148589E+03   0  0    5.261785   -1.102661    5.113699   -0.642235     4.2747  60   130
+ BART:  35  L=   3 -8.8757674816E+03   0  0    4.087989   -0.909961    3.922703   -0.901434     4.5196  72   164
+ BART:  56  L=   4 -8.8776595205E+03   0  0    2.386108   -0.139099    2.386075   -1.012391     3.9977  72   203
+ BART:  82  L=   5 -8.8795319438E+03   0  0    1.293711   -0.027560    1.293663   -0.783958     3.4331  65   247
+ BART: 113  L=   6 -8.8810424798E+03   0  0    0.973311   -0.033195    0.973137   -0.916541     3.2899  50   296
+ BART: 149  L=   7 -8.8815721973E+03   0  0    0.666966   -0.030090    0.666966   -0.761939     3.3528  58   350
+ BART: 190  L=   8 -8.8817339292E+03   0  0    0.181988   -0.000338    0.181986   -0.701889     3.4501  64   409
+
+ BART: SADDLE 1009    FAILED |ret  50190 |delta energy=    3.4238 |force_(tot,par,perp)=     0.1820   -0.0003    0.1820 |eigenval=  -0.7019 |npart=   64 |delr=    3.450 |evalf=   409 |
+ BART: Simulation :            9
+ BART: Attempt    :            2
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1832
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.166958   0.00
+ BART:   0  K=   0 -8.8845882301E+03   5  7    2.502034   -2.409603    0.673787    0.166958     0.6429  10   434
+ BART:   1  K=   1 -8.8796874027E+03   5  7    5.660301   -5.164656    2.316321   -0.494445     2.2561  42   459
+ BART:   7  L=   1 -8.8789965102E+03   0  0    5.843877   -1.034250    5.748129   -0.559868     2.7532  50   483
+ BART:  18  L=   2 -8.8787404130E+03   0  0    5.271374   -0.588119    5.235593   -0.297147     3.2730  59   512
+ BART:  34  L=   3 -8.8798662820E+03   0  0    3.969911   -0.155681    3.956449   -0.070916     3.2354  60   546
+ BART:  55  L=   4 -8.8816083226E+03   0  0    2.140724   -0.258554    2.090438   -0.447476     3.4352  59   585
+ BART:  81  L=   5 -8.8827857976E+03   0  0    0.938961    0.060381    0.923398   -0.442775     3.0235  40   629
+ BART: 112  L=   6 -8.8831477346E+03   0  0    0.640206   -0.006844    0.566522   -0.240978     3.2860  52   678
+ BART: 145  L=   7 -8.8834432639E+03   0  0    0.264414    0.013236    0.264314   -0.430893     3.4350  72   729
+ BART: 186  L=   8 -8.8835278231E+03   0  0    0.109694   -0.065777    0.109689   -0.737066     3.4938  85   788
+
+ BART: SADDLE 1009    FAILED |ret  50186 |delta energy=    1.6087 |force_(tot,par,perp)=     0.1097   -0.0658    0.1097 |eigenval=  -0.7371 |npart=   85 |delr=    3.494 |evalf=   788 |
+ BART: Simulation :            9
+ BART: Attempt    :            3
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1943
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.132793   0.00
+ BART:   0  K=   0 -8.8848158093E+03   5  8    1.653984   -1.591586    0.450018    0.132793     0.6691  13   814
+ BART:   1  K=   1 -8.8815381009E+03   5  6    4.585314   -3.738975    2.654274   -0.341661     2.3079  45   838
+ BART:   7  L=   1 -8.8807794822E+03   0  0    4.832171   -1.464654    4.594437   -0.112737     2.7768  51   862
+ BART:  18  L=   2 -8.8801091072E+03   0  0    4.476729   -1.098462    4.335028   -0.446576     3.3425  66   891
+ BART:  34  L=   3 -8.8795571354E+03   0  0    3.768393   -1.732519    3.159769   -0.096107     3.8743  84   925
+ BART:  55  L=   4 -8.8807353704E+03   0  0    2.420869   -0.265837    2.418764   -0.506620     3.1439  79   964
+ BART:  81  L=   5 -8.8818973103E+03   0  0    2.170670   -0.980833    1.729617   -0.035418     3.2192 105  1008
+ BART: 112  L=   6 -8.8824541104E+03   0  0    1.722639   -0.770565    1.424753   -0.172066     3.8120 170  1057
+ BART: 148  L=   7 -8.8824441625E+03   0  0    1.846925   -0.802812    1.401440   -0.129742     4.7277 215  1111
+ BART: 189  L=   8 -8.8834402845E+03   0  0    0.983432   -0.148078    0.965315    0.002342     4.2252 168  1170
+
+ BART: SADDLE 1009    FAILED |ret  60189 |delta energy=   -0.0689 |force_(tot,par,perp)=     0.9834   -0.1481    0.9653 |eigenval=   0.0023 |npart=  168 |delr=    4.225 |evalf=  1170 |
+ BART: Simulation :            9
+ BART: Attempt    :            4
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1280
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.080386   0.00
+ BART:   0  K=   0 -8.8845844679E+03   5  7    2.395038   -2.305662    0.648171    0.080386     0.6502  13  1195
+ BART:   1  K=   1 -8.8800860346E+03   5  7    5.631139   -5.517183    1.127127   -0.300029     2.2173  36  1220
+ BART:   7  L=   1 -8.8793107478E+03   0  0    5.703932   -1.197277    5.572028   -0.571101     2.7493  46  1244
+ BART:  18  L=   2 -8.8795248061E+03   0  0    5.385856    0.358085    5.371728   -0.036617     2.4905  45  1273
+ BART:  34  L=   3 -8.8800982724E+03   0  0    4.254615    0.958028    4.123288   -0.889245     2.3572  66  1307
+ BART:  54  L=   4 -8.8825494075E+03   8 13    1.527813    1.317020    0.774383   -0.101144     2.8335  70  1358
+ BART:  80  L=   5 -8.8822974128E+03   0  0    1.751952    0.276888    1.714377   -0.478481     2.8572  73  1402
+ BART:  93  L=   6 -8.8837588733E+03   8 13    0.474351    0.376715    0.288261   -0.038990     3.4352  91  1446
+ BART: 112  L=   7 -8.8837331591E+03   0  0    0.490981    0.135599    0.471728    0.031879     3.5289  96  1483
+
+ BART: SADDLE 1009    FAILED |ret  60112 |delta energy=    1.3779 |force_(tot,par,perp)=     0.4910    0.1356    0.4717 |eigenval=   0.0319 |npart=   96 |delr=    3.529 |evalf=  1483 |
+ BART: Simulation :            9
+ BART: Attempt    :            5
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1631
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.140183   0.00
+ BART:   0  K=   0 -8.8846538840E+03   5  8    2.284535   -2.237165    0.462814    0.140183     0.6536  12  1509
+ BART:   1  K=   1 -8.8797906181E+03   5  6    5.812523   -5.362757    2.241933   -0.205468     2.2783  46  1533
+ BART:   7  L=   1 -8.8790162238E+03   0  0    5.704190   -0.921375    5.630128   -0.964920     2.6576  59  1557
+ BART:  18  L=   2 -8.8786010955E+03   0  0    5.340092   -0.579752    5.302525   -1.002503     3.2110  62  1586
+ BART:  34  L=   3 -8.8796946234E+03   0  0    3.794867   -0.135470    3.792237   -1.411906     3.3195  68  1620
+ BART:  55  L=   4 -8.8814007319E+03   0  0    1.911314   -0.064871    1.910384   -0.831695     3.2252  57  1659
+ BART:  81  L=   5 -8.8823149387E+03   0  0    0.798723   -0.052629    0.798674   -0.377338     3.1511  41  1703
+ BART: 112  L=   6 -8.8825635506E+03   0  0    0.269746   -0.032604    0.266112   -0.028887     3.2315  40  1752
+ BART: 148  L=   7 -8.8825916635E+03   0  0    0.078500   -0.038056    0.068553    0.057525     3.2722  39  1806
+
+ BART: SADDLE 1009    FAILED |ret  60148 |delta energy=    2.5821 |force_(tot,par,perp)=     0.0785   -0.0381    0.0686 |eigenval=   0.0575 |npart=   39 |delr=    3.272 |evalf=  1806 |
+ BART: Simulation :            9
+ BART: Attempt    :            6
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1837
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.163224   0.00
+ BART:   0  K=   0 -8.8846762996E+03   5  8    2.154100   -2.060124    0.629315    0.163224     0.6445  11  1832
+ BART:   1  K=   1 -8.8807062996E+03   5  6    4.906898   -4.605503    1.693219   -0.567035     2.2723  44  1856
+ BART:   7  L=   1 -8.8797687461E+03   0  0    5.093256   -1.137889    4.956885   -0.755266     2.9369  50  1880
+ BART:  18  L=   2 -8.8796045482E+03   0  0    4.840873   -0.856922    4.757682   -0.389153     3.3900  51  1909
+ BART:  34  L=   3 -8.8797570445E+03   0  0    3.721427   -1.296082    3.461103   -0.111506     3.5507  71  1943
+ BART:  55  L=   4 -8.8797117429E+03   0  0    2.837947   -1.360615    2.162457   -0.163356     4.1444  86  1982
+ PERP_FIRE: problem with explosion, trying a smaller dt-delr: 
+  0.255844353382821     
+ BART:  82  L=   5 -8.8808620492E+03   0  0    1.647936   -0.219416    1.646944   -0.440140     3.3050  58  2026
+ BART: 113  L=   6 -8.8831072776E+03   0  0    1.029054   -0.241530    1.026806    0.000724     3.1440  40  2075
+
+ BART: SADDLE 1009    FAILED |ret  60113 |delta energy=    1.5945 |force_(tot,par,perp)=     1.0291   -0.2415    1.0268 |eigenval=   0.0007 |npart=   40 |delr=    3.144 |evalf=  2075 |
+ BART: Simulation :            9
+ BART: Attempt    :            7
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1205
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.100168   0.00
+ BART:   0  K=   0 -8.8846258695E+03   5  8    2.274442   -2.243083    0.376385    0.100168     0.6437  13  2101
+ BART:   1  K=   1 -8.8798028631E+03   5  6    5.857222   -5.143245    2.802513   -0.877592     2.2842  35  2125
+ BART:   7  L=   1 -8.8795030021E+03   0  0    5.659417   -0.242098    5.655038   -0.716301     2.5298  42  2149
+ BART:  18  L=   2 -8.8791963083E+03   0  0    5.573500   -1.146894    5.422899    0.145748     3.0113  48  2178
+
+ BART: SADDLE 1009    FAILED |ret  60018 |delta energy=    4.7620 |force_(tot,par,perp)=     5.5735   -1.1469    5.4229 |eigenval=   0.1457 |npart=   48 |delr=    3.011 |evalf=  2178 |
+ BART: Simulation :            9
+ BART: Attempt    :            8
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          283
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.141664   0.00
+ BART:   0  K=   0 -8.8847347571E+03   5  8    1.867990   -1.798126    0.506090    0.141664     0.6421   7  2204
+ BART:   1  K=   1 -8.8810593695E+03   5  7    4.606372   -4.294955    1.664939   -0.457383     2.1458  36  2229
+ BART:   7  L=   1 -8.8802876909E+03   0  0    4.906551   -0.956250    4.806079   -0.342209     2.7595  47  2253
+ BART:  18  L=   2 -8.8796577140E+03   0  0    4.889173   -1.420591    4.636438   -0.207700     3.1652  50  2282
+ BART:  34  L=   3 -8.8800952056E+03   0  0    3.555991   -0.578521    3.487734   -0.738261     3.0780  62  2316
+ BART:  55  L=   4 -8.8800924197E+03   0  0    3.212248   -0.908591    2.484364   -1.872724     3.5623  75  2355
+ BART:  81  L=   5 -8.8811235097E+03   0  0    1.390753    0.103060    1.390727   -2.332806     3.0442  62  2399
+ BART: 112  L=   6 -8.8821375341E+03   0  0    0.741932   -0.258636    0.741932   -2.454586     2.9732  69  2448
+ BART: 148  L=   7 -8.8825580938E+03   0  0    0.475488   -0.170682    0.475482   -1.329172     3.1042  78  2502
+ BART: 181  L=   8 -8.8827915917E+03   0  0    0.288951    0.005452    0.288926   -1.562761     3.1009  75  2553
+
+ BART: SADDLE 1009    FAILED |ret  50181 |delta energy=    2.3574 |force_(tot,par,perp)=     0.2890    0.0055    0.2889 |eigenval=  -1.5628 |npart=   75 |delr=    3.101 |evalf=  2553 |
+ BART: Simulation :            9
+ BART: Attempt    :            9
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1050
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.169540   0.00
+ BART:   0  K=   0 -8.8846571637E+03   5  7    2.229925   -1.974005    1.037241    0.169540     0.6698  11  2578
+ BART:   1  K=   1 -8.8809750506E+03   5  7    4.938778   -4.123832    2.717634   -0.342912     2.3775  43  2603
+ BART:   7  L=   1 -8.8799186430E+03   0  0    5.412200   -1.525960    5.175132    0.031992     2.9730  47  2627
+
+ BART: SADDLE 1009    FAILED |ret  60007 |delta energy=    4.9773 |force_(tot,par,perp)=     5.4122   -1.5260    5.1751 |eigenval=   0.0320 |npart=   47 |delr=    2.973 |evalf=  2627 |
+ BART: Simulation :            9
+ BART: Attempt    :           10
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =            1
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.144667   0.00
+ BART:   0  K=   0 -8.8846044977E+03   5  8    2.330536   -2.267476    0.538471    0.144667     0.6330  11  2653
+ BART:   1  K=   1 -8.8803918421E+03   5  6    5.185345   -5.018597    1.304412   -0.343055     2.2018  40  2677
+ BART:   7  L=   1 -8.8791385361E+03   0  0    4.862715   -1.420762    4.656320   -0.318132     2.8196  50  2701
+ BART:  18  L=   2 -8.8783929205E+03   0  0    4.662337   -1.020807    4.526671   -0.649641     3.2643  71  2730
+ BART:  34  L=   3 -8.8782268908E+03   0  0    4.070751   -0.648323    3.833831   -0.696789     3.6684  72  2764
+ BART:  55  L=   4 -8.8793926665E+03   0  0    2.413181    0.405064    2.401309   -1.361760     3.7871  78  2803
+ BART:  81  L=   5 -8.8809614018E+03   0  0    1.337216    0.153385    1.335667   -1.164060     3.4051  92  2847
+ BART: 112  L=   6 -8.8821579054E+03   0  0    0.963063   -0.479461    0.963063   -1.337257     3.0441  97  2896
+ BART: 148  L=   7 -8.8827777288E+03   0  0    0.604017   -0.173724    0.591182   -1.091834     3.1570  92  2950
+ BART: 189  L=   8 -8.8830316364E+03   0  0    0.273691   -0.290639    0.273573   -0.007168     3.1952  89  3009
+
+ BART: SADDLE 1009    FAILED |ret  50189 |delta energy=    1.6137 |force_(tot,par,perp)=     0.2737   -0.2906    0.2736 |eigenval=  -0.0072 |npart=   89 |delr=    3.195 |evalf=  3009 |
+ BART: Simulation :            9
+ BART: Attempt    :           11
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1623
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.108853   0.00
+ BART:   0  K=   0 -8.8847567329E+03   5  8    1.776530   -1.727989    0.412448    0.108853     0.6403  10  3035
+ BART:   1  K=   1 -8.8808364558E+03   5  6    4.988868   -4.696877    1.681712   -0.310760     2.1613  40  3059
+ BART:   7  L=   1 -8.8796200612E+03   0  0    5.077767   -1.453646    4.862982   -0.967122     2.7529  49  3083
+ BART:  18  L=   2 -8.8790598759E+03   0  0    4.976252   -0.874259    4.863317   -0.493618     3.2351  49  3112
+ BART:  34  L=   3 -8.8798248433E+03   0  0    3.854690   -0.414122    3.787709   -0.234447     3.3075  46  3146
+ BART:  55  L=   4 -8.8805457514E+03   0  0    2.714106   -0.690712    2.294156   -0.022367     3.6487  64  3185
+ BART:  81  L=   5 -8.8815083302E+03   0  0    1.127702   -0.010646    1.127526   -0.298491     3.0677  59  3229
+ BART: 112  L=   6 -8.8824509872E+03   0  0    0.818182    0.039610    0.817509   -0.329925     2.7926  43  3278
+ BART: 148  L=   7 -8.8829176828E+03   0  0    0.582663   -0.048891    0.558951   -0.896508     3.0791  54  3332
+ BART: 151  L=   8 -8.8830545627E+03   7 13    0.155081    0.116084    0.102833   -0.255109     3.0107  55  3366
+
+ BART: SADDLE 1009    FAILED |ret  50151 |delta energy=    2.1216 |force_(tot,par,perp)=     0.1551    0.1161    0.1028 |eigenval=  -0.2551 |npart=   55 |delr=    3.011 |evalf=  3366 |
+ BART: Simulation :            9
+ BART: Attempt    :           12
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          864
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.122832   0.00
+ BART:   0  K=   0 -8.8846703714E+03   5  8    2.160206   -2.114262    0.443156    0.122832     0.6489  13  3392
+ BART:   1  K=   1 -8.8800765518E+03   5  6    5.720421   -5.312134    2.122368   -1.218357     2.2231  37  3416
+ BART:   7  L=   1 -8.8798119967E+03   0  0    5.465987   -0.502585    5.446496   -0.618793     2.3821  40  3440
+ BART:  18  L=   2 -8.8788873715E+03   0  0    4.922245   -1.224669    4.766527   -0.617368     2.9889  45  3469
+ BART:  34  L=   3 -8.8789426640E+03   0  0    3.831551   -0.787995    3.647975   -0.778154     3.4970  53  3503
+ BART:  55  L=   4 -8.8803821547E+03   0  0    1.960917    0.027909    1.960917   -1.169587     3.4667  48  3542
+ BART:  81  L=   5 -8.8815001088E+03   0  0    0.959812   -0.071970    0.959812   -1.005933     3.5388  60  3586
+ BART: 112  L=   6 -8.8825807878E+03   0  0    0.866196   -0.317689    0.853672   -0.805743     4.2821  79  3635
+ BART: 148  L=   7 -8.8831223400E+03   0  0    0.576021   -0.138817    0.517184   -0.266952     4.5855  91  3689
+ BART: 189  L=   8 -8.8832381794E+03   0  0    0.179182   -0.130832    0.177124   -0.161601     4.7452 100  3748
+
+ BART: SADDLE 1009    FAILED |ret  50189 |delta energy=    1.6907 |force_(tot,par,perp)=     0.1792   -0.1308    0.1771 |eigenval=  -0.1616 |npart=  100 |delr=    4.745 |evalf=  3748 |
+ BART: Simulation :            9
+ BART: Attempt    :           13
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1971
+ BART: Number of displaced atoms initially:           18
+BART COLLINEAR:    0    0    1    0.116090   0.00
+ BART:   0  K=   0 -8.8847600841E+03   5  8    1.783841   -1.707394    0.516617    0.116090     0.6560  14  3774
+ BART:   1  K=   1 -8.8810832011E+03   5  6    5.010517   -4.350855    2.485024   -0.317716     2.3013  44  3798
+ BART:   7  L=   1 -8.8810089942E+03   0  0    4.951420   -0.218044    4.947067   -0.101281     2.3594  46  3822
+ BART:  18  L=   2 -8.8810648081E+03   0  0    4.599060   -0.352341    4.585603    0.013516     2.4457  57  3851
+
+ BART: SADDLE 1009    FAILED |ret  60018 |delta energy=    3.1682 |force_(tot,par,perp)=     4.5991   -0.3523    4.5856 |eigenval=   0.0135 |npart=   57 |delr=    2.446 |evalf=  3851 |
+ BART: Simulation :            9
+ BART: Attempt    :           14
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          850
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.109878   0.00
+ BART:   0  K=   0 -8.8845905219E+03   5  8    2.432020   -2.390310    0.448483    0.109878     0.6251  10  3877
+ BART:   1  K=   1 -8.8794396635E+03   5  6    6.170961   -5.550255    2.697301   -0.055291     2.2234  38  3901
+ BART:   7  L=   1 -8.8793965776E+03   0  0    6.159645   -0.129044    6.158374   -0.575325     2.2208  38  3925
+ BART:  18  L=   2 -8.8797213468E+03   0  0    5.633719   -0.173160    5.632912   -0.159015     2.1788  39  3954
+ BART:  34  L=   3 -8.8803356728E+03   0  0    4.342682   -1.044373    4.166295   -0.220099     2.5477  57  3988
+ BART:  55  L=   4 -8.8819204212E+03   0  0    2.448949   -0.495174    2.348701   -0.464900     2.7262  58  4027
+ BART:  81  L=   5 -8.8829560765E+03   0  0    1.223760   -0.194292    1.127133   -0.230585     3.0691  69  4071
+ BART: 112  L=   6 -8.8833440180E+03   0  0    0.556569   -0.130216    0.505927    0.050956     3.4311  91  4120
+
+ BART: SADDLE 1009    FAILED |ret  60112 |delta energy=    1.6255 |force_(tot,par,perp)=     0.5566   -0.1302    0.5059 |eigenval=   0.0510 |npart=   91 |delr=    3.431 |evalf=  4120 |
+ BART: Simulation :            9
+ BART: Attempt    :           15
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1788
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.155268   0.00
+ BART:   0  K=   0 -8.8846493976E+03   5  7    2.177669   -2.024639    0.801923    0.155268     0.6394  11  4145
+ BART:   1  K=   1 -8.8808942543E+03   5  7    5.033825   -4.551724    2.149699   -0.262735     2.3569  43  4170
+ BART:   7  L=   1 -8.8808535054E+03   0  0    5.010283   -0.103144    5.009345   -0.557750     2.3602  45  4194
+ BART:  18  L=   2 -8.8811236468E+03   0  0    4.689666    0.008145    4.689666   -0.539400     2.2155  47  4223
+ BART:  34  L=   3 -8.8820952633E+03   0  0    3.500165    0.047052    3.499751   -0.467902     2.1172  47  4257
+ BART:  55  L=   4 -8.8835169891E+03   0  0    1.626001    0.150421    1.625902   -0.534520     1.5170  30  4296
+ BART:  81  L=   5 -8.8843759512E+03   0  0    0.947317   -0.131752    0.946897   -0.090751     1.6825  22  4340
+ BART: 111  L=   6 -8.8847987733E+03   0  0    0.510017    0.031638    0.502289   -0.947045     1.3444  17  4388
+ BART: 147  L=   7 -8.8848577015E+03   0  0    0.149697   -0.004399    0.149481   -1.056025     1.5350  26  4442
+ BART: 188  L=   8 -8.8848812401E+03   0  0    0.052874   -0.000207    0.052874   -0.906338     1.6769  35  4501
+
+ BART: SADDLE 1009    FAILED |ret  50188 |delta energy=    0.2822 |force_(tot,par,perp)=     0.0529   -0.0002    0.0529 |eigenval=  -0.9063 |npart=   35 |delr=    1.677 |evalf=  4501 |
+ BART: Simulation :            9
+ BART: Attempt    :           16
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          764
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.132940   0.00
+ BART:   0  K=   0 -8.8846961729E+03   5  8    2.012557   -1.965129    0.434342    0.132940     0.6218  12  4527
+ BART:   1  K=   1 -8.8805091760E+03   5  6    5.262726   -4.896525    1.928816   -1.103572     2.1755  39  4551
+ BART:   7  L=   1 -8.8800495343E+03   0  0    4.763748   -0.718894    4.715734   -0.787589     2.5472  40  4575
+ BART:  18  L=   2 -8.8790200466E+03   0  0    4.379667   -1.142907    4.202380   -0.637809     3.1916  56  4604
+ BART:  34  L=   3 -8.8790258989E+03   0  0    3.705310   -0.628256    3.512038   -0.716832     3.6298  74  4638
+ BART:  55  L=   4 -8.8804059327E+03   0  0    1.998972   -0.302260    1.997960   -0.604696     2.9845  64  4677
+ BART:  81  L=   5 -8.8813333614E+03   0  0    2.011191   -0.086647    1.954023   -0.077199     3.6947  82  4721
+ BART: 112  L=   6 -8.8828305532E+03   0  0    0.991633    0.053221    0.989606   -0.081939     3.8116  88  4770
+ BART: 126  L=   7 -8.8830652508E+03   0  0    0.262770    0.034981    0.260413   -0.033640     3.8020  88  4802
+ BART: 167  L=   8 -8.8830715471E+03   0  0    0.184446   -0.015612    0.184400   -0.183507     4.1315 127  4861
+
+ BART: SADDLE 1009    FAILED |ret  50167 |delta energy=    1.9987 |force_(tot,par,perp)=     0.1844   -0.0156    0.1844 |eigenval=  -0.1835 |npart=  127 |delr=    4.131 |evalf=  4861 |
+ BART: Simulation :            9
+ BART: Attempt    :           17
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          264
+ BART: Number of displaced atoms initially:           13
+BART COLLINEAR:    0    0    1    0.131528   0.00
+ BART:   0  K=   0 -8.8846975156E+03   5  8    2.006917   -1.964134    0.412183    0.131528     0.6616   9  4887
+ BART:   1  K=   1 -8.8810957114E+03   5  6    3.962539   -3.538466    1.783528   -1.005783     2.3545  33  4911
+ BART:   7  L=   1 -8.8808755429E+03   0  0    4.014896   -0.599254    3.967890   -0.344558     2.6315  35  4935
+ BART:  18  L=   2 -8.8803445878E+03   0  0    3.811694   -0.726103    3.720687   -0.812454     3.2069  39  4964
+ BART:  34  L=   3 -8.8808454210E+03   0  0    2.439843    0.103830    2.439412   -1.470259     3.2456  36  4998
+ BART:  55  L=   4 -8.8815760603E+03   0  0    1.440113   -0.085126    1.440092   -1.101093     3.0117  36  5037
+ BART:  81  L=   5 -8.8823031158E+03   0  0    0.744762    0.042489    0.744562   -1.155905     3.1458  41  5081
+ BART: 112  L=   6 -8.8826088234E+03   0  0    0.364635    0.011617    0.364632   -1.216431     3.2798  58  5130
+ BART: 148  L=   7 -8.8827533938E+03   0  0    0.185063   -0.057078    0.185062   -0.754939     3.4600  84  5184
+ BART: 189  L=   8 -8.8829317470E+03   0  0    0.206872   -0.080457    0.206790   -1.769962     3.7525 117  5243
+
+ BART: SADDLE 1009    FAILED |ret  50189 |delta energy=    2.0876 |force_(tot,par,perp)=     0.2069   -0.0805    0.2068 |eigenval=  -1.7700 |npart=  117 |delr=    3.753 |evalf=  5243 |
+ BART: Simulation :            9
+ BART: Attempt    :           18
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          609
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.136114   0.00
+ BART:   0  K=   0 -8.8846319390E+03   5  8    2.320294   -2.227259    0.650447    0.136114     0.6617   9  5269
+ BART:   1  K=   1 -8.8800511718E+03   5  6    6.104256   -4.668500    3.932816   -1.808452     2.3281  43  5293
+ BART:   7  L=   1 -8.8798815796E+03   0  0    6.009682   -0.229459    6.005755   -1.163184     2.5068  44  5317
+ BART:  18  L=   2 -8.8802417131E+03   0  0    5.409978   -0.068051    5.409841   -0.620427     2.4675  42  5346
+ BART:  34  L=   3 -8.8814427580E+03   0  0    3.582241   -0.100537    3.580601   -0.254572     2.3331  40  5380
+ BART:  55  L=   4 -8.8828682194E+03   0  0    1.866455   -0.173422    1.838541   -0.146092     2.3883  36  5419
+ BART:  81  L=   5 -8.8837601997E+03   0  0    0.888994   -0.159026    0.885271   -0.283953     2.4202  34  5463
+ BART: 112  L=   6 -8.8841377589E+03   0  0    0.452994   -0.139104    0.448212   -0.271621     2.4788  42  5512
+ BART: 148  L=   7 -8.8842643321E+03   0  0    0.222589   -0.066293    0.209384    0.035692     2.8005  62  5566
+
+ BART: SADDLE 1009    FAILED |ret  60148 |delta energy=    0.7309 |force_(tot,par,perp)=     0.2226   -0.0663    0.2094 |eigenval=   0.0357 |npart=   62 |delr=    2.801 |evalf=  5566 |
+ BART: Simulation :            9
+ BART: Attempt    :           19
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          367
+ BART: Number of displaced atoms initially:           13
+BART COLLINEAR:    0    0    1   -0.014116   0.00
+ BART:   0  K=   0 -8.8845489105E+03   5  7    2.552440   -2.435638    0.763292   -0.014116     0.6352  11  5591
+ BART:   6  L=   1 -8.8845044802E+03   0  0    2.541332   -0.129370    2.538093   -0.372147     0.7727  14  5615
+ BART:  17  L=   2 -8.8844618040E+03   0  0    2.357005   -0.334087    2.329346    0.002482     1.1200  14  5644
+
+ BART: SADDLE 1009    FAILED |ret  60017 |delta energy=    0.4811 |force_(tot,par,perp)=     2.3570   -0.3341    2.3293 |eigenval=   0.0025 |npart=   14 |delr=    1.120 |evalf=  5644 |
+ BART: Simulation :            9
+ BART: Attempt    :           20
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          772
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.165508   0.00
+ BART:   0  K=   0 -8.8846500742E+03   5  8    2.234821   -2.102858    0.756578    0.165508     0.6390  12  5670
+ BART:   1  K=   1 -8.8804907559E+03   5  6    4.618617   -4.434108    1.292407   -0.196125     2.1689  38  5694
+ BART:   7  L=   1 -8.8787559465E+03   0  0    4.396363   -1.743446    4.035967   -0.207906     2.8518  51  5718
+ BART:  18  L=   2 -8.8767985275E+03   0  0    4.507329   -2.296191    3.779319   -0.505872     3.5378  67  5747
+ BART:  34  L=   3 -8.8765381597E+03   0  0    3.486834   -0.644668    3.386657   -1.308675     3.7810  82  5781
+ BART:  55  L=   4 -8.8779467972E+03   0  0    1.984985   -0.283206    1.984985   -1.327524     3.2215  72  5820
+ BART:  81  L=   5 -8.8793788859E+03   0  0    1.479256   -0.141843    1.424629   -0.627423     3.6914  57  5864
+ BART: 112  L=   6 -8.8808986370E+03   0  0    1.429745   -0.141830    1.427913   -0.272334     3.4123  43  5913
+ BART: 148  L=   7 -8.8816504306E+03   0  0    0.669326   -0.044080    0.669171   -0.293441     3.3825  46  5967
+ BART: 188  L=   8 -8.8817834788E+03   0  0    0.213329    0.038304    0.204274   -0.636712     3.2136  52  6025
+
+ BART: SADDLE 1009    FAILED |ret  50188 |delta energy=    3.3156 |force_(tot,par,perp)=     0.2133    0.0383    0.2043 |eigenval=  -0.6367 |npart=   52 |delr=    3.214 |evalf=  6025 |
+ BART: Simulation :            9
+ BART: Attempt    :           21
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1291
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.149043   0.00
+ BART:   0  K=   0 -8.8846848333E+03   5  8    2.057058   -1.971084    0.588486    0.149043     0.6449  11  6051
+ BART:   1  K=   1 -8.8806343722E+03   5  6    4.811217   -4.579252    1.475894   -0.559375     2.2514  38  6075
+ BART:   7  L=   1 -8.8806192309E+03   0  0    4.803532   -0.040045    4.803380   -0.414819     2.2717  38  6099
+ BART:  18  L=   2 -8.8796211780E+03   0  0    4.614666   -1.467647    4.368880   -0.539008     2.9229  51  6128
+ BART:  34  L=   3 -8.8797989061E+03   0  0    3.475794   -1.035254    3.318466   -0.517941     3.0129  67  6162
+ BART:  55  L=   4 -8.8806874033E+03   0  0    2.726191   -0.762647    2.432454   -0.354884     3.0910  81  6201
+ BART:  81  L=   5 -8.8811948900E+03   0  0    1.922898   -0.896756    1.432213    0.022405     3.8497 128  6245
+
+ BART: SADDLE 1009    FAILED |ret  60081 |delta energy=    3.3585 |force_(tot,par,perp)=     1.9229   -0.8968    1.4322 |eigenval=   0.0224 |npart=  128 |delr=    3.850 |evalf=  6245 |
+ BART: Simulation :            9
+ BART: Attempt    :           22
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          619
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.157417   0.00
+ BART:   0  K=   0 -8.8847344976E+03   5  7    1.843183   -1.713184    0.679944    0.157417     0.6407  11  6270
+ BART:   1  K=   1 -8.8809244421E+03   5  7    4.900153   -4.092912    2.694359   -0.403074     2.1398  34  6295
+ BART:   7  L=   1 -8.8798542121E+03   0  0    5.044243   -1.628061    4.771345   -0.252144     2.7115  52  6319
+ BART:  18  L=   2 -8.8795729380E+03   0  0    4.623280   -0.902364    4.538079   -0.021868     2.9755  59  6348
+ BART:  34  L=   3 -8.8801309015E+03   0  0    3.478315   -0.532423    3.429413   -0.115887     2.8331  62  6382
+ BART:  55  L=   4 -8.8809895042E+03   0  0    2.540439   -0.753151    2.327328   -0.707677     3.0184  80  6421
+ BART:  81  L=   5 -8.8813885450E+03   0  0    2.388999   -0.906503    1.731234   -0.470772     3.4447  88  6465
+ BART: 112  L=   6 -8.8818633548E+03   0  0    1.705466   -0.648391    1.480348    0.058936     2.8784  75  6514
+
+ BART: SADDLE 1009    FAILED |ret  60112 |delta energy=    1.7507 |force_(tot,par,perp)=     1.7055   -0.6484    1.4803 |eigenval=   0.0589 |npart=   75 |delr=    2.878 |evalf=  6514 |
+ BART: Simulation :            9
+ BART: Attempt    :           23
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          545
+ BART: Number of displaced atoms initially:           14
+BART COLLINEAR:    0    0    1    0.168632   0.00
+ BART:   0  K=   0 -8.8845413506E+03   5  8    2.633492   -2.560087    0.617445    0.168632     0.6552  12  6540
+ BART:   1  K=   1 -8.8788970558E+03   5  6    7.408580   -5.937277    4.431231   -0.298227     2.3529  34  6564
+ BART:   7  L=   1 -8.8776990773E+03   0  0    7.605967   -1.613799    7.426379   -1.122270     2.9628  54  6588
+ BART:  18  L=   2 -8.8777907398E+03   0  0    6.718943   -0.696607    6.664157   -0.715169     3.1048  55  6617
+ BART:  34  L=   3 -8.8796058285E+03   0  0    4.351843   -0.328182    4.351843   -0.542710     2.6876  63  6651
+ BART:  55  L=   4 -8.8809512768E+03   0  0    2.706716   -0.671143    2.444913   -0.187247     3.2437  70  6690
+ BART:  81  L=   5 -8.8816785520E+03   0  0    1.939749   -0.423034    1.572878   -0.069280     3.8247 101  6734
+ BART: 112  L=   6 -8.8823643673E+03   0  0    0.704532   -0.353553    0.680564   -0.100730     3.6010  99  6783
+ BART: 148  L=   7 -8.8824242498E+03   0  0    0.931486   -0.329675    0.719480   -0.213192     4.2209 125  6837
+ BART: 189  L=   8 -8.8825794035E+03   0  0    0.371114    0.026663    0.370824   -0.385469     3.4700  98  6896
+
+ BART: SADDLE 1009    FAILED |ret  50189 |delta energy=    2.1228 |force_(tot,par,perp)=     0.3711    0.0267    0.3708 |eigenval=  -0.3855 |npart=   98 |delr=    3.470 |evalf=  6896 |
+ BART: Simulation :            9
+ BART: Attempt    :           24
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1465
+ BART: Number of displaced atoms initially:           17
+BART COLLINEAR:    0    0    1    0.129270   0.00
+ BART:   0  K=   0 -8.8845690008E+03   5  8    2.543090   -2.514188    0.382322    0.129270     0.6199  13  6922
+ BART:   1  K=   1 -8.8788400242E+03   5  7    6.946383   -6.662558    1.965339   -0.088430     2.1520  38  6947
+ BART:   7  L=   1 -8.8775956660E+03   0  0    6.795595   -1.199020    6.690963   -1.297712     2.6817  50  6971
+ BART:  18  L=   2 -8.8769748267E+03   0  0    6.398786   -1.288468    6.241135   -0.302634     3.2478  60  7000
+ BART:  34  L=   3 -8.8777098505E+03   0  0    4.602926   -1.143716    4.468790   -0.502366     3.4062  83  7034
+ BART:  55  L=   4 -8.8791822381E+03   0  0    2.543883   -0.831312    2.403692   -0.610432     3.7506  97  7073
+ BART:  81  L=   5 -8.8800524684E+03   0  0    2.299122   -0.729398    1.816518   -0.461872     3.9662 107  7117
+ BART: 112  L=   6 -8.8812898689E+03   0  0    1.177357   -0.149524    1.174335   -0.935709     2.8945  91  7166
+ BART: 126  L=   7 -8.8824651313E+03   8 13    0.594141    0.336640    0.489568   -0.276072     3.2698  89  7211
+ BART: 135  L=   8 -8.8823721855E+03   8 13    0.582123    0.467794    0.346462   -0.049273     3.7459 102  7251
+ BART: 163  L=   9 -8.8823721796E+03   0  0    0.582093    0.201319    0.582091   -0.293572     3.1615  70  7297
+
+ BART: SADDLE 1009    FAILED |ret  50163 |delta energy=    2.3408 |force_(tot,par,perp)=     0.5821    0.2013    0.5821 |eigenval=  -0.2936 |npart=   70 |delr=    3.162 |evalf=  7297 |
+ BART: Simulation :            9
+ BART: Attempt    :           25
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          122
+ BART: Number of displaced atoms initially:           13
+BART COLLINEAR:    0    0    1    0.145559   0.00
+ BART:   0  K=   0 -8.8847037628E+03   5  7    2.075305   -1.730231    1.145945    0.145559     0.7064  11  7322
+ BART:   1  K=   1 -8.8809002503E+03   5  7    5.115387   -4.609187    2.218689   -0.604959     2.2599  33  7347
+ BART:   7  L=   1 -8.8800462125E+03   0  0    4.950533   -0.872036    4.873788   -0.878033     2.9091  45  7371
+ BART:  18  L=   2 -8.8801138767E+03   0  0    4.501781   -0.279976    4.493853   -0.641800     3.1545  48  7400
+ BART:  34  L=   3 -8.8808363956E+03   0  0    3.369991   -0.273426    3.340924   -0.470495     3.2780  54  7434
+ BART:  55  L=   4 -8.8816563167E+03   0  0    2.248004   -0.155764    2.015684   -0.612871     3.7365  66  7473
+ BART:  68  L=   5 -8.8825946109E+03   8 13    0.838205    0.559358    0.624264   -0.539408     3.5495  65  7517
+ BART:  99  L=   6 -8.8825246733E+03   0  0    1.012214    0.219923    0.984144   -0.432344     3.5480  60  7566
+ BART: 135  L=   7 -8.8833981894E+03   0  0    0.690121   -0.193711    0.690052   -0.551223     3.2644  71  7620
+ BART: 176  L=   8 -8.8835688037E+03   0  0    0.231233   -0.192490    0.230146   -0.304385     3.3232  85  7679
+
+ BART: SADDLE 1009    FAILED |ret  50176 |delta energy=    1.4954 |force_(tot,par,perp)=     0.2312   -0.1925    0.2301 |eigenval=  -0.3044 |npart=   85 |delr=    3.323 |evalf=  7679 |
+ BART: Simulation :            9
+ BART: Attempt    :           26
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          199
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.152485   0.00
+ BART:   0  K=   0 -8.8846038753E+03   5  8    2.590053   -2.413639    0.939531    0.152485     0.6544  14  7705
+ BART:   1  K=   1 -8.8803003786E+03   5  6    5.479342   -5.175245    1.800007   -1.084385     2.3131  33  7729
+ BART:   7  L=   1 -8.8797749433E+03   0  0    5.565118   -0.970207    5.473497   -0.724992     2.7859  35  7753
+ BART:  18  L=   2 -8.8794331653E+03   0  0    5.376095   -1.017222    5.233911   -0.489152     3.3725  38  7782
+ BART:  34  L=   3 -8.8799471873E+03   0  0    5.066975    0.250405    4.980074   -2.365944     3.7736  43  7816
+ BART:  55  L=   4 -8.8812618558E+03   0  0    1.784657    0.123881    1.721422   -1.394149     3.2072  43  7855
+ BART:  81  L=   5 -8.8820233355E+03   0  0    0.847589    0.068398    0.847587   -2.108700     2.9006  35  7899
+ BART: 112  L=   6 -8.8824067307E+03   0  0    0.417057    0.023869    0.417057   -1.934300     2.8045  33  7948
+ BART: 148  L=   7 -8.8826696797E+03   0  0    0.270289    0.056061    0.270287   -0.912497     2.6581  44  8002
+ BART: 184  L=   8 -8.8832975515E+03   0  0    0.656871    0.555104    0.656839   -0.782771     2.7282  42  8056
+
+ BART: SADDLE 1009    FAILED |ret  50184 |delta energy=    0.7544 |force_(tot,par,perp)=     0.6569    0.5551    0.6568 |eigenval=  -0.7828 |npart=   42 |delr=    2.728 |evalf=  8056 |
+ BART: Simulation :            9
+ BART: Attempt    :           27
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1862
+ BART: Number of displaced atoms initially:           18
+BART COLLINEAR:    0    0    1    0.088595   0.00
+ BART:   0  K=   0 -8.8846943441E+03   5  8    1.985545   -1.906323    0.555269    0.088595     0.6388  12  8082
+ BART:   1  K=   1 -8.8817449485E+03   5  6    4.460550   -3.366420    2.926384   -0.416510     2.3920  42  8106
+ BART:   7  L=   1 -8.8817216561E+03   0  0    4.451134    0.006191    4.451128   -0.799989     2.2054  39  8130
+ BART:  18  L=   2 -8.8819328138E+03   0  0    4.100448    0.007994    4.100448   -0.818871     2.0980  40  8159
+ BART:  34  L=   3 -8.8826659214E+03   0  0    2.914151    0.049482    2.914094   -0.710105     1.9556  38  8193
+ BART:  55  L=   4 -8.8835707979E+03   0  0    1.627694    0.275586    1.578250   -0.116285     2.2445  36  8232
+ BART:  81  L=   5 -8.8842489528E+03   0  0    0.729884   -0.058140    0.720467   -0.229999     1.8990  34  8276
+ BART: 112  L=   6 -8.8846903472E+03   0  0    0.390022   -0.021017    0.389389   -0.223639     1.7400  30  8325
+ BART: 131  L=   7 -8.8848329034E+03   0  0    0.181120    0.014594    0.180518   -0.171827     1.7726  30  8362
+ BART: 145  L=   8 -8.8848413969E+03   0  0    0.115070    0.011498    0.114495   -0.144632     1.7976  29  8394
+ BART: 163  L=   9 -8.8848426675E+03   0  0    0.106142    0.008588    0.105794   -0.127121     1.8148  29  8430
+
+ BART: SADDLE 1009    FAILED |ret  50163 |delta energy=    0.3321 |force_(tot,par,perp)=     0.1061    0.0086    0.1058 |eigenval=  -0.1271 |npart=   29 |delr=    1.815 |evalf=  8430 |
+ BART: Simulation :            9
+ BART: Attempt    :           28
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          495
+ BART: Number of displaced atoms initially:           13
+BART COLLINEAR:    0    0    1    0.116211   0.00
+ BART:   0  K=   0 -8.8845166278E+03   5  8    2.628809   -2.560093    0.597129    0.116211     0.6095  11  8456
+ BART:   1  K=   1 -8.8796916030E+03   5  6    5.258345   -5.146819    1.077240   -0.225437     2.0949  33  8480
+ BART:   7  L=   1 -8.8789661248E+03   0  0    5.187096   -0.939673    5.100201   -0.340425     2.5635  48  8504
+ BART:  18  L=   2 -8.8780076607E+03   0  0    4.829354   -1.458958    4.608710   -0.673705     3.1488  61  8533
+ BART:  34  L=   3 -8.8779270005E+03   0  0    3.870790   -0.681421    3.686493   -1.167138     3.5963  66  8567
+ BART:  55  L=   4 -8.8796226662E+03   0  0    2.056071   -0.097794    2.056061   -1.662617     3.0943  56  8606
+ BART:  81  L=   5 -8.8809439995E+03   0  0    1.124101   -0.479396    1.123904   -0.127146     3.3380  40  8650
+ BART: 100  L=   6 -8.8821233921E+03   0  0    1.203340    0.266666    1.165268   -0.108924     3.1317  32  8687
+ BART: 130  L=   7 -8.8823830604E+03   0  0    0.558857    0.048716    0.558850   -0.319537     3.3362  19  8735
+ BART: 139  L=   8 -8.8826031239E+03   8 13    0.087879    0.037584    0.079437   -0.148398     3.2698  20  8775
+ BART: 142  L=   9 -8.8826077678E+03   8 13    0.072862    0.023102    0.069103   -0.074868     3.2751  22  8809
+ BART: 145  L=  10 -8.8826106725E+03   8 13    0.065179    0.027842    0.058933   -0.095692     3.2764  25  8843
+ BART: 148  L=  11 -8.8826123031E+03   8 13    0.055634    0.023012    0.050652   -0.194181     3.2790  25  8877
+ BART: 151  L=  12 -8.8826148329E+03   8 13    0.050314    0.005899    0.049967   -0.259168     3.2902  26  8911
+
+ BART: SADDLE 1009    FAILED |ret  50151 |delta energy=    2.5631 |force_(tot,par,perp)=     0.0503    0.0059    0.0500 |eigenval=  -0.2592 |npart=   26 |delr=    3.290 |evalf=  8911 |
+ BART: Simulation :            9
+ BART: Attempt    :           29
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =            2
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.156082   0.00
+ BART:   0  K=   0 -8.8846185859E+03   5  8    2.296884   -2.225947    0.566426    0.156082     0.6508  13  8937
+ BART:   1  K=   1 -8.8800090316E+03   5  6    5.680997   -5.074834    2.553389    0.037983     2.2656  38  8961
+ BART:   2  K=   2 -8.8743233589E+03   5  8    6.461142   -5.579075    3.258876   -1.230681     3.9129  67  8987
+ BART:   8  L=   1 -8.8734468558E+03   0  0    6.253989   -0.741472    6.209351   -0.977725     4.4546  72  9011
+ BART:  19  L=   2 -8.8731999626E+03   0  0    6.057939   -0.705063    5.995618   -0.484511     4.8511  83  9040
+ BART:  35  L=   3 -8.8747385075E+03   0  0    4.555532   -0.043584    4.553919   -0.993214     4.4860  89  9074
+ BART:  56  L=   4 -8.8770254269E+03   0  0    3.049257   -0.145663    2.959069   -0.537397     4.4473  89  9113
+ BART:  82  L=   5 -8.8793872667E+03   0  0    1.477176   -0.462330    1.414037   -0.608889     4.5469  80  9157
+ BART: 113  L=   6 -8.8800438072E+03   0  0    0.874224    0.042951    0.842648   -0.104887     4.6777  65  9206
+ BART: 149  L=   7 -8.8804977904E+03   0  0    0.436224   -0.048638    0.434755   -0.039976     4.8304  78  9260
+ BART: 190  L=   8 -8.8805680529E+03   0  0    0.114631   -0.032365    0.107378   -0.035803     4.9863  87  9319
+
+ BART: SADDLE 1009    FAILED |ret  50190 |delta energy=    4.5914 |force_(tot,par,perp)=     0.1146   -0.0324    0.1074 |eigenval=  -0.0358 |npart=   87 |delr=    4.986 |evalf=  9319 |
+ BART: Simulation :            9
+ BART: Attempt    :           30
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1590
+ BART: Number of displaced atoms initially:           16
+BART COLLINEAR:    0    0    1    0.135153   0.00
+ BART:   0  K=   0 -8.8848955773E+03   5  8    1.392815   -1.325255    0.428524    0.135153     0.6365   9  9345
+ BART:   1  K=   1 -8.8819610281E+03   5  6    4.021202   -3.576824    1.837495    0.030290     2.1473  35  9369
+ BART:   2  K=   2 -8.8776076475E+03   5  7    4.642596   -4.221029    1.933031   -1.210919     3.6233  50  9394
+ BART:   8  L=   1 -8.8775180437E+03   0  0    4.489149    0.037932    4.488685   -2.444989     3.7009  56  9418
+ BART:  19  L=   2 -8.8776514073E+03   0  0    4.135560   -0.011475    4.135543   -1.941249     3.7256  57  9447
+ BART:  35  L=   3 -8.8784521821E+03   0  0    3.267346   -0.068567    3.267346   -2.066571     3.4012  57  9481
+ BART:  56  L=   4 -8.8799876684E+03   0  0    2.103066   -0.081238    2.102955   -1.427442     2.9778  54  9520
+ BART:  82  L=   5 -8.8815621671E+03   0  0    1.182254    0.502817    1.182254   -1.128519     2.6366  35  9564
+ BART: 113  L=   6 -8.8825601324E+03   0  0    0.847961   -1.125988    0.831028   -2.292918     2.0391  30  9613
+ BART: 126  L=   7 -8.8828338884E+03   7 13    0.263539    0.223735    0.139266   -2.401003     2.3831  29  9657
+ BART: 167  L=   8 -8.8828247009E+03   0  0    0.139040   -0.002885    0.136582   -2.570159     2.3683  28  9716
+
+ BART: SADDLE 1009    FAILED |ret  50167 |delta energy=    2.3210 |force_(tot,par,perp)=     0.1390   -0.0029    0.1366 |eigenval=  -2.5702 |npart=   28 |delr=    2.368 |evalf=  9716 |
+ BART: Simulation :            9
+ BART: Attempt    :           31
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =         1247
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.158082   0.00
+ BART:   0  K=   0 -8.8846999555E+03   5  8    2.004032   -1.955894    0.436603    0.158082     0.6351  10  9742
+ BART:   1  K=   1 -8.8801680390E+03   5  6    5.754055   -4.775679    3.209678   -0.740917     2.2623  38  9766
+ BART:   7  L=   1 -8.8793015736E+03   0  0    5.728139   -0.787223    5.671472   -1.260482     2.7942  42  9790
+ BART:  18  L=   2 -8.8790721362E+03   0  0    5.341524   -1.412399    5.132481   -0.670490     3.1424  49  9819
+ BART:  34  L=   3 -8.8800090493E+03   0  0    3.665693   -0.016620    3.664994   -1.140247     2.9796  49  9853
+ BART:  55  L=   4 -8.8815038800E+03   0  0    1.679580   -0.096381    1.679578   -1.000999     2.5714  36  9892
+ BART:  68  L=   5 -8.8827655892E+03   8 13    0.642149    0.207140    0.607823   -0.968997     3.1337  42  9936
+ BART:  90  L=   6 -8.8827578418E+03   0  0    0.637370    0.100547    0.637369   -1.341619     2.9929  39  9976
+ BART: 120  L=   7 -8.8828923416E+03   0  0    0.278844    0.016747    0.278844   -1.217674     3.1952  56 10024
+ BART: 161  L=   8 -8.8829747273E+03   0  0    0.123678    0.000068    0.123678   -1.190782     3.3809  67 10083
+
+ BART: SADDLE 1009    FAILED |ret  50161 |delta energy=    2.1681 |force_(tot,par,perp)=     0.1237    0.0001    0.1237 |eigenval=  -1.1908 |npart=   67 |delr=    3.381 |evalf= 10083 |
+ BART: Simulation :            9
+ BART: Attempt    :           32
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          164
+ BART: Number of displaced atoms initially:           13
+BART COLLINEAR:    0    0    1    0.090651   0.00
+ BART:   0  K=   0 -8.8846514887E+03   5  8    2.163969   -2.120316    0.432461    0.090651     0.6329  11 10109
+ BART:   1  K=   1 -8.8799353437E+03   5  6    5.720212   -4.805853    3.102355   -0.565789     2.2456  33 10133
+ BART:   7  L=   1 -8.8793845414E+03   0  0    5.592433   -0.829426    5.530601   -0.482116     2.5020  37 10157
+ BART:  18  L=   2 -8.8790203494E+03   0  0    5.210419   -0.698662    5.147842   -0.369919     2.9722  42 10186
+ BART:  34  L=   3 -8.8793913073E+03   0  0    3.939924   -0.958155    3.768726   -0.194023     3.4309  57 10220
+ BART:  55  L=   4 -8.8806023806E+03   0  0    2.872784   -0.329929    2.737708   -0.090514     3.5927  52 10259
+ BART:  81  L=   5 -8.8822611584E+03   0  0    1.383202   -0.442117    1.348708    0.110519     3.6841  42 10303
+
+ BART: SADDLE 1009    FAILED |ret  60081 |delta energy=    2.3694 |force_(tot,par,perp)=     1.3832   -0.4421    1.3487 |eigenval=   0.1105 |npart=   42 |delr=    3.684 |evalf= 10303 |
+ BART: Simulation :            9
+ BART: Attempt    :           33
+ BART: Starting from minconf :         1007
+ BART: Reference Energy (eV) :   -8885.17794944530     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          304
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.062913   0.00
+ BART:   0  K=   0 -8.8846124196E+03   5  7    2.348850   -2.174330    0.888473    0.062913     0.6437  12 10328
+ BART:   1  K=   1 -8.8806930269E+03   5  7    4.455895   -4.160014    1.596648   -0.912171     2.1627  36 10353
+ BART:   7  L=   1 -8.8800940639E+03   0  0    4.684197   -1.096200    4.547819   -0.315599     2.6945  40 10377
+ BART:  18  L=   2 -8.8802756702E+03   0  0    4.382022    0.039272    4.381835   -0.596065     2.7171  39 10406
+ BART:  34  L=   3 -8.8810785667E+03   0  0    3.362465    0.169716    3.355366   -0.268708     2.2220  38 10440
+ BART:  55  L=   4 -8.8825763885E+03   0  0    1.955869   -0.251285    1.955606   -1.426531     1.7961  27 10479
+ BART:  81  L=   5 -8.8836234781E+03   0  0    0.989332   -0.113060    0.982792   -1.039901     2.0324  22 10523
+ BART: 112  L=   6 -8.8839879033E+03   0  0    0.374725   -0.021360    0.374506   -0.753652     2.1664  25 10572
+ BART: 148  L=   7 -8.8840597323E+03   0  0    0.128923   -0.006239    0.128918   -0.677360     2.3133  34 10626
+ BART: 189  L=   8 -8.8840849251E+03   0  0    0.036819    0.000365    0.036819   -0.667892     2.3817  37 10685
+  Writing to file : sad1009
+
+ BART: SADDLE 1009 CONVERGED |ret  20189 |delta energy=    1.0873 |force_(tot,par,perp)=     0.0368    0.0004    0.0368 |eigenval=  -0.6679 |npart=   37 |delr=    2.382 |evalf= 10685 |
+ BART: Configuration stored in file sad1009             
+ BART: 194  M=   5 -8.8839767815E+03   0  0    2.485715    0.000365    0.036819   -0.667892     3.2228  41 10691
+ fnrm   6.17877974175499      fmax   1.39318126307398     
+ BART: 199  M=  10 -8.8841851949E+03   0  0    1.630471    0.000365    0.036819   -0.667892     3.1943  40 10696
+ fnrm   2.65843528389502      fmax  0.857849112983445     
+ BART: 204  M=  15 -8.8843837884E+03   0  0    1.032925    0.000365    0.036819   -0.667892     3.1543  36 10701
+ fnrm   1.06693423581230      fmax  0.530086580076540     
+ BART: 209  M=  20 -8.8844979442E+03   0  0    1.045972    0.000365    0.036819   -0.667892     3.2569  38 10706
+ fnrm   1.09405803692168      fmax  0.633992967716517     
+ BART: 214  M=  25 -8.8846427963E+03   0  0    0.900143    0.000365    0.036819   -0.667892     3.5494  41 10711
+ fnrm  0.810257199316865      fmax  0.287255621929313     
+ BART: 219  M=  30 -8.8847349053E+03   0  0    0.783954    0.000365    0.036819   -0.667892     3.7309  45 10716
+ fnrm  0.614583129227525      fmax  0.233587044883366     
+ BART: 224  M=  35 -8.8848299396E+03   0  0    0.638131    0.000365    0.036819   -0.667892     3.8775  60 10721
+ fnrm  0.407210805654034      fmax  0.175746497204398     
+ BART: 229  M=  40 -8.8849244621E+03   0  0    0.569696    0.000365    0.036819   -0.667892     4.0116  71 10726
+ fnrm  0.324553472552994      fmax  0.195826581604159     
+ BART: 234  M=  45 -8.8850191692E+03   0  0    0.475861    0.000365    0.036819   -0.667892     4.1963  81 10731
+ fnrm  0.226444031641460      fmax  9.018269694225919E-002
+ BART: 239  M=  50 -8.8850631082E+03   0  0    0.477854    0.000365    0.036819   -0.667892     4.3692  87 10736
+ fnrm  0.228344571502089      fmax  0.150949656188649     
+ BART: 244  M=  55 -8.8851112015E+03   0  0    0.386295    0.000365    0.036819   -0.667892     4.4751 106 10741
+ fnrm  0.149223456473454      fmax  6.768786292293573E-002
+ BART: 249  M=  60 -8.8851484430E+03   0  0    0.333083    0.000365    0.036819   -0.667892     4.5689 118 10746
+ fnrm  0.110943983604935      fmax  8.056370121236203E-002
+ BART: 254  M=  65 -8.8851711824E+03   0  0    0.298871    0.000365    0.036819   -0.667892     4.6720 137 10751
+ fnrm  8.932368288358436E-002 fmax  6.270345711491887E-002
+ BART: 259  M=  70 -8.8851848475E+03   0  0    0.271764    0.000365    0.036819   -0.667892     4.7802 146 10756
+ fnrm  7.385591407961999E-002 fmax  3.935837598192941E-002
+ BART: 264  M=  75 -8.8851931770E+03   0  0    0.249068    0.000365    0.036819   -0.667892     4.8672 151 10761
+ fnrm  6.203469262758046E-002 fmax  4.832105144153109E-002
+ BART: 269  M=  80 -8.8851992808E+03   0  0    0.221916    0.000365    0.036819   -0.667892     4.9227 160 10766
+ fnrm  4.924651333420583E-002 fmax  3.052204034667502E-002
+ BART: 274  M=  85 -8.8852027366E+03   0  0    0.203524    0.000365    0.036819   -0.667892     4.9538 169 10771
+ fnrm  4.142213289495533E-002 fmax  3.833730072557406E-002
+ BART: 279  M=  90 -8.8852061516E+03   0  0    0.186657    0.000365    0.036819   -0.667892     4.9660 176 10776
+ fnrm  3.484071333172312E-002 fmax  4.149413542356449E-002
+ BART: 284  M=  95 -8.8852111301E+03   0  0    0.162155    0.000365    0.036819   -0.667892     4.9665 181 10781
+ fnrm  2.629433685949448E-002 fmax  2.099516320940541E-002
+ FIRE: minimization successful
+ fnrm:   2.468679108620554E-002   , fmax:   1.644460743701136E-002  , iter: 
+          96
+ Final energy:   -8885.21211831199     
+ BART: Relaxed energy : -8.8852121183E+03
+ BART: Mincounter is         1009 , scounter is 1009
+  Writing to file : min1009
+ BART: Configuration stored in file min1009             
+ BART: MINIMUM 1009 ACCEPTED |E(fin-ini)=   -0.0342 |E(fin-sad)=   -1.1214 |npart=  180 |delr=    4.966 |evalf= 10782 |   2.382   0.59   0.00   0.01
+ BART: Simulation :           10
+ BART: Attempt    :            1
+ BART: Starting from minconf :         1009
+ BART: Reference Energy (eV) :   -8885.21211831199     
+ BART: Temperature :    2.50000000000000     
+ BART: Number of displaced atoms initially:         2000
+ BART: That atom =          700
+ BART: Number of displaced atoms initially:           15
+BART COLLINEAR:    0    0    1    0.123699   0.00
+ BART:   0  K=   0 -8.8846943771E+03   5  8    2.222874   -2.083112    0.775768    0.123699     0.6667  14    26
+ BART:   1  K=   1 -8.8789462673E+03   5  9    7.966314   -7.445670    2.832695   -1.013857     1.9340  22    53
+ BART:   7  L=   1 -8.8784961318E+03   0  0    7.898901   -0.980325    7.836155   -0.748877     2.1176  25    77
+ BART:  18  L=   2 -8.8784716878E+03   0  0    6.773680   -1.000756    6.731324   -1.011418     2.3724  34   106
+ BART:  34  L=   3 -8.8788792284E+03   0  0    5.247195   -1.377639    4.677767   -1.060551     2.9133  45   140
+ BART:  55  L=   4 -8.8809895726E+03   0  0    2.563283   -0.179553    2.563283   -1.212871     2.4213  27   179
+ BART:  81  L=   5 -8.8826752376E+03   0  0    1.136255   -0.290874    1.136250   -1.381082     2.3680  25   223
+ BART: 112  L=   6 -8.8831841162E+03   0  0    0.657139   -0.046015    0.651836   -1.108970     2.6311  36   272
+ BART: 148  L=   7 -8.8833059629E+03   0  0    0.170253   -0.002477    0.170248   -1.015583     2.6975  40   326
+ BART: 189  L=   8 -8.8833220673E+03   0  0    0.038218    0.000021    0.038218   -1.027057     2.7446  40   385
+  Writing to file : sad1010
+
+ BART: SADDLE 1010 CONVERGED |ret  20189 |delta energy=    1.8867 |force_(tot,par,perp)=     0.0382    0.0000    0.0382 |eigenval=  -1.0271 |npart=   40 |delr=    2.745 |evalf=   385 |
+ BART: Configuration stored in file sad1010             
+ BART: 194  M=   5 -8.8830140079E+03   0  0    3.113307    0.000021    0.038218   -1.027057     3.7353  40   391
+ fnrm   9.69267988626437      fmax   2.16905615851448     
+ BART: 199  M=  10 -8.8833218483E+03   0  0    1.772951    0.000021    0.038218   -1.027057     3.6613  39   396
+ fnrm   3.14335595713026      fmax   1.30151161586317     
+ BART: 204  M=  15 -8.8835284519E+03   0  0    1.029081    0.000021    0.038218   -1.027057     3.4911  39   401
+ fnrm   1.05900699317193      fmax  0.589485417668190     
+ BART: 209  M=  20 -8.8835443660E+03   0  0    0.975265    0.000021    0.038218   -1.027057     3.4555  39   406
+ fnrm  0.951141572602429      fmax  0.549845676039625     
+ BART: 214  M=  25 -8.8835847683E+03   0  0    0.498166    0.000021    0.038218   -1.027057     3.4655  37   411
+ fnrm  0.248168972464096      fmax  0.226817161901127     
+ BART: 219  M=  30 -8.8836016496E+03   0  0    0.450154    0.000021    0.038218   -1.027057     3.4795  37   416
+ fnrm  0.202638263078735      fmax  0.209278264355477     
+ BART: 224  M=  35 -8.8836060962E+03   0  0    0.363225    0.000021    0.038218   -1.027057     3.4772  37   421
+ fnrm  0.131932609917039      fmax  0.161917557444040     
+ BART: 229  M=  40 -8.8836148022E+03   0  0    0.234581    0.000021    0.038218   -1.027057     3.4711  38   426
+ fnrm  5.502837530575903E-002 fmax  8.563742261282750E-002
+ BART: 234  M=  45 -8.8836287128E+03   0  0    0.258724    0.000021    0.038218   -1.027057     3.4686  38   431
+ fnrm  6.693826490286103E-002 fmax  9.482071554507439E-002
+ BART: 239  M=  50 -8.8836583048E+03   0  0    0.215289    0.000021    0.038218   -1.027057     3.4972  36   436
+ fnrm  4.634915683724348E-002 fmax  7.944846461896826E-002
+ BART: 244  M=  55 -8.8836916430E+03   0  0    0.162638    0.000021    0.038218   -1.027057     3.5507  37   441
+ fnrm  2.645098316353184E-002 fmax  3.952700487189276E-002
+ BART: 249  M=  60 -8.8837154098E+03   0  0    0.137338    0.000021    0.038218   -1.027057     3.5921  43   446
+ fnrm  1.886158946571085E-002 fmax  4.290080463965764E-002
+ BART: 254  M=  65 -8.8837297796E+03   0  0    0.102076    0.000021    0.038218   -1.027057     3.6027  45   451
+ fnrm  1.041950216935472E-002 fmax  1.715559765440367E-002
+ FIRE: minimization successful
+ fnrm:   1.041950216935472E-002   , fmax:   1.715559765440367E-002  , iter: 
+          65
+ Final energy:   -8883.72977961810     
+ BART: Relaxed energy : -8.8837297796E+03
+ BART: Mincounter is         1010 , scounter is 1010
+  Writing to file : min1010
+ BART: Configuration stored in file min1010             
+ BART: MINIMUM 1010 REJECTED |E(fin-ini)=    1.4823 |E(fin-sad)=   -0.4044 |npart=   45 |delr=    3.603 |evalf=   451 |   2.745   0.62   0.00   0.00
+ Call event worker to stop
+ master send STOP worker tag 
+ iproc 0 (MASTER) return (leaving subroutine) 
+ lammps slaves exiting the infinite do loop to finalize process
+ lammps slaves exiting the infinite do loop to finalize process
+ lammps slaves exiting the infinite do loop to finalize process
+ lammps slaves exiting the infinite do loop to finalize process
+ lammps slaves exiting the infinite do loop to finalize process
+ lammps slaves exiting the infinite do loop to finalize process
+ lammps slaves exiting the infinite do loop to finalize process
+ Simulation is over, finalizing process will occur next 
+srun: First task exited 60s ago
+srun: task 0: running
+srun: tasks 1-7: exited
+srun: Terminating job step 191404.0
+slurmstepd: *** STEP 191404.0 ON compute-2-5 CANCELLED AT 2017-05-04T08:39:27 ***
+srun: Job step aborted: Waiting up to 62 seconds for job step to finish.
+srun: error: compute-2-5: task 0: Killed
