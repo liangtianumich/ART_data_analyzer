@@ -153,8 +153,8 @@ class Atom(object):
 		"""
 		if isinstance(data, Atom) == False:
 			raise Exception("data must be a class object")
-		data.atom_loc
-		return []
+		[x,y,z] = [data.atom_loc[0], data.atom_loc[1], data.atom_loc[2]]
+		return [x,y,z]
 
 
 def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_distance, atom_list = None, save_results = True):
@@ -273,9 +273,11 @@ def local_strain_calculator_atom(initial_config_atom, saddle_config_atom, atom_i
 	for (index,atom_ini_NN) in NN_initial.iterrows():
 		# d0_ji in pandas.Series
 		d0_ji = Atom.from_ds(atom_int_NN) - Atom_ini_obj
+		d0_ji = Atom.to_list(d0_ji)
 		atom_sad_NN = Atom.from_ds(NN_sandle.loc[NN_saddle["item"] == atom_NN["item"]])
 		# d_ji in pandas.Series
 		d_ji = atom_sad_NN - Atom_sad_obj
+		d_ji = Atom.to_list(d_ji)
 		# begin calculate the V and M matrix
 		V[0][0] = V[0][0] + d0_ji[0] * d0_ji[0]
 		V[0][1] = V[0][1] + d0_ji[0] * d0_ji[1]
@@ -296,8 +298,18 @@ def local_strain_calculator_atom(initial_config_atom, saddle_config_atom, atom_i
 		W[2][0] = W[2][0] + d0_ji[2] * d_ji[0]
 		W[2][1] = W[2][1] + d0_ji[2] * d_ji[1]
 		W[2][2] = W[2][2] + d0_ji[2] * d_ji[2]
-		
-	d0 = initial_config_atom.
+	
+	J = np.dot(np.linalg.inv(V), W)
+	
+	mu = (np.dot(J, np.transpose(J)) - np.identity(3)) * 0.5
+	
+	mu_hydro = np.trace(mu)/3.0
+	
+	mu_off_diag = (mu - mu_hydro * np.identity(3))
+	
+	mu_Mises = (0.5 * np.trace(np.dot(mu_off_diag, mu_off_diag))) ** 0.5
+	
+	return 
 	
 	
 
