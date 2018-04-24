@@ -3,6 +3,7 @@ import pandas as pd
 import scipy.spatial as spatial
 import os
 import json
+from periodic_kdtree import PeriodicCKDTree
 
 class Atom(object):
 	"""
@@ -157,7 +158,7 @@ class Atom(object):
 		return [x,y,z]
 
 
-def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_distance, atom_list = None, save_results = True):
+def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_distance, box_dim, atom_list = None, save_results = True):
 	"""
 	this function calculate various local atomic strain quantities for atoms whose item id stored inside
 	the atom_list 
@@ -191,7 +192,7 @@ def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_dis
 		strain: dict()
 			a dictionary with key being the item id number of the interested atom
 			values being the calculated various local atomic strains measures 
-			stored inside in a pandas.Series
+			stored inside in a list
 			
 	Note:
 		the nearest neighbor is determined through the atomic configuration in
@@ -206,7 +207,7 @@ def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_dis
 	
 	# check if the nn results.json file exists or not
 	
-	nn = NN_finder_all(initial_config_data,cut_off_distance, atom_list)
+	nn = NN_finder_all(initial_config_data, cut_off_distance, box_dim, atom_list)
 	
 	strain = dict()
 	
@@ -226,8 +227,8 @@ def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_dis
 		#NN_saddle = (saddle_config_data['item'].isin(item_nn["item"])).tolist() 
 		#saddle_config_nn = saddle_config_data.loc[(saddle_config_data['item'].isin(item_nn["item"])).tolist()]
 		
-		#local_strains should be a dict as well since it has multiple output strain
-		# or a pandas Series
+		# local_strains should be a dict as well since it has multiple output strain
+		# or a list
 		local_strains = local_strain_calculator_atom(NN_initial, NN_saddle)
 		strain[item] = local_strains
 	
@@ -255,7 +256,7 @@ def local_strain_calculator_atom(initial_config_atom, saddle_config_atom, atom_i
 	return:
 		atom_strain: an instance of pandas.Series
 			storing various local atomic strains in pandas.Series
-			such as the von mises strain, 
+			such as the von mises shear strain invariants, hydrostatic invariant 
 	"""
 	# calculate dij and d0_ij
 	NN_intial = initial_config_atom.loc[initial_config_atom['item'] != atom_item]
@@ -309,11 +310,11 @@ def local_strain_calculator_atom(initial_config_atom, saddle_config_atom, atom_i
 	
 	mu_Mises = (0.5 * np.trace(np.dot(mu_off_diag, mu_off_diag))) ** 0.5
 	
-	return 
+	return [mu_hydro, mu_Mises]
 	
 	
 
-def NN_finder_all(initial_config_data,cut_off_distance, atom_list = None, save_results = True):
+def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = None, save_results = True):
 	"""
 	A very general nearest neigbor finder function calculate multiple atom's nearest neighbor all at once using
 	the efficient cKDTree algorithm, the multiple atoms whose item number 
@@ -336,7 +337,10 @@ def NN_finder_all(initial_config_data,cut_off_distance, atom_list = None, save_r
 		For example,
 		{(1,1):3.7,(1,2):2.7,(2,2):3.0} means that atom_type 1 and 1 cut-off
 		is 3.7, etc
-
+	
+	box_dim: list
+		a list containing the spatial dimension of simulation box size in x, y, z
+		
 	atom_list: list
 		the list containing the item number of interested atoms whose nearest neighbors
 		are being found
@@ -348,6 +352,9 @@ def NN_finder_all(initial_config_data,cut_off_distance, atom_list = None, save_r
 	this cKDtree algorithm is efficient when:
 	you have many points whose neighbors you want to find, you may save 
 	substantial amounts of time by putting them in a cKDTree and using query_ball_tree
+	
+	for molecular simulation: 
+	https://github.com/patvarilly/periodic_kdtree
 	
 	returns:
 		nn: dict()
@@ -390,7 +397,7 @@ def NN_finder_all(initial_config_data,cut_off_distance, atom_list = None, save_r
 					 curr_cut_off = cut_off_distance[pair]
 			
 			# iterate over each row seems inefficient for (index, curr_atom) in int_group.iterrows()
-			result_tree = spatial.cKDTree(atom_group[['x','y','z']].values)
+			result_tree = PeriodicCKDTree(box_dim, atom_group[['x','y','z']].values)
 			result_groups = result_tree.query_ball_point(int_group[['x','y','z']].values, curr_cut_off)
 			#indices = np.unique(IT.chain.from_iterable(result_groups))
 			
