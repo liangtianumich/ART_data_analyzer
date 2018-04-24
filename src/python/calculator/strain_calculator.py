@@ -257,8 +257,8 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 		box_dim: list
 			the simulation box spatial dimension to implement periodic boundary condition
 	return:
-		atom_strain: an instance of pandas.Series
-			storing various local atomic strains in pandas.Series
+		atom_strain: list
+			storing various local atomic strains in list
 			such as the von mises shear strain invariants, hydrostatic invariant 
 	"""
 	# calculate dij and d0_ij
