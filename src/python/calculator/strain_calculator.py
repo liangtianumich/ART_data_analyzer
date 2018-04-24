@@ -158,10 +158,10 @@ class Atom(object):
 		return [x,y,z]
 
 
-def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_distance, box_dim, atom_list = None, save_results = True):
+def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, atom_list = None, save_results = True):
 	"""
 	this function calculate various local atomic strain quantities for atoms whose item id stored inside
-	the atom_list 
+	the atom_list under periodic boundary condition for orthogonal simulation box
 	input arguments:
 	
 	initial_config_data: instance of pandas.Dataframe
@@ -229,7 +229,7 @@ def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_dis
 		
 		# local_strains should be a dict as well since it has multiple output strain
 		# or a list
-		local_strains = local_strain_calculator_atom(NN_initial, NN_saddle)
+		local_strains = local_strain_calculator_atom_orth(NN_initial, NN_saddle)
 		strain[item] = local_strains
 	
 	if save_results is True:
@@ -238,7 +238,7 @@ def local_strain_calculator(initial_config_data, saddle_config_data, cut_off_dis
 	return strain
 
 
-def local_strain_calculator_atom(initial_config_atom, saddle_config_atom, atom_item):
+def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, atom_item, box_dim):
 	"""
 	this function calculate the local atomic strain according to the algorithm
 	proposed in http://li.mit.edu/Archive//Graphics/A/annotate_atomic_strain/Doc/main.pdf
@@ -253,6 +253,9 @@ def local_strain_calculator_atom(initial_config_atom, saddle_config_atom, atom_i
 		
 		atom_item: integer
 			the item id of interested atom
+			
+		box_dim: list
+			the simulation box spatial dimension to implement periodic boundary condition
 	return:
 		atom_strain: an instance of pandas.Series
 			storing various local atomic strains in pandas.Series
@@ -279,6 +282,18 @@ def local_strain_calculator_atom(initial_config_atom, saddle_config_atom, atom_i
 		# d_ji in pandas.Series
 		d_ji = atom_sad_NN - Atom_sad_obj
 		d_ji = Atom.to_list(d_ji)
+		
+		# begin implement pbc for d_ji and d0_ji as in 
+		# https://en.wikipedia.org/wiki/Periodic_boundary_conditions
+		# dx = x[j] - x[i];
+		# dx -= x_size * nearbyint(dx * x_rsize)
+		Near_int_d = [int(round(i)) for i in np.array(d_ji) * 1.0/np.array(box_dim)]
+		d_ji = np.array(d_ji) - np.array(box_dim) * Near_int_d
+		
+		Near_int_d0 = [int(round(i)) for i in np.array(d0_ji) * 1.0/np.array(box_dim)]
+		d0_ji = np.array(d0_ji) - np.array(box_dim) * Near_int_d0
+		
+		
 		# begin calculate the V and M matrix
 		V[0][0] = V[0][0] + d0_ji[0] * d0_ji[0]
 		V[0][1] = V[0][1] + d0_ji[0] * d0_ji[1]
