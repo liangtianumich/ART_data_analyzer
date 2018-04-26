@@ -2,8 +2,11 @@ import numpy as np
 import pandas as pd
 import scipy.spatial as spatial
 import os
-import json
-from periodic_kdtree import PeriodicCKDTree
+import pickle
+import imp
+strain_calculator = imp.load_source('module.name', '../src/python/calculator/periodic_kdtree.py')
+PeriodicCKDTree = strain_calculator.PeriodicCKDTree
+#from periodic_kdtree import PeriodicCKDTree
 
 class Atom(object):
 	"""
@@ -22,43 +25,41 @@ class Atom(object):
 				list that stores atomic coordinate x,y,z
 			box_dim: list, optional, default None object
 				list that stores simulation box size lx,ly,lz
-			
-			
 		"""
 		if type(atom_loc) != list or len(atom_loc) != 3:
 			raise Exception("atom location coordinates incorrect")
 		if box_dim != None:
 			if type(box_dim) != list or len(box_dim) != 3:
 				raise Exception("simulation box dimension incorrect")
-        self.atom_loc = atom_loc
-        self.box_dim = box_dim
-        self.atom_id = atom_id
-        self.item = item
-    
-    def __add__(self, other):
-        final_atom_loc = (np.array(self.atom_loc) + np.array(other.atom_loc)).tolist()
-        return Atom(final_atom_loc)
-    
-    def __sub__(self, other):
-        final_atom_loc = (np.array(self.atom_loc) - np.array(other.atom_loc)).tolist()
-        return Atom(final_atom_loc)
-    
-    def __mul__(self, other):
-        final_atom_loc = (np.array(self.atom_loc) * np.array(other.atom_loc)).tolist()
-        return Atom(final_atom_loc)
-    
-    def __rmul__(self, other):
-        return self.__mul__(other)
-    
-    def __div__(self, other):
+		self.atom_loc = atom_loc
+		self.box_dim = box_dim
+		self.atom_id = atom_id
+		self.item = item
+	
+	def __add__(self, other):
+		final_atom_loc = (np.array(self.atom_loc) + np.array(other.atom_loc)).tolist()		
+		return Atom(final_atom_loc)
+	
+	def __sub__(self, other):
+		final_atom_loc = (np.array(self.atom_loc) - np.array(other.atom_loc)).tolist()
+		return Atom(final_atom_loc)
+	
+	def __mul__(self, other):
+		final_atom_loc = (np.array(self.atom_loc) * np.array(other.atom_loc)).tolist()
+		return Atom(final_atom_loc)
+	
+	def __rmul__(self, other):
+		return self.__mul__(other)
+	
+	def __div__(self, other):
 		final_atom_loc = (np.array(self.atom_loc) / np.array(other.atom_loc)).tolist()
-        return Atom(final_atom_loc)
-    
-    def __rdiv__(self, other):
-        return self.__div__(other)
-    
-    @classmethod
-    def distance(cls, atom_1, atom_2):
+		return Atom(final_atom_loc)
+	
+	def __rdiv__(self, other):
+		return self.__div__(other)
+	
+	@classmethod
+	def distance(cls, atom_1, atom_2):
 		"""
 		class method to calculate the distance between atom_1 and atom_2,
 		where atom_1 and atom_2 are the instances of class Atom
@@ -77,7 +78,7 @@ class Atom(object):
 		return np.linalg.norm((atom_1-atom_2).atom_loc)
 	
 	@classmethod
-    def distance_pbc(cls, atom_1, atom_2):
+	def distance_pbc(cls, atom_1, atom_2):
 		"""
 		class method to calculate the distance between atom_1 and atom_2 under
 		periodic boundary condition, where atom_1 and atom_2 are the 
@@ -106,19 +107,20 @@ class Atom(object):
 		for _pair in _pair_list:
 			_curr_pair_distance = Atom.distance(atom_1, Atom(atom_2.atom_loc + _pair))
 			_pair_distance.append(_curr_pair_distance)
-        return min(_pair_distance)
+		return min(_pair_distance)
 	
 	@classmethod
 	def from_ds(cls, data):
 		"""
-		create a Atom class object from pandas.Series
+		create a Atom class object from single column pandas.DataFrame or pandas.Series
 		Input argument:
-			data: instance of pandas.Series
+			data: instance of single column pandas.DataFrame or pandas.Series
 				data of a single atom
 		"""
-		if isinstance(data, pd.Series) == False:
-			raise Exception("data converted into Atom class object must be pandas.Series")
-		[_x,_y,_z] = data["x"], data["y"], data["z"]
+		if isinstance(data, pd.DataFrame) == False and isinstance(data, pd.Series) == False:
+			raise Exception("data converted into Atom class object must be single column pandas.DataFrame or pandas.Series")
+		data = data.squeeze()
+		_x,_y,_z = data["x"], data["y"], data["z"]
 		_atom_id = data["atom_id"]
 		_item = data["item"]
 		
@@ -134,7 +136,7 @@ class Atom(object):
 				a dictionary with key is atom_id integer, value is the subset of
 				pandas.Dataframe of all atoms with this atom_id		
 		"""
-		if isinstance(data, pd.Dataframe) == False:
+		if isinstance(data, pd.DataFrame) == False:
 			raise Exception("data must be pandas.Dataframe")
 		#get unique atom_type id and sorting
 		unique_atom_type = sorted(data["atom_id"].unique())
@@ -143,7 +145,7 @@ class Atom(object):
 		# tuple pair key, val in .items() might be useful
 		groups = dict()
 		for i in unique_atom_type:
-			groups[i] = data.loc[[data["atom_id"] == i]]
+			groups[i] = data.loc[data["atom_id"] == i]
 		return groups
 	
 	@classmethod
@@ -154,7 +156,7 @@ class Atom(object):
 		"""
 		if isinstance(data, Atom) == False:
 			raise Exception("data must be a class object")
-		[x,y,z] = [data.atom_loc[0], data.atom_loc[1], data.atom_loc[2]]
+		x,y,z = (data.atom_loc)[0], (data.atom_loc)[1], (data.atom_loc)[2]
 		return [x,y,z]
 
 
@@ -180,6 +182,9 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		of initial_config_data since it is not a module that reused a lot
 		it is good enough to get this single value through Ovide coordination analysis rdf or other software
 		instead of a rigourous calculation
+	
+	box_dim: list,
+		the spatial dimension of simulation box in [x,y,z]
 	
 	atom_list: list,
 		a list storing the atom item id of interested atoms
@@ -218,7 +223,7 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		NN_list.append(item)
 		
 		# NN_intial is the pandas.Dataframe of intial data with interested_atom and its NN
-		NN_intial = initial_config_data.loc[initial_config_data["item"].isin(NN_list)]
+		NN_initial = initial_config_data.loc[initial_config_data["item"].isin(NN_list)]
 		
 		# NN_saddle is the pandas.Dataframe of saddle data with interested_atom and its NN
 		NN_saddle = saddle_config_data.loc[saddle_config_data["item"].isin(NN_list)]
@@ -229,12 +234,13 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		
 		# local_strains should be a dict as well since it has multiple output strain
 		# or a list
-		local_strains = local_strain_calculator_atom_orth(NN_initial, NN_saddle)
+		local_strains = local_strain_calculator_atom_orth(NN_initial, NN_saddle, item, box_dim)
 		strain[item] = local_strains
 	
 	if save_results is True:
 		with open('strain_result.json', 'w') as f:
-			json.dump(strain,f)
+			pickle.dump(strain,f)
+			f.close()
 	return strain
 
 
@@ -262,13 +268,15 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 			such as the von mises shear strain invariants, hydrostatic invariant 
 	"""
 	# calculate dij and d0_ij
-	NN_intial = initial_config_atom.loc[initial_config_atom['item'] != atom_item]
+	NN_initial = initial_config_atom.loc[initial_config_atom['item'] != atom_item]
 	Atom_initial = initial_config_atom.loc[initial_config_atom['item'] == atom_item]
 	Atom_ini_obj = Atom.from_ds(Atom_initial)
+	print "Atom_ini_obj:", Atom_ini_obj.atom_loc
 	
 	NN_saddle = saddle_config_atom.loc[saddle_config_atom['item'] != atom_item]
 	Atom_saddle = saddle_config_atom.loc[saddle_config_atom['item'] == atom_item]
 	Atom_sad_obj = Atom.from_ds(Atom_saddle)
+	print "Atom_sad_obj:", Atom_sad_obj.atom_loc
 	
 	Dim = 3
 	V = np.zeros(shape=(Dim,Dim))
@@ -276,19 +284,23 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 	
 	for (index,atom_ini_NN) in NN_initial.iterrows():
 		# d0_ji in pandas.Series
-		d0_ji = Atom.from_ds(atom_int_NN) - Atom_ini_obj
+		d0_ji = Atom.from_ds(atom_ini_NN) - Atom_ini_obj
 		d0_ji = Atom.to_list(d0_ji)
-		atom_sad_NN = Atom.from_ds(NN_sandle.loc[NN_saddle["item"] == atom_NN["item"]])
+		atom_sad_NN = Atom.from_ds(NN_saddle.loc[NN_saddle["item"] == atom_ini_NN["item"]])
 		# d_ji in pandas.Series
 		d_ji = atom_sad_NN - Atom_sad_obj
+		print "d_ji before", d_ji.atom_loc
 		d_ji = Atom.to_list(d_ji)
 		
 		# begin implement pbc for d_ji and d0_ji as in 
 		# https://en.wikipedia.org/wiki/Periodic_boundary_conditions
 		# dx = x[j] - x[i];
 		# dx -= x_size * nearbyint(dx * x_rsize)
+		print "d_ji:", d_ji
+		print "box_dim:", box_dim
+		
 		Near_int_d = [int(round(i)) for i in np.array(d_ji) * 1.0/np.array(box_dim)]
-		d_ji = np.array(d_ji) - np.array(box_dim) * Near_int_d
+		d_ji = np.array(d_ji) - np.array(box_dim) * np.array(Near_int_d)
 		
 		Near_int_d0 = [int(round(i)) for i in np.array(d0_ji) * 1.0/np.array(box_dim)]
 		d0_ji = np.array(d0_ji) - np.array(box_dim) * Near_int_d0
@@ -299,11 +311,11 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 		V[0][1] = V[0][1] + d0_ji[0] * d0_ji[1]
 		V[0][2] = V[0][2] + d0_ji[0] * d0_ji[2]
 		V[1][0] = V[1][0] + d0_ji[1] * d0_ji[0]
-        V[1][1] = V[1][1] + d0_ji[1] * d0_ji[1]
-        V[1][2] = V[1][2] + d0_ji[1] * d0_ji[2]
+		V[1][1] = V[1][1] + d0_ji[1] * d0_ji[1]
+		V[1][2] = V[1][2] + d0_ji[1] * d0_ji[2]
 		V[2][0] = V[2][0] + d0_ji[2] * d0_ji[0]
-        V[2][1] = V[2][1] + d0_ji[2] * d0_ji[1]
-        V[2][2] = V[2][2] + d0_ji[2] * d0_ji[2]
+		V[2][1] = V[2][1] + d0_ji[2] * d0_ji[1]
+		V[2][2] = V[2][2] + d0_ji[2] * d0_ji[2]
 
 		W[0][0] = W[0][0] + d0_ji[0] * d_ji[0]
 		W[0][1] = W[0][1] + d0_ji[0] * d_ji[1]
@@ -333,10 +345,9 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 	"""
 	A very general nearest neigbor finder function calculate multiple atom's nearest neighbor all at once using
 	the efficient cKDTree algorithm, the multiple atoms whose item number 
-	is listed inside the atom_list input argument，
-	the default is to calculate all atoms inside initial_config_data file.
+	is listed inside the atom_list input argument,
+	the default is to calculate all atoms inside initial_config_data file
 	User can customize which atoms to calculate by specifying in atom_list
-	
 	Input arguments:
 	initial_config_data: instance of pandas.Dataframe
 		configuration data
@@ -401,10 +412,10 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 	#_interested_atom = _interested_data[['x','y','z']]
 	
 	nn = dict()
-    # build the efficient nearest neighbor KDTree algorithm
-    # default distance metric Euclidian norm p = 2
-    # create tree object using the larger points array
-    for (i, int_group) in interested_groups.items():
+	# build the efficient nearest neighbor KDTree algorithm
+	# default distance metric Euclidian norm p = 2
+	# create tree object using the larger points array
+	for (i, int_group) in interested_groups.items():
 		for (j, atom_group) in groups.items():
 			# comparing atom_type_i and atom_type_j
 			for pair in [(i,j),(j,i)]:
@@ -416,23 +427,28 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 			result_groups = result_tree.query_ball_point(int_group[['x','y','z']].values, curr_cut_off)
 			#indices = np.unique(IT.chain.from_iterable(result_groups))
 			
-			for (int_NN,(index,int_atom)) in (results_groups,int_group.iterrows()):
+			#for (int_NN,(index,int_atom)) in (result_groups,int_group.iterrows()):
+			k = 0
+			for index,int_atom in int_group.iterrows():
 				# int_NN is a list of index of NN, index is according to the order
 				# in atom_group 
 				# curr_NN is a dataframe storing NN found for current atom_group
+				int_NN = result_groups[k]
 				curr_NN = atom_group.iloc[int_NN]
 				if int_atom["item"] not in nn:
 					nn[int_atom["item"]] = curr_NN
 				elif int_atom["item"] in nn:
 					nn[int_atom["item"]] = nn[int_atom["item"]].append(curr_NN)
+				k = k + 1
 	
 	# it is best practice to save this NN dictionary results into a json file 
 	# to prevent rerun, if this file exists, let user know that
 	# the file_of_nearest_neighbor exists before calling it
 	if save_results is True:
 		with open('nn_result.json', 'w') as f:
-			json.dump(nn,f)
-    return nn
+			pickle.dump(nn,f)
+			f.close()
+	return nn
 	
 	
 def NN_finder(initial_config_data,atom_item_id,cut_off_distance):
@@ -481,7 +497,7 @@ def NN_finder(initial_config_data,atom_item_id,cut_off_distance):
 	# calculate the distance_pbc and compared based on pair atom_types
 	for (_index, _row) in df.iterrows():
 		curr_atom = Atom.from_ds(_row)
-		if curr_atom.atom_id ==
+		#if curr_atom.atom_id ==
 	
 	
 	
