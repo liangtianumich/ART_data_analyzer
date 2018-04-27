@@ -191,7 +191,7 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		default calculating all atoms in the initial_config_data
 	
 	save_results: boolean, default True
-		if True, save calculated local strains results into a json file
+		if True, save calculated local strains results into a pkl file
 		
 	returns:
 		strain: dict()
@@ -210,7 +210,7 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		atom_list = (initial_config_data["item"]).tolist()
 	_data = initial_config_data
 	
-	# check if the nn results.json file exists or not
+	# check if the nn results.pkl file exists or not
 	
 	nn = NN_finder_all(initial_config_data, cut_off_distance, box_dim, atom_list)
 	
@@ -238,7 +238,7 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		strain[item] = local_strains
 	
 	if save_results is True:
-		with open('strain_result.json', 'w') as f:
+		with open('strain_result.pkl', 'w') as f:
 			pickle.dump(strain,f)
 			f.close()
 	return strain
@@ -271,12 +271,11 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 	NN_initial = initial_config_atom.loc[initial_config_atom['item'] != atom_item]
 	Atom_initial = initial_config_atom.loc[initial_config_atom['item'] == atom_item]
 	Atom_ini_obj = Atom.from_ds(Atom_initial)
-	print "Atom_ini_obj:", Atom_ini_obj.atom_loc
+	
 	
 	NN_saddle = saddle_config_atom.loc[saddle_config_atom['item'] != atom_item]
 	Atom_saddle = saddle_config_atom.loc[saddle_config_atom['item'] == atom_item]
 	Atom_sad_obj = Atom.from_ds(Atom_saddle)
-	print "Atom_sad_obj:", Atom_sad_obj.atom_loc
 	
 	Dim = 3
 	V = np.zeros(shape=(Dim,Dim))
@@ -289,15 +288,12 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 		atom_sad_NN = Atom.from_ds(NN_saddle.loc[NN_saddle["item"] == atom_ini_NN["item"]])
 		# d_ji in pandas.Series
 		d_ji = atom_sad_NN - Atom_sad_obj
-		print "d_ji before", d_ji.atom_loc
 		d_ji = Atom.to_list(d_ji)
 		
 		# begin implement pbc for d_ji and d0_ji as in 
 		# https://en.wikipedia.org/wiki/Periodic_boundary_conditions
 		# dx = x[j] - x[i];
 		# dx -= x_size * nearbyint(dx * x_rsize)
-		print "d_ji:", d_ji
-		print "box_dim:", box_dim
 		
 		Near_int_d = [int(round(i)) for i in np.array(d_ji) * 1.0/np.array(box_dim)]
 		d_ji = np.array(d_ji) - np.array(box_dim) * np.array(Near_int_d)
@@ -372,7 +368,7 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 		are being found
 	
 	save_results: boolean, default True
-		specify whether to save the results dictionary into a json file
+		specify whether to save the results dictionary into a pkl file
 	
 	Note:
 	this cKDtree algorithm is efficient when:
@@ -441,11 +437,11 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 					nn[int_atom["item"]] = nn[int_atom["item"]].append(curr_NN)
 				k = k + 1
 	
-	# it is best practice to save this NN dictionary results into a json file 
+	# it is best practice to save this NN dictionary results into a pkl file 
 	# to prevent rerun, if this file exists, let user know that
 	# the file_of_nearest_neighbor exists before calling it
 	if save_results is True:
-		with open('nn_result.json', 'w') as f:
+		with open('nn_result.pkl', 'w') as f:
 			pickle.dump(nn,f)
 			f.close()
 	return nn
