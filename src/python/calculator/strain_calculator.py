@@ -35,6 +35,7 @@ class Atom(object):
 		self.box_dim = box_dim
 		self.atom_id = atom_id
 		self.item = item
+		self.Z = 
 	
 	def __add__(self, other):
 		final_atom_loc = (np.array(self.atom_loc) + np.array(other.atom_loc)).tolist()		
