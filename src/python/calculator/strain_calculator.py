@@ -4,7 +4,7 @@ import os
 import pickle
 from util import Atom, NN_finder_all
 
-def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, atom_list = None, save_results = True):
+def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_results, atom_list = None, save_results = True):
 	"""
 	this function calculate various local atomic strain quantities for atoms whose item id stored inside
 	the atom_list under periodic boundary condition for orthogonal simulation box
@@ -29,6 +29,9 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 	
 	box_dim: list,
 		the spatial dimension of simulation box in [x,y,z]
+	
+	path_to_results: str
+		str of directory path to save the data into results.pkl
 	
 	atom_list: list,
 		a list storing the atom item id of interested atoms
@@ -56,9 +59,12 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 	
 	# check if the nn results.pkl file exists or not
 	
-	nn = NN_finder_all(initial_config_data, cut_off_distance, box_dim, atom_list)
+	nn = NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_results, atom_list)
 	
-	strain = dict()
+	if os.path.exists(path_to_results):
+		strain = pickle.load(open(path_to_results,'r'))
+	else:
+		strain = dict()
 	
 	for item in atom_list:
 		
@@ -79,10 +85,15 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		# local_strains should be a dict as well since it has multiple output strain
 		# or a list
 		local_strains = local_strain_calculator_atom_orth(NN_initial, NN_saddle, item, box_dim)
-		strain[item] = local_strains
+		try:
+			strain[item]['strain'] = local_strains
+		except KeyError:
+			strain[item] = dict()
+			strain[item]['strain'] = local_strains
+			
 	
 	if save_results is True:
-		with open('strain_result.pkl', 'w') as f:
+		with open(path_to_results, 'w') as f:
 			pickle.dump(strain,f)
 			f.close()
 	return strain

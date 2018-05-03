@@ -28,10 +28,3 @@ def read_data_from_dump(path_to_file=None):
 		#.rename(columns=['item', 'atom id', 'x','y','z'])
 		#result = pd.DataFrame(data.iloc[:,0:5], columns=['item', 'atom id', 'x','y','z'])
 		return result
-
-
-#df = read_data_from_dump('~/Documents/alabama/ART_data_analyzer/examples/example_1/min1000.dump')
-#print df
-#print df.index
-#print df.columns
-#print df['x']

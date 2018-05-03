@@ -3,6 +3,7 @@ this event selector module filter each event based on various criterias
 each criteria is an independent function
 """
 import pandas as pd
+import json
 
 def df_to_dict(df):
 	"""
@@ -17,7 +18,7 @@ def df_to_dict(df):
 	return _final_dict
 		
 	
-def event_select_accept(path_to_file = None):
+def event_select_accept(path_to_data_dir = None, save_results=True):
 	"""
 	this function filter a single event, i.e. initial configuration, saddle
 	configuration and final configuration based on whether this event has been accepted
@@ -44,16 +45,27 @@ def event_select_accept(path_to_file = None):
 	option since event_list_df can be passed as both input and output
 	to maintain the consistenency of the code for various functions
 	"""
-	if path_to_file == None:
-		raise Exception("no path of events.list data file has been specified, please specifiy \
-		the correct path to the data file")
-	events = pd.read_csv(path_to_file,sep='\s+', header=None)
+	if path_to_data_dir == None:
+		raise Exception("no directory path to events.list file has been specified, please specifiy \
+		the correct path to the events.list file")
+	
+	path_to_events_list = path_to_data_dir + "/events.list"
+	
+	path_to_select_events = path_to_data_dir + "/selected_events.json"
+	if os.path.exists(path_to_selected_events):
+		return json.load(open(path_tp_selected_events,'r'))
+		
+	
+	events = pd.read_csv(path_to_events_list,sep='\s+', header=None)
 	events.columns = ["ini","sad","fin","status"]
 	accepted_events = events.loc[events["status"] == "accepted"]
 	
+	accepted_events = df_to_dict(accepted_events)
+	if save_results is True:
+		json.dump(accepted_events, open(path_to_select_events,"r"))
 	# drop the column called "status" since now all events are accepted
 	# accepted_events = accepted_events.drop('status', axis=1)
-	return df_to_dict(accepted_events)
+	return accepted_events
 
 def event_3_criteria():
 	df = df.loc[df["status"] == "accepted"]

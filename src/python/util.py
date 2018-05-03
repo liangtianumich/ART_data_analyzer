@@ -4,6 +4,7 @@ utilities module to store useful classes and functions for other modules
 import numpy as np
 import pandas as pd
 import pickle
+import os
 from periodic_kdtree import PeriodicCKDTree
 
 class Atom(object):
@@ -158,7 +159,43 @@ class Atom(object):
 		x,y,z = (data.atom_loc)[0], (data.atom_loc)[1], (data.atom_loc)[2]
 		return [x,y,z]
 
-def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = None, save_results = True):
+
+class results(object):
+	def __init__(self, path_test_dir, path_to_data, ):
+		
+		# events = event_selector(path_to_data_dir)
+		# save events into selected_event_list.json
+		
+		# for event in events:
+		# 	path_test_dir = path_to_data_dir + "event_%s_%s"%event[0],event[1]
+		
+		self.path_to_test_dir = path_to_test_dir 
+		self.path_to_input = self.path_to_test_dir + "/input.json"
+		self.path_to_results = self.path_to_test_dir + "/results.pkl"
+		
+		
+		self.data = pickle.load(open(self.path_to_results,'r'))
+	
+	def statistics(self):
+		
+		# get the statistics of the various quantities calculated in
+		# save the file into a file called results_statistics.json
+		for (atom_id, 
+		self.data
+	
+	def
+			
+			self.path_to_file_ini = self.path_to_test_dir + "min1000.dump"
+			self.path_to_file_sad = self.path_to_test_dir + "min1001.dump"
+	
+			self.initial_config_data = read_data_from_dump(self.path_to_file_ini)
+			self.saddle_config_data = read_data_from_dump(self.path_to_file_sad)
+			
+			Event(self.initial_config_data, self.saddle_config_data)
+
+
+
+def NN_finder_all(initial_config_data,cut_off_distance, box_dim, path_to_results, atom_list = None, save_results = True):
 	"""
 	A very general nearest neigbor finder function calculate multiple atom's nearest neighbor all at once using
 	the efficient cKDTree algorithm, the multiple atoms whose item number 
@@ -183,6 +220,9 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 	
 	box_dim: list
 		a list containing the spatial dimension of simulation box size in x, y, z
+	
+	path_to_results: str
+		str of dir path to results.pkl
 		
 	atom_list: list
 		the list containing the item number of interested atoms whose nearest neighbors
@@ -227,8 +267,10 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 	interested_groups = Atom.classify_df(_interested_data)
 	
 	#_interested_atom = _interested_data[['x','y','z']]
-	
-	nn = dict()
+	if os.path.exists(path_to_results):
+		nn = pickle.load(open(path_to_results,'r'))
+	else:
+		nn = dict()
 	# build the efficient nearest neighbor KDTree algorithm
 	# default distance metric Euclidian norm p = 2
 	# create tree object using the larger points array
@@ -256,13 +298,16 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 					nn[int_atom["item"]] = curr_NN
 				elif int_atom["item"] in nn:
 					nn[int_atom["item"]] = nn[int_atom["item"]].append(curr_NN)
+						
+				
 				k = k + 1
+	nn[int_atom["item"]] = dict()
 	
 	# it is best practice to save this NN dictionary results into a pkl file 
 	# to prevent rerun, if this file exists, let user know that
 	# the file_of_nearest_neighbor exists before calling it
 	if save_results is True:
-		with open('results.pkl', 'w') as f:
+		with open(path_to_results, 'w') as f:
 			pickle.dump(nn,f)
 			f.close()
 	return nn
