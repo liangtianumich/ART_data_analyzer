@@ -1,8 +1,16 @@
-# the environmental variables need to be set up before using this package
+# set up environmental variables before using this package
 
-# add this package dir to PYTHONPATH so that the python module can be searched
+# the directory path of the python package in user's machine
+export MY_ART=/Users/ltian/Documents/alabama/ART_data_analyzer
+
+# user need to specify the test directory for running tests
+export TEST_DIR=$MY_ART/test_dir
+
+# add this package /src/python dir to PYTHONPATH so that the python modules can be searched
+export PYTHONPATH=$MY_ART/src/python:$PYTHONPATH
 
 # make the python running script as an exe file inside package dir, add this package dir to path
+export PATH=$MY_ART/scripts:$PATH
 
 
 
