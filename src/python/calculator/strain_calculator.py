@@ -1,13 +1,8 @@
 import numpy as np
 import pandas as pd
-import scipy.spatial as spatial
 import os
 import pickle
-import imp
 from util import Atom, NN_finder_all
-strain_calculator = imp.load_source('module.name', '../src/python/calculator/periodic_kdtree.py')
-PeriodicCKDTree = strain_calculator.PeriodicCKDTree
-from periodic_kdtree import PeriodicCKDTree
 
 def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, atom_list = None, save_results = True):
 	"""

@@ -110,7 +110,7 @@ def SOAP_vector(curr_atom, curr_NN, save_results = True):
 		# determine coefficient for basis function
 		
 		
-		# add Z attribute into the Atom class
+		# add atom_z attribute into the Atom class
  		atom_type_1 = curr_atom.atom_id
 		atom_type_2 = NN_atom.atom_id
 		if atom_type_1 == 1:
@@ -118,7 +118,7 @@ def SOAP_vector(curr_atom, curr_NN, save_results = True):
 		elif atom_type_2 == 2:
 			
 			
-		gaussian_spectral_decomposition(dr, curr_atom.Z, NN_atom.Z)
+		gaussian_spectral_decomposition(dr, curr_atom.atom_z, NN_atom.atom_z)
 		
 		
 		

@@ -1,6 +1,10 @@
 """
 utilities module to store useful classes and functions for other modules
 """
+import numpy as np
+import pandas as pd
+import pickle
+from periodic_kdtree import PeriodicCKDTree
 
 class Atom(object):
 	"""
@@ -8,7 +12,7 @@ class Atom(object):
 	the class object can be manipulated as regular numerical operation by using python operator overloading, 
 	see http://thepythonguru.com/python-operator-overloading/
 	"""
-	def __init__(self, atom_loc, box_dim=None, atom_id=1,item=1, Z=None):
+	def __init__(self, atom_loc, box_dim=None, atom_id=1,item=1, atom_z=None):
 		"""
 		constructor intialize the properties of an atom as state variables of the atom, 
 		such as atomic coordinates, atom_id, item number in the simulation system
@@ -29,7 +33,7 @@ class Atom(object):
 		self.box_dim = box_dim
 		self.atom_id = atom_id
 		self.item = item
-		self.Z = Z
+		self.atom_z = atom_z
 	
 	def __add__(self, other):
 		final_atom_loc = (np.array(self.atom_loc) + np.array(other.atom_loc)).tolist()		
@@ -185,7 +189,7 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 		are being found
 	
 	save_results: boolean, default True
-		specify whether to save the results dictionary into a pkl file
+		specify whether to save the results dictionary into a results.pkl file
 	
 	Note:
 	this cKDtree algorithm is efficient when:
@@ -258,7 +262,7 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, atom_list = Non
 	# to prevent rerun, if this file exists, let user know that
 	# the file_of_nearest_neighbor exists before calling it
 	if save_results is True:
-		with open('nn_result.pkl', 'w') as f:
+		with open('results.pkl', 'w') as f:
 			pickle.dump(nn,f)
 			f.close()
 	return nn
