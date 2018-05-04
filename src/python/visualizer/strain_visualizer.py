@@ -3,7 +3,7 @@ this strain visualization module plot the distribution of local atomic strains
 in terms of atomic coordinates x,y,z in the simulation box
 """
 import pandas as pd
-#from strain_calculator import Atom
+from util import Atom
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.cm as cmx
@@ -27,8 +27,69 @@ def scatter3d(x,y,z, cs, colorsMap='jet'):
     scalarMap.set_array(cs)
     fig.colorbar(scalarMap)
     plt.savefig('strain_3d.png')
-    plt.show()
+    plt.close()
 
+def plot_histogram(path_to_image, x):
+	plt.figure()
+	plt.hist(x,bins='auto')
+	plt.savefig(path_to_image)
+	plt.close()
+	
+	
+	
+	
+def scatter_plot_3D(strain_result, initial_config_data):
+	"""
+	this function plot atomic strain, shear strain in 3d
+	strain_result is the output dict of strain_calculator.local_strain_calculator_orth
+	it still need the initial configuration data to extract the atomic coordinates
+	input arguments:
+	strain_results: dict()
+	
+	initial_config_data: pandas.Dataframe
+	"""
+	x, y, z = [],[],[]
+	color_value = []
+	for key, atom_strain in strain_result.items():	
+		atom = Atom.from_ds(initial_config_data.loc[initial_config_data["item"] == key])
+		x.append((atom.atom_loc)[0])
+		y.append((atom.atom_loc)[1])
+		z.append((atom.atom_loc)[2])
+		color_value.append(atom_strain[0])
+	scatter3d(x,y,z, color_value, colorsMap='jet')
+
+def plot_2d_shear(path_to_dir, displacement, strain):
+	
+	"""
+	this function plot a 2d plot for displacement and strain for a single event
+	
+	displacement:list
+	
+	strain:list
+	"""
+	plt.figure()
+	plt.plot(displacement, strain,'ro')
+	plt.xlabel('atomic displacement',fontsize=20)
+	plt.ylabel('von Mises shear strain',fontsize=20)
+	plt.savefig(path_to_dir)
+	plt.close()
+
+def plot_2d_vol(path_to_dir, displacement, strain):
+	
+	"""
+	this function plot a 2d plot for displacement and strain for a single event
+	
+	displacement:list
+	
+	strain:list
+	"""
+	plt.figure()
+	plt.plot(displacement, strain,'ro')
+	plt.xlabel('atomic displacement',fontsize=20)
+	plt.ylabel('volumetric strain',fontsize=20)
+	plt.savefig(path_to_dir)
+	plt.close()
+	
 def plot_strain_2d(initial_config_data, strain, normal_plane):
 	"""
 	

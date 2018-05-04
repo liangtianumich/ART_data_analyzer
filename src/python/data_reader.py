@@ -24,6 +24,7 @@ def read_data_from_dump(path_to_file=None):
 		#print "data.head", data.head()
 		#print "data.iloc[:,0:5]", data.iloc[:,0:5]
 		result = data.iloc[:,0:5]
+		print "path to data file", path_to_file
 		result.columns = ['item', 'atom_id', 'x','y','z']
 		#.rename(columns=['item', 'atom id', 'x','y','z'])
 		#result = pd.DataFrame(data.iloc[:,0:5], columns=['item', 'atom id', 'x','y','z'])

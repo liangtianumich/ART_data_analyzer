@@ -4,6 +4,7 @@ each criteria is an independent function
 """
 import pandas as pd
 import json
+import os
 
 def df_to_dict(df):
 	"""
@@ -51,9 +52,9 @@ def event_select_accept(path_to_data_dir = None, save_results=True):
 	
 	path_to_events_list = path_to_data_dir + "/events.list"
 	
-	path_to_select_events = path_to_data_dir + "/selected_events.json"
+	path_to_selected_events = path_to_data_dir + "/selected_events.json"
 	if os.path.exists(path_to_selected_events):
-		return json.load(open(path_tp_selected_events,'r'))
+		return json.load(open(path_to_selected_events,'r'))
 		
 	
 	events = pd.read_csv(path_to_events_list,sep='\s+', header=None)
@@ -62,7 +63,7 @@ def event_select_accept(path_to_data_dir = None, save_results=True):
 	
 	accepted_events = df_to_dict(accepted_events)
 	if save_results is True:
-		json.dump(accepted_events, open(path_to_select_events,"r"))
+		json.dump(accepted_events, open(path_to_selected_events,"w"))
 	# drop the column called "status" since now all events are accepted
 	# accepted_events = accepted_events.drop('status', axis=1)
 	return accepted_events
@@ -71,7 +72,7 @@ def event_3_criteria():
 	df = df.loc[df["status"] == "accepted"]
 	df["satisfy_3_criteria"] = False
 	
-	for index,row in df.iterrows();
+	for index,row in df.iterrows():
 		if single_event_3_criteria(row) is True:
 			df["satisfy_3_criteria"] = True
 	return df		
@@ -104,11 +105,6 @@ def event_list_to_file_path(path_to_data, event_ds):
 		fin: pandas.Dataframe
 			data of final configuration
 	"""
-	
-	
-	
-path_to_file = "~/Documents/alabama/ART_data_analyzer/examples/example_1/events.list"
-print event_select_accept(path_to_file)
 
 	
 	

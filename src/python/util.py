@@ -105,7 +105,7 @@ class Atom(object):
 		_pair_distance = []
 		
 		for _pair in _pair_list:
-			_curr_pair_distance = Atom.distance(atom_1, Atom(atom_2.atom_loc + _pair))
+			_curr_pair_distance = Atom.distance(atom_1, Atom((np.array(atom_2.atom_loc) + _pair).tolist()))
 			_pair_distance.append(_curr_pair_distance)
 		return min(_pair_distance)
 	
@@ -161,7 +161,7 @@ class Atom(object):
 
 
 class results(object):
-	def __init__(self, path_test_dir, path_to_data, ):
+	def __init__(self, path_test_dir, path_to_data):
 		
 		# events = event_selector(path_to_data_dir)
 		# save events into selected_event_list.json
@@ -180,22 +180,18 @@ class results(object):
 		
 		# get the statistics of the various quantities calculated in
 		# save the file into a file called results_statistics.json
-		for (atom_id, 
-		self.data
-	
-	def
-			
-			self.path_to_file_ini = self.path_to_test_dir + "min1000.dump"
-			self.path_to_file_sad = self.path_to_test_dir + "min1001.dump"
-	
-			self.initial_config_data = read_data_from_dump(self.path_to_file_ini)
-			self.saddle_config_data = read_data_from_dump(self.path_to_file_sad)
-			
-			Event(self.initial_config_data, self.saddle_config_data)
+		
+		self.path_to_file_ini = self.path_to_test_dir + "min1000.dump"
+		self.path_to_file_sad = self.path_to_test_dir + "min1001.dump"
+
+		self.initial_config_data = read_data_from_dump(self.path_to_file_ini)
+		self.saddle_config_data = read_data_from_dump(self.path_to_file_sad)
+		
+		Event(self.initial_config_data, self.saddle_config_data)
 
 
 
-def NN_finder_all(initial_config_data,cut_off_distance, box_dim, path_to_results, atom_list = None, save_results = True):
+def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True):
 	"""
 	A very general nearest neigbor finder function calculate multiple atom's nearest neighbor all at once using
 	the efficient cKDTree algorithm, the multiple atoms whose item number 
@@ -221,15 +217,15 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, path_to_results
 	box_dim: list
 		a list containing the spatial dimension of simulation box size in x, y, z
 	
-	path_to_results: str
-		str of dir path to results.pkl
+	path_to_test_dir: str
+		str of current test result dir, under it, it save data into nn_results.pkl
 		
 	atom_list: list
 		the list containing the item number of interested atoms whose nearest neighbors
 		are being found
 	
 	save_results: boolean, default True
-		specify whether to save the results dictionary into a results.pkl file
+		specify whether to save the results dictionary into a nn_results.pkl file
 	
 	Note:
 	this cKDtree algorithm is efficient when:
@@ -267,8 +263,11 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, path_to_results
 	interested_groups = Atom.classify_df(_interested_data)
 	
 	#_interested_atom = _interested_data[['x','y','z']]
-	if os.path.exists(path_to_results):
-		nn = pickle.load(open(path_to_results,'r'))
+	
+	path_to_nn_results = path_to_test_dir + "/nn_results.pkl"
+	
+	if os.path.exists(path_to_nn_results):
+		return pickle.load(open(path_to_nn_results,'r'))
 	else:
 		nn = dict()
 	# build the efficient nearest neighbor KDTree algorithm
@@ -297,17 +296,13 @@ def NN_finder_all(initial_config_data,cut_off_distance, box_dim, path_to_results
 				if int_atom["item"] not in nn:
 					nn[int_atom["item"]] = curr_NN
 				elif int_atom["item"] in nn:
-					nn[int_atom["item"]] = nn[int_atom["item"]].append(curr_NN)
-						
-				
-				k = k + 1
-	nn[int_atom["item"]] = dict()
-	
+					nn[int_atom["item"]] = nn[int_atom["item"]].append(curr_NN)				
+				k = k + 1	
 	# it is best practice to save this NN dictionary results into a pkl file 
 	# to prevent rerun, if this file exists, let user know that
 	# the file_of_nearest_neighbor exists before calling it
 	if save_results is True:
-		with open(path_to_results, 'w') as f:
+		with open(path_to_nn_results, 'w') as f:
 			pickle.dump(nn,f)
 			f.close()
 	return nn
