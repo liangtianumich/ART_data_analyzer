@@ -1,0 +1,18 @@
+log		log_ART.lammps
+
+units		metal
+#echo		both
+atom_style	atomic
+atom_modify     map array
+#dimension	3
+#boundary	p p p
+
+read_data       conf.eam
+
+#region 		box block 0 32.43 0 32.43 0 32.43 units box
+#create_box      2 box               
+#create_atoms    1 random 1280 124675 box  
+#create_atoms    2 random 720 124676 box  
+
+pair_style	eam/fs
+pair_coeff	* * CuZr_mm.eam.fs Cu Zr
