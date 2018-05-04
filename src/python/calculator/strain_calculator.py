@@ -16,12 +16,14 @@ def event_strain_disp(event_strain_dict,event_disp_dict):
 	vol_strain = []
 	shear_strain = []
 	disp = []
-	for key,value in event_strain_dict.items():
-		vol_strain.append(value[0])
-		shear_strain.append(value[1])
-		disp.append(event_disp_dict[key])
-	return (vol_strain,shear_strain,disp)
-		
+	
+	keys = list(event_strain_dict.keys())
+	keys.sort()
+	for i in keys:
+		vol_strain.append(event_strain_dict[i][0])
+		shear_strain.append(event_strain_dict[i][1])
+		disp.append(event_disp_dict[i])
+	return (vol_strain, shear_strain, disp)
 
 def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 	"""
@@ -62,7 +64,9 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 		for (index,event) in event_list.items():		
 			init, sad, fin = event[0], event[1], event[2]
 			path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+			print ('\n')
 			print "path_to_curr_event", path_to_curr_event
+			print ('\n')
 			if not os.path.exists(path_to_curr_event):
 				os.makedirs(path_to_curr_event)
 			path_to_file_ini = test + '/' + init + ".dump"
@@ -79,7 +83,9 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 			if not os.path.exists(path_to_sad_fin):
 				os.makedirs(path_to_sad_fin)
 			
+			print "\n initial to saddle: \n"
 			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad)
+			print "\n saddle to final: \n"
 			sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin)
 			
 			#init_sad_vol_strain, init_sad_shear_strain, init_sad_displacement = event_strain_disp(init_sad_strain,init_sad_disp)
@@ -99,13 +105,13 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 			path_to_sad_fin_disp_vol_strain = path_to_sad_fin + '/disp_vol_strain.tif'
 			plot_2d_vol(path_to_sad_fin_disp_vol_strain,init_sad[2], init_sad[0])
 			
-			pickle.dump(init_sad[2], open(path_to_init_sad+"/disp_results.pkl",'w'))
-			pickle.dump(init_sad[1], open(path_to_init_sad+"/shear_strain_results.pkl",'w'))
-			pickle.dump(init_sad[0], open(path_to_init_sad+"/vol_strain_results.pkl",'w'))
+			pickle.dump(init_sad[2], open(path_to_init_sad+"/disp_results_list.pkl",'w'))
+			pickle.dump(init_sad[1], open(path_to_init_sad+"/shear_strain_results_list.pkl",'w'))
+			pickle.dump(init_sad[0], open(path_to_init_sad+"/vol_strain_results_list.pkl",'w'))
 			
-			pickle.dump(sad_fin[2], open(path_to_sad_fin+"/disp_results.pkl",'w'))
-			pickle.dump(sad_fin[1], open(path_to_sad_fin+"/shear_strain_results.pkl",'w'))
-			pickle.dump(sad_fin[0], open(path_to_sad_fin+"/vol_strain_results.pkl",'w'))
+			pickle.dump(sad_fin[2], open(path_to_sad_fin+"/disp_results_list.pkl",'w'))
+			pickle.dump(sad_fin[1], open(path_to_sad_fin+"/shear_strain_results_list.pkl",'w'))
+			pickle.dump(sad_fin[0], open(path_to_sad_fin+"/vol_strain_results_list.pkl",'w'))
 			
 			
 			plot_histogram(path_to_init_sad + "/disp_histogram.tif", init_sad[2])
@@ -144,29 +150,29 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 	
 	
 	
-	pickle.dump(disp_ave, open(path_to_data_dir+"/init_sad_disp_ave.json",'w'))
-	pickle.dump(disp_std, open(path_to_data_dir+"/init_sad_disp_std.json",'w'))
-	pickle.dump(disp_max, open(path_to_data_dir+"/init_sad_disp_max.json",'w'))
+	pickle.dump(disp_ave, open(path_to_data_dir+"/init_sad_disp_ave.pkl",'w'))
+	pickle.dump(disp_std, open(path_to_data_dir+"/init_sad_disp_std.pkl",'w'))
+	pickle.dump(disp_max, open(path_to_data_dir+"/init_sad_disp_max.pkl",'w'))
 	
-	pickle.dump(shear_ave, open(path_to_data_dir+"/init_sad_shear_ave.json",'w'))
-	pickle.dump(shear_std, open(path_to_data_dir+"/init_sad_shear_std.json",'w'))
-	pickle.dump(shear_max, open(path_to_data_dir+"/init_sad_shear_max.json",'w'))
+	pickle.dump(shear_ave, open(path_to_data_dir+"/init_sad_shear_ave.pkl",'w'))
+	pickle.dump(shear_std, open(path_to_data_dir+"/init_sad_shear_std.pkl",'w'))
+	pickle.dump(shear_max, open(path_to_data_dir+"/init_sad_shear_max.pkl",'w'))
 	
-	pickle.dump(vol_ave, open(path_to_data_dir+"/init_sad_vol_ave.json",'w'))
-	pickle.dump(vol_std, open(path_to_data_dir+"/init_sad_vol_std.json",'w'))
-	pickle.dump(vol_max, open(path_to_data_dir+"/init_sad_vol_max.json",'w'))
+	pickle.dump(vol_ave, open(path_to_data_dir+"/init_sad_vol_ave.pkl",'w'))
+	pickle.dump(vol_std, open(path_to_data_dir+"/init_sad_vol_std.pkl",'w'))
+	pickle.dump(vol_max, open(path_to_data_dir+"/init_sad_vol_max.pkl",'w'))
 	
-	pickle.dump(disp_ave_2, open(path_to_data_dir+"/sad_init_disp_ave.json",'w'))
-	pickle.dump(disp_std_2, open(path_to_data_dir+"/sad_init_disp_std.json",'w'))
-	pickle.dump(disp_max_2, open(path_to_data_dir+"/sad_init_disp_max.json",'w'))
+	pickle.dump(disp_ave_2, open(path_to_data_dir+"/sad_init_disp_ave.pkl",'w'))
+	pickle.dump(disp_std_2, open(path_to_data_dir+"/sad_init_disp_std.pkl",'w'))
+	pickle.dump(disp_max_2, open(path_to_data_dir+"/sad_init_disp_max.pkl",'w'))
 	
-	pickle.dump(shear_ave_2, open(path_to_data_dir+"/sad_init_shear_ave.json",'w'))
-	pickle.dump(shear_std_2, open(path_to_data_dir+"/sad_init_shear_std.json",'w'))
-	pickle.dump(shear_max_2, open(path_to_data_dir+"/sad_init_shear_max.json",'w'))
+	pickle.dump(shear_ave_2, open(path_to_data_dir+"/sad_init_shear_ave.pkl",'w'))
+	pickle.dump(shear_std_2, open(path_to_data_dir+"/sad_init_shear_std.pkl",'w'))
+	pickle.dump(shear_max_2, open(path_to_data_dir+"/sad_init_shear_max.pkl",'w'))
 	
-	pickle.dump(vol_ave_2, open(path_to_data_dir+"/sad_init_vol_ave.json",'w'))
-	pickle.dump(vol_std_2, open(path_to_data_dir+"/sad_init_vol_std.json",'w'))
-	pickle.dump(vol_max_2, open(path_to_data_dir+"/sad_init_vol_max.json",'w'))
+	pickle.dump(vol_ave_2, open(path_to_data_dir+"/sad_init_vol_ave.pkl",'w'))
+	pickle.dump(vol_std_2, open(path_to_data_dir+"/sad_init_vol_std.pkl",'w'))
+	pickle.dump(vol_max_2, open(path_to_data_dir+"/sad_init_vol_max.pkl",'w'))
 	
 			
 	plot_histogram(path_to_data_dir+"/init_sad_disp_ave.tif", disp_ave)
@@ -194,10 +200,6 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 	plot_histogram(path_to_data_dir+"/sad_fin_vol_max.tif", vol_max_2)
 	
 	print "done!"
-	
-			
-			
-	
 
 def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True):
 	"""
@@ -245,23 +247,26 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		the nearest neighbor is determined through the atomic configuration in
 		initial_config_data
 	"""
+	
+	# check if the strain_results_dict.pkl nn_results_dict.pkl file exists or not
+	path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
+	path_to_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
+	
+	if os.path.exists(path_to_strain_results) and os.path.exists(path_to_displacement):
+		print "atomic strain and displacement has already been calculated and saved in pkl file, skip"
+		return (pickle.load(open(path_to_strain_results,'r')), pickle.load(open(path_to_displacement,'r')))
+	else:
+		print "starting calculating atomic strain and displacement magnitude"
+		strain = dict()
+		disp_results = dict()
+
 	# if not specifying the atom_list, choose all atoms in the initial_config_data
 	if atom_list is None:
 		atom_list = (initial_config_data["item"]).tolist()
 	_data = initial_config_data
 	
-	# check if the nn_results.pkl file exists or not
-	path_to_strain_results = path_to_test_dir + "/strain_results.pkl"
-	path_to_displacement = path_to_test_dir + "/displacement_results.pkl"
-	
 	nn = NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list)
 	
-	if os.path.exists(path_to_strain_results) and os.path.exists(path_to_displacement):
-		return (pickle.load(open(path_to_strain_results,'r')), pickle.load(open(path_to_displacement,'r')))
-	else:
-		strain = dict()
-		disp_results = dict()
-
 	for item in atom_list:
 		#calcualte displacement
 		init_atom = Atom.from_ds(initial_config_data.loc[initial_config_data["item"]==item])
@@ -269,7 +274,6 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		sad_atom = Atom.from_ds(saddle_config_data.loc[saddle_config_data["item"]==item])
 		sad_atom.box_dim = box_dim
 		disp_results[item] = Atom.distance_pbc(init_atom, sad_atom)
-		
 		
 		# calcualte strain
 		item_nn = nn[item]
@@ -293,12 +297,14 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 			
 	
 	if save_results is True:
+		print "begin saving atomic strain and displacement dict results into pkl file"
 		with open(path_to_strain_results, 'w') as f:
 			pickle.dump(strain,f)
 			f.close()
 		with open(path_to_displacement, 'w') as f:
 			pickle.dump(disp_results,f)
 			f.close()
+		print "atomic strain and displacement results saved into pkl file as dictionary"
 	return (strain, disp_results)
 
 

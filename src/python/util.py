@@ -225,7 +225,7 @@ def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_d
 		are being found
 	
 	save_results: boolean, default True
-		specify whether to save the results dictionary into a nn_results.pkl file
+		specify whether to save the results dictionary into a nn_results_dict.pkl file
 	
 	Note:
 	this cKDtree algorithm is efficient when:
@@ -247,6 +247,13 @@ def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_d
 	# if path_to_file is None or os.path.exists(path_to_file):
 	# raise Exception("NN results file not found, please specify the correct path to the file")
 		
+	path_to_nn_results = path_to_test_dir + "/nn_results_dict.pkl"
+	
+	if os.path.exists(path_to_nn_results):
+		print "nn results dictionary already calculated and saved in pkl file, skip calculation"
+		return pickle.load(open(path_to_nn_results,'r'))
+	else:
+		nn = dict()
 		
 	# if there is no atom_list specified, use all atoms in initial_config_data
 	if atom_list is None:
@@ -264,12 +271,7 @@ def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_d
 	
 	#_interested_atom = _interested_data[['x','y','z']]
 	
-	path_to_nn_results = path_to_test_dir + "/nn_results.pkl"
 	
-	if os.path.exists(path_to_nn_results):
-		return pickle.load(open(path_to_nn_results,'r'))
-	else:
-		nn = dict()
 	# build the efficient nearest neighbor KDTree algorithm
 	# default distance metric Euclidian norm p = 2
 	# create tree object using the larger points array
