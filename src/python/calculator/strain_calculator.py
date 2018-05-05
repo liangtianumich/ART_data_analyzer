@@ -113,14 +113,17 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 			pickle.dump(sad_fin[1], open(path_to_sad_fin+"/shear_strain_results_list.pkl",'w'))
 			pickle.dump(sad_fin[0], open(path_to_sad_fin+"/vol_strain_results_list.pkl",'w'))
 			
+			plot_histogram_2(path_to_curr_event + "/disp_histogram.tif", [init_sad[2],sad_fin[2]])
+			plot_histogram_2(path_to_curr_event + "/shear_strain_histogram.tif", [init_sad[1],sad_fin[1]])
+			plot_histogram_2(path_to_curr_event + "/vol_strain_histogram.tif", [init_sad[0],sad_fin[0]])
 			
-			plot_histogram(path_to_init_sad + "/disp_histogram.tif", init_sad[2])
-			plot_histogram(path_to_init_sad + "/shear_strain_histogram.tif", init_sad[1])
-			plot_histogram(path_to_init_sad + "/vol_strain_histogram.tif", init_sad[0])
+			#plot_histogram(path_to_init_sad + "/disp_histogram.tif", init_sad[2])
+			#plot_histogram(path_to_init_sad + "/shear_strain_histogram.tif", init_sad[1])
+			#plot_histogram(path_to_init_sad + "/vol_strain_histogram.tif", init_sad[0])
 			
-			plot_histogram(path_to_sad_fin + "/disp_histogram.tif", sad_fin[2])
-			plot_histogram(path_to_sad_fin + "/shear_strain_histogram.tif", sad_fin[1])
-			plot_histogram(path_to_sad_fin + "/vol_strain_histogram.tif", sad_fin[0])
+			#plot_histogram(path_to_sad_fin + "/disp_histogram.tif", sad_fin[2])
+			#plot_histogram(path_to_sad_fin + "/shear_strain_histogram.tif", sad_fin[1])
+			#plot_histogram(path_to_sad_fin + "/vol_strain_histogram.tif", sad_fin[0])
 			
 			# calculate the statistics of init_sad and sad_fin		
 			disp_ave.append(np.mean(init_sad[2]))
@@ -149,55 +152,74 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 			vol_max_2.append(np.max(sad_fin[0]))
 	
 	
+	pickle.dump({"ave":disp_ave,"std":disp_std,"max":disp_max}, open(path_to_data_dir+"/init_sad_disp_stats.pkl",'w'))
+	pickle.dump({"ave":shear_ave,"std":shear_std,"max":shear_max}, open(path_to_data_dir+"/init_sad_shear_stats.pkl",'w'))
+	pickle.dump({"ave":vol_ave,"std":vol_std,"max":vol_max}, open(path_to_data_dir+"/init_sad_vol_stats.pkl",'w'))
 	
-	pickle.dump(disp_ave, open(path_to_data_dir+"/init_sad_disp_ave.pkl",'w'))
-	pickle.dump(disp_std, open(path_to_data_dir+"/init_sad_disp_std.pkl",'w'))
-	pickle.dump(disp_max, open(path_to_data_dir+"/init_sad_disp_max.pkl",'w'))
+	pickle.dump({"ave":disp_ave_2,"std":disp_std_2,"max":disp_max_2}, open(path_to_data_dir+"/sad_fin_disp_stats.pkl",'w'))
+	pickle.dump({"ave":shear_ave_2,"std":shear_std_2,"max":shear_max_2}, open(path_to_data_dir+"/sad_fin_shear_stats.pkl",'w'))
+	pickle.dump({"ave":vol_ave_2,"std":vol_std_2,"max":vol_max_2}, open(path_to_data_dir+"/sad_fin_vol_stats.pkl",'w'))
 	
-	pickle.dump(shear_ave, open(path_to_data_dir+"/init_sad_shear_ave.pkl",'w'))
-	pickle.dump(shear_std, open(path_to_data_dir+"/init_sad_shear_std.pkl",'w'))
-	pickle.dump(shear_max, open(path_to_data_dir+"/init_sad_shear_max.pkl",'w'))
+	#pickle.dump(disp_ave, open(path_to_data_dir+"/init_sad_disp_ave.pkl",'w'))
+	#pickle.dump(disp_std, open(path_to_data_dir+"/init_sad_disp_std.pkl",'w'))
+	#pickle.dump(disp_max, open(path_to_data_dir+"/init_sad_disp_max.pkl",'w'))
 	
-	pickle.dump(vol_ave, open(path_to_data_dir+"/init_sad_vol_ave.pkl",'w'))
-	pickle.dump(vol_std, open(path_to_data_dir+"/init_sad_vol_std.pkl",'w'))
-	pickle.dump(vol_max, open(path_to_data_dir+"/init_sad_vol_max.pkl",'w'))
+	#pickle.dump(shear_ave, open(path_to_data_dir+"/init_sad_shear_ave.pkl",'w'))
+	#pickle.dump(shear_std, open(path_to_data_dir+"/init_sad_shear_std.pkl",'w'))
+	#pickle.dump(shear_max, open(path_to_data_dir+"/init_sad_shear_max.pkl",'w'))
 	
-	pickle.dump(disp_ave_2, open(path_to_data_dir+"/sad_init_disp_ave.pkl",'w'))
-	pickle.dump(disp_std_2, open(path_to_data_dir+"/sad_init_disp_std.pkl",'w'))
-	pickle.dump(disp_max_2, open(path_to_data_dir+"/sad_init_disp_max.pkl",'w'))
+	#pickle.dump(vol_ave, open(path_to_data_dir+"/init_sad_vol_ave.pkl",'w'))
+	#pickle.dump(vol_std, open(path_to_data_dir+"/init_sad_vol_std.pkl",'w'))
+	#pickle.dump(vol_max, open(path_to_data_dir+"/init_sad_vol_max.pkl",'w'))
 	
-	pickle.dump(shear_ave_2, open(path_to_data_dir+"/sad_init_shear_ave.pkl",'w'))
-	pickle.dump(shear_std_2, open(path_to_data_dir+"/sad_init_shear_std.pkl",'w'))
-	pickle.dump(shear_max_2, open(path_to_data_dir+"/sad_init_shear_max.pkl",'w'))
+	#pickle.dump(disp_ave_2, open(path_to_data_dir+"/sad_init_disp_ave.pkl",'w'))
+	#pickle.dump(disp_std_2, open(path_to_data_dir+"/sad_init_disp_std.pkl",'w'))
+	#pickle.dump(disp_max_2, open(path_to_data_dir+"/sad_init_disp_max.pkl",'w'))
 	
-	pickle.dump(vol_ave_2, open(path_to_data_dir+"/sad_init_vol_ave.pkl",'w'))
-	pickle.dump(vol_std_2, open(path_to_data_dir+"/sad_init_vol_std.pkl",'w'))
-	pickle.dump(vol_max_2, open(path_to_data_dir+"/sad_init_vol_max.pkl",'w'))
+	#pickle.dump(shear_ave_2, open(path_to_data_dir+"/sad_init_shear_ave.pkl",'w'))
+	#pickle.dump(shear_std_2, open(path_to_data_dir+"/sad_init_shear_std.pkl",'w'))
+	#pickle.dump(shear_max_2, open(path_to_data_dir+"/sad_init_shear_max.pkl",'w'))
+	
+	#pickle.dump(vol_ave_2, open(path_to_data_dir+"/sad_init_vol_ave.pkl",'w'))
+	#pickle.dump(vol_std_2, open(path_to_data_dir+"/sad_init_vol_std.pkl",'w'))
+	#pickle.dump(vol_max_2, open(path_to_data_dir+"/sad_init_vol_max.pkl",'w'))
+	
+	plot_histogram_2(path_to_data_dir+"/disp_ave.tif", [disp_ave,disp_ave_2])
+	plot_histogram_2(path_to_data_dir+"/disp_std.tif", [disp_std,disp_std_2])
+	plot_histogram_2(path_to_data_dir+"/disp_max.tif", [disp_max,disp_max_2])
+	
+	plot_histogram_2(path_to_data_dir+"/shear_ave.tif", [shear_ave,shear_ave_2])
+	plot_histogram_2(path_to_data_dir+"/shear_std.tif", [shear_std,shear_std_2])
+	plot_histogram_2(path_to_data_dir+"/shear_max.tif", [shear_max,shear_max_2])
+	
+	plot_histogram_2(path_to_data_dir+"/vol_ave.tif", [vol_ave,vol_ave_2])
+	plot_histogram_2(path_to_data_dir+"/vol_std.tif", [vol_std,vol_std_2])
+	plot_histogram_2(path_to_data_dir+"/vol_max.tif", [vol_max,vol_max_2])
 	
 			
-	plot_histogram(path_to_data_dir+"/init_sad_disp_ave.tif", disp_ave)
-	plot_histogram(path_to_data_dir+"/init_sad_disp_std.tif", disp_std)
-	plot_histogram(path_to_data_dir+"/init_sad_disp_max.tif", disp_max)
+	#plot_histogram(path_to_data_dir+"/init_sad_disp_ave.tif", disp_ave)
+	#plot_histogram(path_to_data_dir+"/init_sad_disp_std.tif", disp_std)
+	#plot_histogram(path_to_data_dir+"/init_sad_disp_max.tif", disp_max)
 	
-	plot_histogram(path_to_data_dir+"/sad_fin_disp_ave.tif", disp_ave_2)
-	plot_histogram(path_to_data_dir+"/sad_fin_disp_std.tif", disp_std_2)
-	plot_histogram(path_to_data_dir+"/sad_fin_disp_max.tif", disp_max_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_disp_ave.tif", disp_ave_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_disp_std.tif", disp_std_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_disp_max.tif", disp_max_2)
 	
-	plot_histogram(path_to_data_dir+"/init_sad_shear_ave.tif", shear_ave)
-	plot_histogram(path_to_data_dir+"/init_sad_shear_std.tif", shear_std)
-	plot_histogram(path_to_data_dir+"/init_sad_shear_max.tif", shear_max)
+	#plot_histogram(path_to_data_dir+"/init_sad_shear_ave.tif", shear_ave)
+	#plot_histogram(path_to_data_dir+"/init_sad_shear_std.tif", shear_std)
+	#plot_histogram(path_to_data_dir+"/init_sad_shear_max.tif", shear_max)
 	
-	plot_histogram(path_to_data_dir+"/sad_fin_shear_ave.tif", shear_ave_2)
-	plot_histogram(path_to_data_dir+"/sad_fin_shear_std.tif", shear_std_2)
-	plot_histogram(path_to_data_dir+"/sad_fin_shear_max.tif", shear_max_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_shear_ave.tif", shear_ave_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_shear_std.tif", shear_std_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_shear_max.tif", shear_max_2)
 	
-	plot_histogram(path_to_data_dir+"/init_sad_vol_ave.tif", vol_ave)
-	plot_histogram(path_to_data_dir+"/init_sad_vol_std.tif", vol_std)
-	plot_histogram(path_to_data_dir+"/init_sad_vol_max.tif", vol_max)
+	#plot_histogram(path_to_data_dir+"/init_sad_vol_ave.tif", vol_ave)
+	#plot_histogram(path_to_data_dir+"/init_sad_vol_std.tif", vol_std)
+	#plot_histogram(path_to_data_dir+"/init_sad_vol_max.tif", vol_max)
 	
-	plot_histogram(path_to_data_dir+"/sad_fin_vol_ave.tif", vol_ave_2)
-	plot_histogram(path_to_data_dir+"/sad_fin_vol_std.tif", vol_std_2)
-	plot_histogram(path_to_data_dir+"/sad_fin_vol_max.tif", vol_max_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_vol_ave.tif", vol_ave_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_vol_std.tif", vol_std_2)
+	#plot_histogram(path_to_data_dir+"/sad_fin_vol_max.tif", vol_max_2)
 	
 	print "done!"
 

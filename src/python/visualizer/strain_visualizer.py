@@ -4,6 +4,7 @@ in terms of atomic coordinates x,y,z in the simulation box
 """
 import pandas as pd
 from util import Atom
+import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.cm as cmx
@@ -35,7 +36,18 @@ def plot_histogram(path_to_image, x):
 	plt.savefig(path_to_image)
 	plt.close()
 	
+def plot_histogram_2(path_to_image, x):
+	"""
+	path to image now point to the event dir
+	x is a two element list, each element is an array
+	"""
 	
+	plt.figure()
+	weights = [np.ones_like(x[0])/float(len(x[0])), np.ones_like(x[1])/float(len(x[1]))]
+	plt.hist(x,bins=10, weights=weights, color=['r','black'],label=["initial-saddle","saddle-final"])
+	plt.legend(loc='best')
+	plt.savefig(path_to_image)
+	plt.close()
 	
 	
 def scatter_plot_3D(strain_result, initial_config_data):
