@@ -8,10 +8,10 @@ import pandas as pd
 
 def read_data_from_file(path_to_file=None, quiet = False):
 	try:
-		read_data_from_dump(path_to_file, quiet)
+		return read_data_from_dump(path_to_file, quiet)
 	except IOError:
 		path_to_file = path_to_file[:-5]
-		read_data_from_non_dump(path_to_file, quiet)
+		return read_data_from_non_dump(path_to_file, quiet)
 		
 def read_data_from_dump(path_to_file=None, quiet = False):
 	"""
