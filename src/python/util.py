@@ -283,7 +283,7 @@ class results(object):
 
 
 
-def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True):
+def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True, re_calc = False):
 	"""
 	A very general nearest neigbor finder function calculate multiple atom's nearest neighbor all at once using
 	the efficient cKDTree algorithm, the multiple atoms whose item number 
@@ -341,11 +341,11 @@ def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_d
 		
 	path_to_nn_results = path_to_test_dir + "/nn_results_dict.pkl"
 	
-	if os.path.exists(path_to_nn_results):
-		print "nn results dictionary already calculated and saved in pkl file, skip calculation"
-		return pickle.load(open(path_to_nn_results,'r'))
-	else:
-		nn = dict()
+	if re_calc is False:
+		if os.path.exists(path_to_nn_results):
+			print "nn results dictionary already calculated and saved in pkl file, skip calculation"
+			return pickle.load(open(path_to_nn_results,'r'))
+	nn = dict()
 		
 	# if there is no atom_list specified, use all atoms in initial_config_data
 	if atom_list is None:

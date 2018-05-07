@@ -25,7 +25,7 @@ def event_strain_disp(event_strain_dict,event_disp_dict):
 		disp.append(event_disp_dict[i])
 	return (vol_strain, shear_strain, disp)
 
-def strain_calculator_run_all_tests(path_to_data_dir, input_param):
+def strain_calculator_run_all_tests(path_to_data_dir, input_param, re_calc = False):
 	"""
 	this function run all tests starting with test* inside a data directory
 	path_to_input = path_to_curr_result + "/input.json"
@@ -35,7 +35,7 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 	num_of_tests = input_param['num_of_tests']
 	
 	tests_list = []
-	for i in range(num_of_tests+1):
+	for i in xrange(num_of_tests+1):
 		path_to_curr_test = path_to_data_dir + "test%s"%i
 		if os.path.exists(path_to_curr_test):
 			tests_list.append(path_to_curr_test)
@@ -55,12 +55,8 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 
 		# get each of the selected events for current test
 		path_to_event_list = path_to_curr_result + "/selected_events.json"
-		if os.path.exists(path_to_event_list):
-			print "events already selected, load selected_events.json"
-			event_list = json.load(open(path_to_event_list,"r"))
-		else:
-			print "starting selecting events based on two criteria"
-			event_list = event_selection(test,box_dim)
+		
+		event_list = event_selection(test,box_dim,re_calc = re_calc)
 		
 		# for each event, init to sad and sad to fin
 		for (index,event) in event_list.items():		
@@ -88,9 +84,9 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 				os.makedirs(path_to_sad_fin)
 			
 			print "\n initial to saddle: \n"
-			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad)
+			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, re_calc = re_calc)
 			print "\n saddle to final: \n"
-			sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin)
+			sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, re_calc = re_calc)
 			
 			#init_sad_vol_strain, init_sad_shear_strain, init_sad_displacement = event_strain_disp(init_sad_strain,init_sad_disp)
 			#sad_fin_vol_strain, sad_fin_shear_strain, sad_fin_displacement = event_strain_disp(sad_fin_strain,sad_fin_disp)
@@ -227,7 +223,7 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 	
 	print "done!"
 
-def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True):
+def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True, re_calc = False):
 	"""
 	this function calculate various local atomic strain quantities for atoms whose item id stored inside
 	the atom_list under periodic boundary condition for orthogonal simulation box
@@ -278,20 +274,21 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 	path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
 	path_to_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
 	
-	if os.path.exists(path_to_strain_results) and os.path.exists(path_to_displacement):
-		print "atomic strain and displacement has already been calculated and saved in pkl file, skip"
-		return (pickle.load(open(path_to_strain_results,'r')), pickle.load(open(path_to_displacement,'r')))
-	else:
-		print "starting calculating atomic strain and displacement magnitude"
-		strain = dict()
-		disp_results = dict()
+	if re_calc is False:
+		if os.path.exists(path_to_strain_results) and os.path.exists(path_to_displacement):
+			print "atomic strain and displacement has already been calculated and saved in pkl file, skip"
+			return (pickle.load(open(path_to_strain_results,'r')), pickle.load(open(path_to_displacement,'r')))
+	
+	print "starting calculating atomic strain and displacement magnitude"
+	strain = dict()
+	disp_results = dict()
 
 	# if not specifying the atom_list, choose all atoms in the initial_config_data
 	if atom_list is None:
 		atom_list = (initial_config_data["item"]).tolist()
 	_data = initial_config_data
 	
-	nn = NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list)
+	nn = NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list, re_calc = re_calc)
 	
 	for item in atom_list:
 		#calcualte displacement

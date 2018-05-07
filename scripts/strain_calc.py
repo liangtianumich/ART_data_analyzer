@@ -2,6 +2,7 @@
 import os
 import pickle
 import json
+import time
 import pandas as pd
 import matplotlib.pyplot as plt
 from calculator.strain_calculator import strain_calculator_run_all_tests
@@ -29,9 +30,9 @@ if not os.path.exists(path_to_input_file):
 		pickle.dump(input_param,f)
 else:
 	input_param = pickle.load(open(path_to_input_file,'r'))
-
-strain_calculator_run_all_tests(path_to_data_dir, input_param)
-
+start_time = time.time()
+strain_calculator_run_all_tests(path_to_data_dir, input_param, re_calc = True)
+print "run time:", time.time() - start_time, "seconds"
 
 
 

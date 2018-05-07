@@ -19,7 +19,7 @@ def df_to_dict(df):
 	
 	return _final_dict
 	
-def event_selection(path_to_data_dir = None, box_dim = None, save_results=True):
+def event_selection(path_to_data_dir = None, box_dim = None, save_results=True, re_calc = False):
 	"""
 	this function filter a single accepted event, i.e. initial configuration, saddle
 	configuration and final configuration based on whether this event satisfied two
@@ -59,7 +59,11 @@ def event_selection(path_to_data_dir = None, box_dim = None, save_results=True):
 			final state
 	"""
 	path_to_selected_events = path_to_data_dir + "/results/selected_events.json"
-	
+	if re_calc is False:
+		if os.path.exists(path_to_selected_events):
+			print "events already selected, load selected_events.json"
+			return json.load(open(path_to_selected_events,'r'))
+	print "starting selecting events based on two criteria"
 	accepted_events = event_select_accept(path_to_data_dir)
 	
 	# event_energy is a function in util.py that extract energy from log.file.1 using regex module
