@@ -4,7 +4,7 @@ import os
 import pickle
 import json
 from util import Atom, NN_finder_all
-from event_selector import event_select_accept
+from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
 
@@ -56,9 +56,11 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 		# get each of the selected events for current test
 		path_to_event_list = path_to_curr_result + "/selected_events.json"
 		if os.path.exists(path_to_event_list):
+			print "events already selected, load selected_events.json"
 			event_list = json.load(open(path_to_event_list,"r"))
 		else:
-			event_list = event_select_accept(test)
+			print "starting selecting events based on two criteria"
+			event_list = event_selection(test,box_dim)
 		
 		# for each event, init to sad and sad to fin
 		for (index,event) in event_list.items():		

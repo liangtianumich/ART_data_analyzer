@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import pickle
 import os
+import re
+from data_reader import read_data_from_dump
 from periodic_kdtree import PeriodicCKDTree
 
 class Atom(object):
@@ -160,6 +162,96 @@ class Atom(object):
 		return [x,y,z]
 
 
+class Configuration(object):
+	def __init__(self,path_to_config_dump_data,box_dim, quiet = True):
+		"""
+		
+		"""
+		if not path_to_config_dump_data.endswith('.dump'):
+			raise Exception("configuration date file must be a dump file")
+		
+		self.data = read_data_from_dump(path_to_config_dump_data, quiet)
+		self.box_dim = box_dim
+	
+	@classmethod
+	def distance(cls,config_1, config_2):
+		"""
+		this method implement the distance in the following definition
+		sqrt(sum(dx**2+dy**2+dz**2) for each atom in config)
+		Input arguments:
+			config_1: instance of Configuration object
+				its data attribute returns the pandas.DataFrame
+				
+			config_2: instance of Configuration object
+				its data attribute returns the pandas.DataFrame	
+		return: 
+			distance: scalar float
+				the distance between two atomic configurations
+			
+		"""
+		sorted_data_1 = (config_1.data).sort_values('item')
+		sorted_data_2 = (config_2.data).sort_values('item')
+		dr = sorted_data_1 - sorted_data_2
+		return np.linalg.norm(dr)
+	
+	@classmethod
+	def distance_pbc(cls, config_1, config_2):
+		"""
+		this method implement the distance in the following definition
+		sqrt(sum(dx**2+dy**2+dz**2) for each atom in config)
+		the dx, dy, dz should follow the minumum image convention in pbc
+		
+		Input arguments:
+			config_1: instance of Configuration object
+				its data attribute returns the pandas.DataFrame
+				
+			config_2: instance of Configuration object
+				its data attribute returns the pandas.DataFrame	
+		return: 
+			distance: scalar float
+				the distance between two atomic configurations under pbc
+		
+		Note: each atom follow the minimum image convention
+		"""
+		sorted_data_1 = (config_1.data).sort_values('item')
+		sorted_data_2 = (config_2.data).sort_values('item')
+		i = 0
+		total_distance = 0.0
+		for index, row in sorted_data_1.iterrows():
+			atom_1 = Atom.from_ds(row)
+			atom_1.box_dim = config_1.box_dim
+			atom_2 = Atom.from_ds(sorted_data_2.iloc[i])
+			atom_2.box_dim = config_2.box_dim
+			atom_dist = Atom.distance_pbc(atom_1,atom_2)
+			total_distance = total_distance + atom_dist ** 2
+			i = i + 1
+		return total_distance ** 0.5	
+
+def event_energy(path_to_data_dir):
+	"""
+	Input:
+		path_to_log_file: str
+			path of log.file.1 for test1 that contains the energy information
+	
+	Output:
+		energy_of_events: a dict
+		a dict giving the energy of each state of each successful event
+		key being the state str, such as min1000,sad1001 etc
+		value being the float value of the energy
+	"""
+	f=open(path_to_data_dir+"/log.file.1")
+	string=f.read()
+	energy_of_events = dict()
+	pattern = "Configuration[\s]+stored[\s]+in[\s]+file[\s]+:[\s]+([minsad\d]+)\s+.+\s+.+\s+.+\s+.+Starting\s+from\s+minconf.+\n.+Reference\s+Energy\s+.eV.+:\s+([-+.eE\d]+)"
+	match = re.search(pattern, string)
+	energy_of_events[match.group(1)] = float(match.group(2))
+	
+	pattern_other = "Configuration[\s]+stored[\s]+in[\s]+file[\s]+:[\s]+([minsad\d]+)\s+.+Total\s+energy\s+[a-zA-Z]+\s+.eV.+:\s+([-+.eE\d]+)"
+	match_other = re.findall(pattern_other, string)
+	for state,energy in match_other:
+		energy_of_events[state] = float(energy)
+	return energy_of_events
+	
 class results(object):
 	def __init__(self, path_test_dir, path_to_data):
 		

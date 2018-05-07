@@ -5,6 +5,7 @@ each criteria is an independent function
 import pandas as pd
 import json
 import os
+from util import event_energy, Configuration
 
 def df_to_dict(df):
 	"""
@@ -17,8 +18,78 @@ def df_to_dict(df):
 		_final_dict[index] = row.tolist()
 	
 	return _final_dict
-		
 	
+def event_selection(path_to_data_dir = None, box_dim = None, save_results=True):
+	"""
+	this function filter a single accepted event, i.e. initial configuration, saddle
+	configuration and final configuration based on whether this event satisfied two
+	stage criterias:
+	
+	criteria 1:
+	the saddle state energy should be larger than the energy of both initial and final state
+	exclude the searches E(sad-init) <0 or E(sad - fin) <0
+	
+	criteria 2:
+	If both the energy difference AND distance between the final state and initial state 
+	are small, then the final state is identical to the initial state, should be eliminated
+	in details, this happens if dE < 0.02 (eV) AND distance < 1
+	
+	criteria 3:
+	for the remaining refined searches, any pair is redundant if 
+	abs(D(fin - init)_1-D(fin-init)_2) < 0.1 (A)
+	AND abs(E(fin-init)_1-E(fin-init))_2 < 0.005(eV)
+	AND abs(E(sad-init)_1-E(sad-init))_2 < 0.01(eV)
+	Energuy stored in log.file.1, with the pattern matching,
+	except min1000
+	Configuration stored in file min1001
+	Total energy Minimum (eV) -8.8897753852E+03
+	
+	for min1000,
+	- Configuration stored in file :           min1000
+	__________________________________________________
+	- Simulation                   :                 1
+	- Attempt                      :                 1
+	- Starting from minconf        :              1000
+	- Reference Energy (eV)        : -8.8912484758E+03
+	
+	return:
+		selected_events: dict()
+			this dict with key being the original event id in event.list
+			value being a list containing the string of initial state, saddle state
+			final state
+	"""
+	path_to_selected_events = path_to_data_dir + "/results/selected_events.json"
+	
+	accepted_events = event_select_accept(path_to_data_dir)
+	
+	# event_energy is a function in util.py that extract energy from log.file.1 using regex module
+	events_energy = event_energy(path_to_data_dir)
+	
+	selected_events = dict()
+	for x in accepted_events:
+		init_state = accepted_events[x][0]
+		sad_state = accepted_events[x][1]
+		fin_state = accepted_events[x][2]
+		list_of_state = [init_state, sad_state, fin_state]
+		
+		init_energy = events_energy[init_state]
+		sad_energy = events_energy[sad_state]
+		fin_energy = events_energy[fin_state]
+		list_of_energy = [init_energy, sad_energy, fin_energy]
+		
+		path_to_init_file = path_to_data_dir +'/' + init_state + ".dump"
+		path_to_sad_file = path_to_data_dir +'/' + sad_state + ".dump"
+		path_to_fin_file = path_to_data_dir +'/' + fin_state + ".dump"
+		
+		list_of_path = [path_to_init_file, path_to_sad_file, path_to_fin_file]
+		
+		if single_event_2_criteria(list_of_path, list_of_energy, box_dim):
+			selected_events[x] = list_of_state
+	
+	if save_results is True:
+		json.dump(selected_events, open(path_to_selected_events,"w"))
+	return selected_events
+
 def event_select_accept(path_to_data_dir = None, save_results=True):
 	"""
 	this function filter a single event, i.e. initial configuration, saddle
@@ -52,9 +123,9 @@ def event_select_accept(path_to_data_dir = None, save_results=True):
 	
 	path_to_events_list = path_to_data_dir + "/events.list"
 	
-	path_to_selected_events = path_to_data_dir + "/selected_events.json"
-	if os.path.exists(path_to_selected_events):
-		return json.load(open(path_to_selected_events,'r'))
+	path_to_accepted_events = path_to_data_dir + "/results/accepted_events.json"
+	if os.path.exists(path_to_accepted_events):
+		return json.load(open(path_to_accepted_events,'r'))
 		
 	
 	events = pd.read_csv(path_to_events_list,sep='\s+', header=None)
@@ -63,7 +134,7 @@ def event_select_accept(path_to_data_dir = None, save_results=True):
 	
 	accepted_events = df_to_dict(accepted_events)
 	if save_results is True:
-		json.dump(accepted_events, open(path_to_selected_events,"w"))
+		json.dump(accepted_events, open(path_to_accepted_events,"w"))
 	# drop the column called "status" since now all events are accepted
 	# accepted_events = accepted_events.drop('status', axis=1)
 	return accepted_events
@@ -77,34 +148,40 @@ def event_3_criteria():
 			df["satisfy_3_criteria"] = True
 	return df		
 
-def single_event_3_criteria(event_ds):
+def single_event_2_criteria(list_of_path, list_of_energy, box_dim):
 	"""
-	maybe organize the following two functions into two methods in a class event
+	this function takes the data of single event, i.e. the configurational data
+	and the energy data to check if this event satisfy the stage 1 two criteria
+	return True if satisfied, False otherwise
 	
+	criteria 1:
+	the saddle state energy should be larger than the energy of both initial and final state
+	exclude the searches E(sad-init) <0 or E(sad - fin) <0
+	
+	criteria 2:
+	If both the energy difference AND distance between the final state and initial state 
+	are small, then the final state is identical to the initial state, should be eliminated
+	in details, this happens if dE < 0.02 (eV) AND distance < 1
 	"""
 	
-	ini, sad, fin = event_list_to_file_path(path_to_data, event_ds)
+	init_config = Configuration(list_of_path[0],box_dim)
+	fin_config = Configuration(list_of_path[2],box_dim)
 	
+	# criteria 1
+	if list_of_energy[1] - list_of_energy[0] < 0 or list_of_energy[1] - list_of_energy[2] < 0:
+		return False
 	
-def event_list_to_file_path(path_to_data, event_ds):
-	"""
-	input:
-		path_to_data: str
-			path string to the data dir
-		event_ds: pandas.Series
-			single event pandas series containing the str of
-			initial configuration in column ini, saddle configuration in column sad,
-			final configuration in column fin, 
+	#criteria 2
+	distance = Configuration.distance_pbc(init_config,fin_config)
+	if distance < 1 and abs(list_of_energy[2] - list_of_energy[0]) < 0.02:
+		return False
+	else:
+		return True
 		
-	return:
-		ini: pandas.Dataframe
-			data of initial configuration
-		sad: pandas.Dataframe
-			data of saddle configuration
 		
-		fin: pandas.Dataframe
-			data of final configuration
-	"""
-
+	
+	
+	
+	
 	
 	

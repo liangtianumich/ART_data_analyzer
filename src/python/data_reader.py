@@ -6,7 +6,7 @@ anticipated in the future
 """
 import pandas as pd
 
-def read_data_from_dump(path_to_file=None):
+def read_data_from_dump(path_to_file=None, quiet = False):
 	"""
 	this function takes the full path to the dump data file and read the data file into
 	a pandas.Dataframe object for futher data analysis
@@ -24,7 +24,8 @@ def read_data_from_dump(path_to_file=None):
 		#print "data.head", data.head()
 		#print "data.iloc[:,0:5]", data.iloc[:,0:5]
 		result = data.iloc[:,0:5]
-		print "path to data file", path_to_file
+		if quiet is False:
+			print "read data file:", path_to_file
 		result.columns = ['item', 'atom_id', 'x','y','z']
 		#.rename(columns=['item', 'atom id', 'x','y','z'])
 		#result = pd.DataFrame(data.iloc[:,0:5], columns=['item', 'atom id', 'x','y','z'])
