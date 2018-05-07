@@ -6,7 +6,7 @@ import pandas as pd
 import pickle
 import os
 import re
-from data_reader import read_data_from_dump
+from data_reader import *
 from periodic_kdtree import PeriodicCKDTree
 
 class Atom(object):
@@ -170,7 +170,7 @@ class Configuration(object):
 		if not path_to_config_dump_data.endswith('.dump'):
 			raise Exception("configuration date file must be a dump file")
 		
-		self.data = read_data_from_dump(path_to_config_dump_data, quiet)
+		self.data = read_data_from_file(path_to_config_dump_data, quiet)
 		self.box_dim = box_dim
 	
 	@classmethod
@@ -276,8 +276,8 @@ class results(object):
 		self.path_to_file_ini = self.path_to_test_dir + "min1000.dump"
 		self.path_to_file_sad = self.path_to_test_dir + "min1001.dump"
 
-		self.initial_config_data = read_data_from_dump(self.path_to_file_ini)
-		self.saddle_config_data = read_data_from_dump(self.path_to_file_sad)
+		self.initial_config_data = read_data_from_file(self.path_to_file_ini)
+		self.saddle_config_data = read_data_from_file(self.path_to_file_sad)
 		
 		Event(self.initial_config_data, self.saddle_config_data)
 

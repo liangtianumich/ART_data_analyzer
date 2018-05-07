@@ -74,9 +74,11 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 			path_to_file_ini = test + '/' + init + ".dump"
 			path_to_file_sad = test + '/' + sad + ".dump"
 			path_to_file_fin = test + '/' + fin + ".dump"
-			initial_config_data = read_data_from_dump(path_to_file_ini)
-			saddle_config_data = read_data_from_dump(path_to_file_sad)
-			final_config_data = read_data_from_dump(path_to_file_fin)
+			
+			initial_config_data = read_data_from_file(path_to_file_ini)
+			saddle_config_data = read_data_from_file(path_to_file_sad)
+			final_config_data = read_data_from_file(path_to_file_fin)
+			
 			path_to_init_sad = path_to_curr_event + "/init_sad"
 			path_to_sad_fin = path_to_curr_event + "/sad_fin"
 			
