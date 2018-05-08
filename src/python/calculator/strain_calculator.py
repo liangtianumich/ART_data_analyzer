@@ -9,17 +9,6 @@ from util import Atom, NN_finder_all
 from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
-import cProfile
-
-def strain_calculator_run_all_tests(path_to_data_dir, input_param):
-	#num_of_proc = input_param['num_of_proc']
-	re_calc = input_param['re_calc']
-	#if num_of_proc == 1:
-	#	strain_calculator_run_all_tests_no_mp(path_to_data_dir, input_param, re_calc = re_calc)
-	#elif num_of_proc > 1:
-	strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = re_calc)
-	#else:
-	#	raise Exception("number of processors must be greater than 1")
 
 def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = False):
 	"""
@@ -522,6 +511,3 @@ def event_strain_disp(event_strain_dict,event_disp_dict):
 		shear_strain.append(event_strain_dict[i][1])
 		disp.append(event_disp_dict[i])
 	return (vol_strain, shear_strain, disp)
-#size = 32.130125 - 0.299875
-#box_dim = [size, size, size]
-#cProfile.run("strain_calculator_run_single_test('/Users/ltian/Documents/alabama/ART_data_analyzer/examples/test1',{(1,1):3.7,(1,2):3.7,(2,2):3.7},box_dim, re_calc = True)")
