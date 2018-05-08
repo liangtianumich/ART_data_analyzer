@@ -1,7 +1,7 @@
 # set up environmental variables before using this package
 
 # the directory path of the python package in user's machine
-export MY_ART=/Users/ltian/Documents/alabama/ART_data_analyzer
+export MY_ART=~/ART_data_analyzer
 
 # user need to specify the ART data directory
 export DATA_DIR=$MY_ART/examples/
