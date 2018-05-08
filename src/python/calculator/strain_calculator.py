@@ -10,8 +10,9 @@ from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
 
-def strain_calculator_run_all_tests(path_to_data_dir, input_param, re_calc = False):
+def strain_calculator_run_all_tests(path_to_data_dir, input_param):
 	num_of_proc = input_param['num_of_proc']
+	re_calc = input_param['re_calc']
 	if num_of_proc == 1:
 		strain_calculator_run_all_tests_no_mp(path_to_data_dir, input_param, re_calc = re_calc)
 	elif num_of_proc > 1:

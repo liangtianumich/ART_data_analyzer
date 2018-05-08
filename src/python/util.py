@@ -283,7 +283,7 @@ class results(object):
 
 
 
-def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True, re_calc = False):
+def NN_finder_all(initial_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = False, re_calc = False):
 	"""
 	A very general nearest neigbor finder function calculate multiple atom's nearest neighbor all at once using
 	the efficient cKDTree algorithm, the multiple atoms whose item number 
