@@ -1,31 +1,101 @@
 import numpy as np
 import pandas as pd
 import os
+import multiprocessing as mp
 import pickle
 import json
+from functools import partial
 from util import Atom, NN_finder_all
 from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
 
-def event_strain_disp(event_strain_dict,event_disp_dict):
-	"""
-	this function takes a strain dictionary with the key being atom item_id
-	and value being a list of [volume, von_Mises] converts it into a series statistics
-	"""
-	vol_strain = []
-	shear_strain = []
-	disp = []
-	
-	keys = list(event_strain_dict.keys())
-	keys.sort()
-	for i in keys:
-		vol_strain.append(event_strain_dict[i][0])
-		shear_strain.append(event_strain_dict[i][1])
-		disp.append(event_disp_dict[i])
-	return (vol_strain, shear_strain, disp)
-
 def strain_calculator_run_all_tests(path_to_data_dir, input_param, re_calc = False):
+	num_of_proc = input_param['num_of_proc']
+	if num_of_proc == 1:
+		strain_calculator_run_all_tests_no_mp(path_to_data_dir, input_param, re_calc = re_calc)
+	elif num_of_proc > 1:
+		strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = re_calc)
+	else:
+		raise Exception("number of processors must be greater than 1")
+
+def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = False):
+	"""
+	this function run strain calculations on all tests under multiple processors
+	"""
+	cut_off_distance = input_param["cut_off"]
+	box_dim = input_param['box_dim']
+	num_of_tests = input_param['num_of_tests']
+	num_of_proc = input_param['num_of_proc']
+	tests_list = []
+	for i in xrange(num_of_tests+1):
+		path_to_curr_test = path_to_data_dir + "test%s"%i
+		if os.path.exists(path_to_curr_test):
+			tests_list.append(path_to_curr_test)
+	
+	disp_ave, disp_std, disp_max , disp_ave_2, disp_std_2, disp_max_2 = [], [], [], [], [], []
+	
+	shear_ave, shear_std, shear_max, shear_ave_2, shear_std_2, shear_max_2 = [], [], [], [], [], []
+	
+	vol_ave, vol_std, vol_max, vol_ave_2, vol_std_2, vol_max_2 = [], [], [], [], [], []
+	
+	pool = mp.Pool(processes = num_of_proc)
+	#partial(my_fun2, general_const=my_const), input_list)
+	# search python pool map partial
+	# pool.map result preserve the order of input
+	result_list = pool.map(partial(strain_calculator_run_single_test,cut_off_distance=cut_off_distance, box_dim=box_dim, re_calc=re_calc), tests_list)
+    
+	for curr_test in result_list:
+		for event in curr_test:
+			init_sad = event[0]
+			sad_fin = event[1]
+			# calculate the statistics of init_sad and sad_fin		
+			disp_ave.append(init_sad["ave"][2])
+			disp_std.append(init_sad["std"][2])
+			disp_max.append(init_sad["max"][2])
+			
+			shear_ave.append(init_sad["ave"][1])
+			shear_std.append(init_sad["std"][1])
+			shear_max.append(init_sad["max"][1])
+			
+			vol_ave.append(init_sad["ave"][0])
+			vol_std.append(init_sad["std"][0])
+			vol_max.append(init_sad["max"][0])
+			
+			disp_ave_2.append(sad_fin["ave"][2])
+			disp_std_2.append(sad_fin["std"][2])
+			disp_max_2.append(sad_fin["max"][2])
+			
+			shear_ave_2.append(sad_fin["ave"][1])
+			shear_std_2.append(sad_fin["std"][1])
+			shear_max_2.append(sad_fin["max"][1])
+			
+			vol_ave_2.append(sad_fin["ave"][0])
+			vol_std_2.append(sad_fin["std"][0])
+			vol_max_2.append(sad_fin["max"][0])
+			
+	pickle.dump({"ave":disp_ave,"std":disp_std,"max":disp_max}, open(path_to_data_dir+"/init_sad_disp_stats.pkl",'w'))
+	pickle.dump({"ave":shear_ave,"std":shear_std,"max":shear_max}, open(path_to_data_dir+"/init_sad_shear_stats.pkl",'w'))
+	pickle.dump({"ave":vol_ave,"std":vol_std,"max":vol_max}, open(path_to_data_dir+"/init_sad_vol_stats.pkl",'w'))
+	
+	pickle.dump({"ave":disp_ave_2,"std":disp_std_2,"max":disp_max_2}, open(path_to_data_dir+"/sad_fin_disp_stats.pkl",'w'))
+	pickle.dump({"ave":shear_ave_2,"std":shear_std_2,"max":shear_max_2}, open(path_to_data_dir+"/sad_fin_shear_stats.pkl",'w'))
+	pickle.dump({"ave":vol_ave_2,"std":vol_std_2,"max":vol_max_2}, open(path_to_data_dir+"/sad_fin_vol_stats.pkl",'w'))
+	
+	plot_histogram_2(path_to_data_dir+"/disp_ave.png", [disp_ave,disp_ave_2])
+	plot_histogram_2(path_to_data_dir+"/disp_std.png", [disp_std,disp_std_2])
+	plot_histogram_2(path_to_data_dir+"/disp_max.png", [disp_max,disp_max_2])
+	
+	plot_histogram_2(path_to_data_dir+"/shear_ave.png", [shear_ave,shear_ave_2])
+	plot_histogram_2(path_to_data_dir+"/shear_std.png", [shear_std,shear_std_2])
+	plot_histogram_2(path_to_data_dir+"/shear_max.png", [shear_max,shear_max_2])
+	
+	plot_histogram_2(path_to_data_dir+"/vol_ave.png", [vol_ave,vol_ave_2])
+	plot_histogram_2(path_to_data_dir+"/vol_std.png", [vol_std,vol_std_2])
+	plot_histogram_2(path_to_data_dir+"/vol_max.png", [vol_max,vol_max_2])	
+	print "done!"
+
+def strain_calculator_run_all_tests_no_mp(path_to_data_dir, input_param, re_calc = False):
 	"""
 	this function run all tests starting with test* inside a data directory
 	path_to_input = path_to_curr_result + "/input.json"
@@ -49,108 +119,36 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param, re_calc = Fal
 	
 	for test in tests_list:
 		# path to current test results dir
-		path_to_curr_result = test + "/results"
-		if not os.path.exists(path_to_curr_result):
-			os.makedirs(path_to_curr_result)
-
-		# get each of the selected events for current test
-		path_to_event_list = path_to_curr_result + "/selected_events.json"
-		
-		event_list = event_selection(test,box_dim,re_calc = re_calc)
-		
-		# for each event, init to sad and sad to fin
-		for (index,event) in event_list.items():		
-			init, sad, fin = event[0], event[1], event[2]
-			path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
-			print ('\n')
-			print "path_to_curr_event", path_to_curr_event
-			print ('\n')
-			if not os.path.exists(path_to_curr_event):
-				os.makedirs(path_to_curr_event)
-			path_to_file_ini = test + '/' + init + ".dump"
-			path_to_file_sad = test + '/' + sad + ".dump"
-			path_to_file_fin = test + '/' + fin + ".dump"
-			
-			initial_config_data = read_data_from_file(path_to_file_ini)
-			saddle_config_data = read_data_from_file(path_to_file_sad)
-			final_config_data = read_data_from_file(path_to_file_fin)
-			
-			path_to_init_sad = path_to_curr_event + "/init_sad"
-			path_to_sad_fin = path_to_curr_event + "/sad_fin"
-			
-			if not os.path.exists(path_to_init_sad):
-				os.makedirs(path_to_init_sad)
-			if not os.path.exists(path_to_sad_fin):
-				os.makedirs(path_to_sad_fin)
-			
-			print "\n initial to saddle: \n"
-			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, re_calc = re_calc)
-			print "\n saddle to final: \n"
-			sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, re_calc = re_calc)
-			
-			#init_sad_vol_strain, init_sad_shear_strain, init_sad_displacement = event_strain_disp(init_sad_strain,init_sad_disp)
-			#sad_fin_vol_strain, sad_fin_shear_strain, sad_fin_displacement = event_strain_disp(sad_fin_strain,sad_fin_disp)
-			init_sad = event_strain_disp(init_sad_strain,init_sad_disp)
-			sad_fin = event_strain_disp(sad_fin_strain,sad_fin_disp)
-			
-			path_to_init_sad_disp_strain = path_to_init_sad + '/disp_shear_strain.png'
-			plot_2d_shear(path_to_init_sad_disp_strain,init_sad[2], init_sad[1])
-			
-			path_to_init_sad_disp_vol_strain = path_to_init_sad + '/disp_vol_strain.png'
-			plot_2d_vol(path_to_init_sad_disp_vol_strain,init_sad[2], init_sad[0])
-			
-			path_to_sad_fin_disp_strain = path_to_sad_fin + '/disp_shear_strain.png'
-			plot_2d_shear(path_to_sad_fin_disp_strain,sad_fin[2], sad_fin[1])
-			
-			path_to_sad_fin_disp_vol_strain = path_to_sad_fin + '/disp_vol_strain.png'
-			plot_2d_vol(path_to_sad_fin_disp_vol_strain,init_sad[2], init_sad[0])
-			
-			pickle.dump(init_sad[2], open(path_to_init_sad+"/disp_results_list.pkl",'w'))
-			pickle.dump(init_sad[1], open(path_to_init_sad+"/shear_strain_results_list.pkl",'w'))
-			pickle.dump(init_sad[0], open(path_to_init_sad+"/vol_strain_results_list.pkl",'w'))
-			
-			pickle.dump(sad_fin[2], open(path_to_sad_fin+"/disp_results_list.pkl",'w'))
-			pickle.dump(sad_fin[1], open(path_to_sad_fin+"/shear_strain_results_list.pkl",'w'))
-			pickle.dump(sad_fin[0], open(path_to_sad_fin+"/vol_strain_results_list.pkl",'w'))
-			
-			plot_histogram_2(path_to_curr_event + "/disp_histogram.png", [init_sad[2],sad_fin[2]])
-			plot_histogram_2(path_to_curr_event + "/shear_strain_histogram.png", [init_sad[1],sad_fin[1]])
-			plot_histogram_2(path_to_curr_event + "/vol_strain_histogram.png", [init_sad[0],sad_fin[0]])
-			
-			#plot_histogram(path_to_init_sad + "/disp_histogram.tif", init_sad[2])
-			#plot_histogram(path_to_init_sad + "/shear_strain_histogram.tif", init_sad[1])
-			#plot_histogram(path_to_init_sad + "/vol_strain_histogram.tif", init_sad[0])
-			
-			#plot_histogram(path_to_sad_fin + "/disp_histogram.tif", sad_fin[2])
-			#plot_histogram(path_to_sad_fin + "/shear_strain_histogram.tif", sad_fin[1])
-			#plot_histogram(path_to_sad_fin + "/vol_strain_histogram.tif", sad_fin[0])
+		test_results = strain_calculator_run_single_test(test, cut_off_distance, box_dim, re_calc=re_calc)
+		for event in test_results:
+			init_sad = event[0]
+			sad_fin = event[1]
 			
 			# calculate the statistics of init_sad and sad_fin		
-			disp_ave.append(np.mean(init_sad[2]))
-			disp_std.append(np.std(init_sad[2]))
-			disp_max.append(np.max(init_sad[2]))
+			disp_ave.append(init_sad["ave"][2])
+			disp_std.append(init_sad["std"][2])
+			disp_max.append(init_sad["max"][2])
 			
-			shear_ave.append(np.mean(init_sad[1]))
-			shear_std.append(np.std(init_sad[1]))
-			shear_max.append(np.max(init_sad[1]))
+			shear_ave.append(init_sad["ave"][1])
+			shear_std.append(init_sad["std"][1])
+			shear_max.append(init_sad["max"][1])
 			
-			vol_ave.append(np.mean(init_sad[0]))
-			vol_std.append(np.std(init_sad[0]))
-			vol_max.append(np.max(init_sad[0]))
+			vol_ave.append(init_sad["ave"][0])
+			vol_std.append(init_sad["std"][0])
+			vol_max.append(init_sad["max"][0])
 			
+			disp_ave_2.append(sad_fin["ave"][2])
+			disp_std_2.append(sad_fin["std"][2])
+			disp_max_2.append(sad_fin["max"][2])
 			
-			disp_ave_2.append(np.mean(sad_fin[2]))
-			disp_std_2.append(np.std(sad_fin[2]))
-			disp_max_2.append(np.max(sad_fin[2]))
+			shear_ave_2.append(sad_fin["ave"][1])
+			shear_std_2.append(sad_fin["std"][1])
+			shear_max_2.append(sad_fin["max"][1])
 			
-			shear_ave_2.append(np.mean(sad_fin[1]))
-			shear_std_2.append(np.std(sad_fin[1]))
-			shear_max_2.append(np.max(sad_fin[1]))
-			
-			vol_ave_2.append(np.mean(sad_fin[0]))
-			vol_std_2.append(np.std(sad_fin[0]))
-			vol_max_2.append(np.max(sad_fin[0]))
-	
+			vol_ave_2.append(sad_fin["ave"][0])
+			vol_std_2.append(sad_fin["std"][0])
+			vol_max_2.append(sad_fin["max"][0])
+
 	
 	pickle.dump({"ave":disp_ave,"std":disp_std,"max":disp_max}, open(path_to_data_dir+"/init_sad_disp_stats.pkl",'w'))
 	pickle.dump({"ave":shear_ave,"std":shear_std,"max":shear_max}, open(path_to_data_dir+"/init_sad_shear_stats.pkl",'w'))
@@ -159,30 +157,6 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param, re_calc = Fal
 	pickle.dump({"ave":disp_ave_2,"std":disp_std_2,"max":disp_max_2}, open(path_to_data_dir+"/sad_fin_disp_stats.pkl",'w'))
 	pickle.dump({"ave":shear_ave_2,"std":shear_std_2,"max":shear_max_2}, open(path_to_data_dir+"/sad_fin_shear_stats.pkl",'w'))
 	pickle.dump({"ave":vol_ave_2,"std":vol_std_2,"max":vol_max_2}, open(path_to_data_dir+"/sad_fin_vol_stats.pkl",'w'))
-	
-	#pickle.dump(disp_ave, open(path_to_data_dir+"/init_sad_disp_ave.pkl",'w'))
-	#pickle.dump(disp_std, open(path_to_data_dir+"/init_sad_disp_std.pkl",'w'))
-	#pickle.dump(disp_max, open(path_to_data_dir+"/init_sad_disp_max.pkl",'w'))
-	
-	#pickle.dump(shear_ave, open(path_to_data_dir+"/init_sad_shear_ave.pkl",'w'))
-	#pickle.dump(shear_std, open(path_to_data_dir+"/init_sad_shear_std.pkl",'w'))
-	#pickle.dump(shear_max, open(path_to_data_dir+"/init_sad_shear_max.pkl",'w'))
-	
-	#pickle.dump(vol_ave, open(path_to_data_dir+"/init_sad_vol_ave.pkl",'w'))
-	#pickle.dump(vol_std, open(path_to_data_dir+"/init_sad_vol_std.pkl",'w'))
-	#pickle.dump(vol_max, open(path_to_data_dir+"/init_sad_vol_max.pkl",'w'))
-	
-	#pickle.dump(disp_ave_2, open(path_to_data_dir+"/sad_init_disp_ave.pkl",'w'))
-	#pickle.dump(disp_std_2, open(path_to_data_dir+"/sad_init_disp_std.pkl",'w'))
-	#pickle.dump(disp_max_2, open(path_to_data_dir+"/sad_init_disp_max.pkl",'w'))
-	
-	#pickle.dump(shear_ave_2, open(path_to_data_dir+"/sad_init_shear_ave.pkl",'w'))
-	#pickle.dump(shear_std_2, open(path_to_data_dir+"/sad_init_shear_std.pkl",'w'))
-	#pickle.dump(shear_max_2, open(path_to_data_dir+"/sad_init_shear_max.pkl",'w'))
-	
-	#pickle.dump(vol_ave_2, open(path_to_data_dir+"/sad_init_vol_ave.pkl",'w'))
-	#pickle.dump(vol_std_2, open(path_to_data_dir+"/sad_init_vol_std.pkl",'w'))
-	#pickle.dump(vol_max_2, open(path_to_data_dir+"/sad_init_vol_max.pkl",'w'))
 	
 	plot_histogram_2(path_to_data_dir+"/disp_ave.png", [disp_ave,disp_ave_2])
 	plot_histogram_2(path_to_data_dir+"/disp_std.png", [disp_std,disp_std_2])
@@ -196,32 +170,103 @@ def strain_calculator_run_all_tests(path_to_data_dir, input_param, re_calc = Fal
 	plot_histogram_2(path_to_data_dir+"/vol_std.png", [vol_std,vol_std_2])
 	plot_histogram_2(path_to_data_dir+"/vol_max.png", [vol_max,vol_max_2])
 	
-			
-	#plot_histogram(path_to_data_dir+"/init_sad_disp_ave.tif", disp_ave)
-	#plot_histogram(path_to_data_dir+"/init_sad_disp_std.tif", disp_std)
-	#plot_histogram(path_to_data_dir+"/init_sad_disp_max.tif", disp_max)
-	
-	#plot_histogram(path_to_data_dir+"/sad_fin_disp_ave.tif", disp_ave_2)
-	#plot_histogram(path_to_data_dir+"/sad_fin_disp_std.tif", disp_std_2)
-	#plot_histogram(path_to_data_dir+"/sad_fin_disp_max.tif", disp_max_2)
-	
-	#plot_histogram(path_to_data_dir+"/init_sad_shear_ave.tif", shear_ave)
-	#plot_histogram(path_to_data_dir+"/init_sad_shear_std.tif", shear_std)
-	#plot_histogram(path_to_data_dir+"/init_sad_shear_max.tif", shear_max)
-	
-	#plot_histogram(path_to_data_dir+"/sad_fin_shear_ave.tif", shear_ave_2)
-	#plot_histogram(path_to_data_dir+"/sad_fin_shear_std.tif", shear_std_2)
-	#plot_histogram(path_to_data_dir+"/sad_fin_shear_max.tif", shear_max_2)
-	
-	#plot_histogram(path_to_data_dir+"/init_sad_vol_ave.tif", vol_ave)
-	#plot_histogram(path_to_data_dir+"/init_sad_vol_std.tif", vol_std)
-	#plot_histogram(path_to_data_dir+"/init_sad_vol_max.tif", vol_max)
-	
-	#plot_histogram(path_to_data_dir+"/sad_fin_vol_ave.tif", vol_ave_2)
-	#plot_histogram(path_to_data_dir+"/sad_fin_vol_std.tif", vol_std_2)
-	#plot_histogram(path_to_data_dir+"/sad_fin_vol_max.tif", vol_max_2)
-	
 	print "done!"
+
+def strain_calculator_run_single_test(test, cut_off_distance, box_dim, save_results = True, re_calc=False):
+	"""
+	this function perform strain and displacement calculation for a single test
+	whose dir is test
+	"""
+	path_to_curr_result = test + "/results"
+	if not os.path.exists(path_to_curr_result):
+		os.makedirs(path_to_curr_result)
+
+	# get each of the selected events for current test
+	path_to_event_list = path_to_curr_result + "/selected_events.json"
+	
+	event_list = event_selection(test,box_dim,re_calc = re_calc)
+	
+	
+	test_results = []
+	# list in the order of vol_strain, shear_strain, disp
+	
+	# for each event, init to sad and sad to fin
+	for (index,event) in event_list.items():
+		init_sad_event_result = dict()
+		sad_fin_event_result = dict()
+		
+		init, sad, fin = event[0], event[1], event[2]
+		path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+		print ('\n')
+		print "path_to_curr_event", path_to_curr_event
+		print ('\n')
+		if not os.path.exists(path_to_curr_event):
+			os.makedirs(path_to_curr_event)
+		path_to_file_ini = test + '/' + init + ".dump"
+		path_to_file_sad = test + '/' + sad + ".dump"
+		path_to_file_fin = test + '/' + fin + ".dump"
+		
+		initial_config_data = read_data_from_file(path_to_file_ini)
+		saddle_config_data = read_data_from_file(path_to_file_sad)
+		final_config_data = read_data_from_file(path_to_file_fin)
+		
+		path_to_init_sad = path_to_curr_event + "/init_sad"
+		path_to_sad_fin = path_to_curr_event + "/sad_fin"
+		
+		if not os.path.exists(path_to_init_sad):
+			os.makedirs(path_to_init_sad)
+		if not os.path.exists(path_to_sad_fin):
+			os.makedirs(path_to_sad_fin)
+		print "\n initial to saddle: \n"
+		init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, re_calc = re_calc)
+		print "\n saddle to final: \n"
+		sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, re_calc = re_calc)
+		
+		#init_sad_vol_strain, init_sad_shear_strain, init_sad_displacement = event_strain_disp(init_sad_strain,init_sad_disp)
+		#sad_fin_vol_strain, sad_fin_shear_strain, sad_fin_displacement = event_strain_disp(sad_fin_strain,sad_fin_disp)
+		init_sad = event_strain_disp(init_sad_strain,init_sad_disp)
+		sad_fin = event_strain_disp(sad_fin_strain,sad_fin_disp)
+		
+		
+		init_sad_event_result['ave']=[np.mean(init_sad[0]),np.mean(init_sad[1]),np.mean(init_sad[2])]
+		init_sad_event_result['std']=[np.std(init_sad[0]),np.std(init_sad[1]),np.std(init_sad[2])]
+		init_sad_event_result['max']=[np.max(init_sad[0]),np.max(init_sad[1]),np.max(init_sad[2])]
+		
+		sad_fin_event_result['ave']=[np.mean(sad_fin[0]),np.mean(sad_fin[1]),np.mean(sad_fin[2])]
+		sad_fin_event_result['std']=[np.std(sad_fin[0]),np.std(sad_fin[1]),np.std(sad_fin[2])]
+		sad_fin_event_result['max']=[np.max(sad_fin[0]),np.max(sad_fin[1]),np.max(sad_fin[2])]
+		
+		test_results.append((init_sad_event_result,sad_fin_event_result))
+		
+		path_to_init_sad_disp_strain = path_to_init_sad + '/disp_shear_strain.png'
+		plot_2d_shear(path_to_init_sad_disp_strain,init_sad[2], init_sad[1])
+		
+		path_to_init_sad_disp_vol_strain = path_to_init_sad + '/disp_vol_strain.png'
+		plot_2d_vol(path_to_init_sad_disp_vol_strain,init_sad[2], init_sad[0])
+		
+		path_to_sad_fin_disp_strain = path_to_sad_fin + '/disp_shear_strain.png'
+		plot_2d_shear(path_to_sad_fin_disp_strain,sad_fin[2], sad_fin[1])
+		
+		path_to_sad_fin_disp_vol_strain = path_to_sad_fin + '/disp_vol_strain.png'
+		plot_2d_vol(path_to_sad_fin_disp_vol_strain,init_sad[2], init_sad[0])
+		
+		pickle.dump(init_sad[2], open(path_to_init_sad+"/disp_results_list.pkl",'w'))
+		pickle.dump(init_sad[1], open(path_to_init_sad+"/shear_strain_results_list.pkl",'w'))
+		pickle.dump(init_sad[0], open(path_to_init_sad+"/vol_strain_results_list.pkl",'w'))
+		
+		pickle.dump(sad_fin[2], open(path_to_sad_fin+"/disp_results_list.pkl",'w'))
+		pickle.dump(sad_fin[1], open(path_to_sad_fin+"/shear_strain_results_list.pkl",'w'))
+		pickle.dump(sad_fin[0], open(path_to_sad_fin+"/vol_strain_results_list.pkl",'w'))
+		plot_histogram_2(path_to_curr_event + "/disp_histogram.png", [init_sad[2],sad_fin[2]])
+		plot_histogram_2(path_to_curr_event + "/shear_strain_histogram.png", [init_sad[1],sad_fin[1]])
+		plot_histogram_2(path_to_curr_event + "/vol_strain_histogram.png", [init_sad[0],sad_fin[0]])
+	
+	if save_results is True:
+		print "begin saving current test each event statistics results into pkl file"
+		with open(path_to_curr_result +"/events_stats.pkl", 'w') as f:
+			pickle.dump(test_results,f)
+			f.close()
+	return test_results
 
 def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True, re_calc = False):
 	"""
@@ -421,3 +466,21 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 	mu_Mises = (0.5 * np.trace(np.dot(mu_off_diag, mu_off_diag))) ** 0.5
 	
 	return [mu_hydro, mu_Mises]
+
+
+def event_strain_disp(event_strain_dict,event_disp_dict):
+	"""
+	this function takes a strain dictionary with the key being atom item_id
+	and value being a list of [volume, von_Mises] converts it into a list
+	"""
+	vol_strain = []
+	shear_strain = []
+	disp = []
+	
+	keys = list(event_strain_dict.keys())
+	keys.sort()
+	for i in keys:
+		vol_strain.append(event_strain_dict[i][0])
+		shear_strain.append(event_strain_dict[i][1])
+		disp.append(event_disp_dict[i])
+	return (vol_strain, shear_strain, disp)

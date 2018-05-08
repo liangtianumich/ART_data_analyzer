@@ -41,7 +41,12 @@ Currently, strain_calc.py is an exe python file, it performs displacement and at
 
 Before running this script, after user specify all the environmental variables in environmental.sh to match their own machine and source it. 
 
-Nice features: all calculations in the fly of strain calculations will be saved into a pkl file, such as nn_results.pkl, strain_results.pkl, and displacement_results.pkl for initial to saddle configuration, and saddle to final configuration for each event. When rerunning this calculation, these files will be directly read to prevent redundant running. 
+Nice features: 
+support parallel calculation by multiprocessing module, the user can specify the number of processes in the input file
+
+all calculations in the fly of strain calculations will be saved into a pkl file, such as nn_results.pkl, strain_results.pkl, and displacement_results.pkl for initial to saddle configuration, and saddle to final configuration for each event. When rerunning this calculation, these files will be directly read to prevent redundant running. 
+
+A re_calc argument is included with default False to use the existing calculations. However, when user want to try calculate with a new set of input parameters, they may need to invoke the re_calc to True.
 
 All plots for visualizing the statistics of various physical quantities are automatically plotted and saved into their corresponding event locations that are specified by event_initial_str_sad_str_fin_str: for example, event_min1001_sad1002_min1002
 
@@ -51,8 +56,17 @@ The mean, std, max of displacement, shear strain, volumetric strain of each even
 
 All events are accepted/selected based on their individual modules and have minimal interaction with the calculation modules. User can customize their own event selection criteria.
 
-The user can specify the cut-off distance cut-off, the simulation box dimension box_dim and the total number of tests in their data directory
-{'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests}
+The user can specify the cut-off distance cut-off, the simulation box dimension box_dim and the total number of tests, num_of_procs in their data directory
+{'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests,’num_of_procs’:num_of_procs}
+
+If the num_of_procs == 1, it will run calculation in single process mode
+
+If num_of_procs >1, it will invoke the multiprocessing module Pool class
+num_of_procs can be found by nproc --all or grep -c processor /proc/cpuinfo in linux
+
+In Mac, sysctl -n hw.ncpu to get logical CPUs
+
+Crossplatform option here, default is to use all CPU cores by multiprocess.cpu_count() as implemented as default option here.
 
 An example of cut_off_distance dict: {(1,1):3.7,(1,2):3.7,(2,2):3.7}
 Means atom_type_1 and atom_type 1 cut_off_distance is 3.7, type 1 and type 2 is also 3.7 etc

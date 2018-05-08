@@ -3,8 +3,7 @@ import os
 import pickle
 import json
 import time
-import pandas as pd
-import matplotlib.pyplot as plt
+import multiprocessing as mp
 from calculator.strain_calculator import strain_calculator_run_all_tests
 
 path_to_data_dir = os.environ['DATA_DIR']
@@ -24,13 +23,19 @@ if not os.path.exists(path_to_input_file):
 	size = 32.130125 - 0.299875
 	box_dim = [size, size, size]
 	num_of_tests = 2000
-	input_param = {'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests}
+	num_of_proc = 2
+	#mp.cpu_count()
+	input_param = {'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests,'num_of_proc':num_of_proc}
 	print "input_param:", input_param
 	with open(path_to_input_file,'w') as f:
 		pickle.dump(input_param,f)
 else:
 	input_param = pickle.load(open(path_to_input_file,'r'))
-start_time = time.time()
+	
+if 'num_of_proc' not in input_param:
+	input_param["num_of_proc"] = mp.cpu_count()
+
+start_time = time.time()	
 strain_calculator_run_all_tests(path_to_data_dir, input_param, re_calc = True)
 print "run time:", time.time() - start_time, "seconds"
 
