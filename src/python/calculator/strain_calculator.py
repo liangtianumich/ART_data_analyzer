@@ -9,16 +9,17 @@ from util import Atom, NN_finder_all
 from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
+import cProfile
 
 def strain_calculator_run_all_tests(path_to_data_dir, input_param):
-	num_of_proc = input_param['num_of_proc']
+	#num_of_proc = input_param['num_of_proc']
 	re_calc = input_param['re_calc']
-	if num_of_proc == 1:
-		strain_calculator_run_all_tests_no_mp(path_to_data_dir, input_param, re_calc = re_calc)
-	elif num_of_proc > 1:
-		strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = re_calc)
-	else:
-		raise Exception("number of processors must be greater than 1")
+	#if num_of_proc == 1:
+	#	strain_calculator_run_all_tests_no_mp(path_to_data_dir, input_param, re_calc = re_calc)
+	#elif num_of_proc > 1:
+	strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = re_calc)
+	#else:
+	#	raise Exception("number of processors must be greater than 1")
 
 def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = False):
 	"""
@@ -338,11 +339,11 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 	
 	for item in atom_list:
 		#calcualte displacement
-		init_atom = Atom.from_ds(initial_config_data.loc[initial_config_data["item"]==item])
-		init_atom.box_dim = box_dim
-		sad_atom = Atom.from_ds(saddle_config_data.loc[saddle_config_data["item"]==item])
-		sad_atom.box_dim = box_dim
-		disp_results[item] = Atom.distance_pbc(init_atom, sad_atom)
+		init_atom = from_ds(initial_config_data.loc[initial_config_data["item"]==item])
+		#init_atom.box_dim = box_dim
+		sad_atom = from_ds(saddle_config_data.loc[saddle_config_data["item"]==item])
+		#sad_atom.box_dim = box_dim
+		disp_results[item] = distance_pbc(init_atom, sad_atom, box_dim)
 		
 		# calcualte strain
 		item_nn = nn[item]
@@ -403,12 +404,12 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 	# calculate dij and d0_ij
 	NN_initial = initial_config_atom.loc[initial_config_atom['item'] != atom_item]
 	Atom_initial = initial_config_atom.loc[initial_config_atom['item'] == atom_item]
-	Atom_ini_obj = Atom.from_ds(Atom_initial)
+	Atom_ini_obj = from_ds(Atom_initial)
 	
 	
 	NN_saddle = saddle_config_atom.loc[saddle_config_atom['item'] != atom_item]
 	Atom_saddle = saddle_config_atom.loc[saddle_config_atom['item'] == atom_item]
-	Atom_sad_obj = Atom.from_ds(Atom_saddle)
+	Atom_sad_obj = from_ds(Atom_saddle)
 	
 	Dim = 3
 	V = np.zeros(shape=(Dim,Dim))
@@ -416,12 +417,12 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 	
 	for (index,atom_ini_NN) in NN_initial.iterrows():
 		# d0_ji in pandas.Series
-		d0_ji = Atom.from_ds(atom_ini_NN) - Atom_ini_obj
-		d0_ji = Atom.to_list(d0_ji)
-		atom_sad_NN = Atom.from_ds(NN_saddle.loc[NN_saddle["item"] == atom_ini_NN["item"]])
+		d0_ji = from_ds(atom_ini_NN) - Atom_ini_obj
+		#d0_ji = to_list(d0_ji)
+		atom_sad_NN = from_ds(NN_saddle.loc[NN_saddle["item"] == atom_ini_NN["item"]])
 		# d_ji in pandas.Series
 		d_ji = atom_sad_NN - Atom_sad_obj
-		d_ji = Atom.to_list(d_ji)
+		#d_ji = to_list(d_ji)
 		
 		# begin implement pbc for d_ji and d0_ji as in 
 		# https://en.wikipedia.org/wiki/Periodic_boundary_conditions
@@ -469,6 +470,42 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 	return [mu_hydro, mu_Mises]
 
 
+def from_ds(data):
+	"""
+	used inside iteration for run time reduction
+	create a Atom class object from single column pandas.DataFrame or pandas.Series
+	Input argument:
+		data: instance of single column pandas.DataFrame or pandas.Series
+			data of a single atom
+	
+	return:
+		a numpy array of atom location
+	"""
+	_data = data.squeeze()
+	return np.array((_data["x"], _data["y"], _data["z"]))
+
+def distance_pbc(atom_1, atom_2, box_dim):
+	"""
+	use inside large iterations to improve code performance
+	method to calculate the distance between atom_1 and atom_2 under
+	periodic boundary condition, where atom_1 and atom_2 are the 
+	instances of class Atoms
+	
+	Arguments:
+		atom_1: instance of class Atom 
+			atomic coordinates of atom_1
+		atom_2: instance of class Atom
+			atomic coordinates of atom_2
+	return:
+		distance: float
+			the minimum pair distance between atom_1 and atom_2 under pbc
+	"""
+	lx,ly,lz = box_dim[0],box_dim[1],box_dim[2]
+	
+	_pair_list = np.array(([0,0,0],[lx,0,0],[-lx,0,0],[0,ly,0],[0,-ly,0],[0,0,lz],[0,0,-lz]))
+	
+	return min([np.linalg.norm(atom_1 - atom_2 + _pair) for _pair in _pair_list])
+
 def event_strain_disp(event_strain_dict,event_disp_dict):
 	"""
 	this function takes a strain dictionary with the key being atom item_id
@@ -485,3 +522,6 @@ def event_strain_disp(event_strain_dict,event_disp_dict):
 		shear_strain.append(event_strain_dict[i][1])
 		disp.append(event_disp_dict[i])
 	return (vol_strain, shear_strain, disp)
+#size = 32.130125 - 0.299875
+#box_dim = [size, size, size]
+#cProfile.run("strain_calculator_run_single_test('/Users/ltian/Documents/alabama/ART_data_analyzer/examples/test1',{(1,1):3.7,(1,2):3.7,(2,2):3.7},box_dim, re_calc = True)")

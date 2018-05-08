@@ -4,7 +4,7 @@ import pickle
 import json
 import time
 import multiprocessing as mp
-from calculator.strain_calculator import strain_calculator_run_all_tests
+from calculator.strain_calculator import strain_calculator_run_all_tests_mp
 
 path_to_data_dir = os.environ['DATA_DIR']
 
@@ -24,7 +24,7 @@ size = 32.130125 - 0.299875
 box_dim = [size, size, size]
 num_of_tests = 2000
 num_of_proc = mp.cpu_count()
-recalc = False
+re_calc = False
 input_param = {'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests,'num_of_proc':num_of_proc,"re_calc": re_calc}
 
 	
@@ -32,7 +32,7 @@ if 'num_of_proc' not in input_param:
 	input_param["num_of_proc"] = mp.cpu_count()
 
 start_time = time.time()
-strain_calculator_run_all_tests(path_to_data_dir, input_param)
+strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc=re_calc)
 print "total run time:", time.time() - start_time, "seconds"
 
 

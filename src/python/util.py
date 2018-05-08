@@ -215,13 +215,15 @@ class Configuration(object):
 		"""
 		sorted_data_1 = (config_1.data).sort_values('item')
 		sorted_data_2 = (config_2.data).sort_values('item')
+		box_dim_1 = config_1.box_dim
+		box_dim_2 = config_2.box_dim
 		i = 0
 		total_distance = 0.0
 		for index, row in sorted_data_1.iterrows():
 			atom_1 = Atom.from_ds(row)
-			atom_1.box_dim = config_1.box_dim
+			atom_1.box_dim = box_dim_1
 			atom_2 = Atom.from_ds(sorted_data_2.iloc[i])
-			atom_2.box_dim = config_2.box_dim
+			atom_2.box_dim = box_dim_2
 			atom_dist = Atom.distance_pbc(atom_1,atom_2)
 			total_distance = total_distance + atom_dist ** 2
 			i = i + 1
@@ -464,6 +466,3 @@ def cut_off_distance_calculator(config_data):
 			pair_dist_fun = pdf_calculator_pair(config_data, atom_type[i],atom_type[j])
 			cut_off_distance.append(first_min_pdf(pair_dist_fun))
 	return cut_off_distance
-
-
-
