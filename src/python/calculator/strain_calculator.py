@@ -37,6 +37,10 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = 
 	result_list = pool.map(partial(strain_calculator_run_single_test,cut_off_distance=cut_off_distance, box_dim=box_dim, re_calc=re_calc), tests_list)
     
 	for curr_test in result_list:
+		# if this test do not have data and strain calculation gives None
+		# skip this test
+		if curr_test is None:
+			continue
 		for event in curr_test:
 			init_sad = event[0]
 			sad_fin = event[1]
@@ -174,8 +178,11 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, save_resu
 
 	# get each of the selected events for current test
 	path_to_event_list = path_to_curr_result + "/selected_events.json"
-	
-	event_list = event_selection(test,box_dim,re_calc = re_calc)
+	#escape when this test do not have log.file.1 file	
+	try:
+		event_list = event_selection(test,box_dim,re_calc = re_calc)
+	except IOError:
+		return None
 	
 	
 	test_results = []
