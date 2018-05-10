@@ -32,7 +32,7 @@ if 'num_of_proc' not in input_param:
 	input_param["num_of_proc"] = mp.cpu_count()
 
 start_time = time.time()
-strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc=re_calc)
+strain_calculator_run_all_tests_mp(path_to_data_dir, input_param)
 print "total run time:", time.time() - start_time, "seconds"
 
 
