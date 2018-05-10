@@ -9,6 +9,7 @@ This package has the following modules and sub-packages:
 data_reader: extracting data from various data file formats (default format lammps dump file), read data into a pandas.Dataframe
 
 event_selector: locate the accepted event to be analyzed while preventing redundant event search
+Event_redudant_check that implement redundancy check of all possible pairs events passed two stage 1 criteria
 
 Util: utilities containing various classes and functions for other modules
 
@@ -41,6 +42,11 @@ This package is written in python scripting language to analyze the atomic confi
 Executable files:
 
 Currently, strain_calc.py is an exe python file, it performs displacement and atomic strain calculations and save all results and plots automatically in their corresponding locations. The calculation results have been rigorously verified with the results by Ovito.
+
+event_filter.py ran rigorous redundancy check for each possible pair events which has passed the two stage 1 criteria, this script can ran before strain calculation to calculate minimal number of meaningful events or after strain calculation to help select the filtered events for the correct statistical distribution, 
+whether to use this script depends on the percentage of events filtered by this criteria. Generally, the user is encouraged to use this script on a subset of tests such as 10 tests to check how many events are filtered. If negligible, It is possible to ignore this criteria.
+
+strain_visualization.py generate the plots of all available calculated events that passed two stage 1 criteria, even when there is unfinished calculations or calculations are going on since it ignored uncalculated events, user can customize a subset of their interested tests to extract statistics
 
 Before running this script, after user specify all the environmental variables in environmental.sh to match their own machine and source it. 
 
