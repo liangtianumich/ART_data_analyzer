@@ -178,13 +178,14 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, save_resu
 
 	# get each of the selected events for current test
 	path_to_event_list = path_to_curr_result + "/selected_events.json"
-	#escape when this test do not have log.file.1 file	
+	#escape when this test do not have log.file.1 file or configuration file
 	try:
 		event_list = event_selection(test,box_dim,re_calc = re_calc)
 	except IOError:
 		return None
-	
-	
+	# if no events has been selected in this test
+	if event_list is None:
+		return None
 	test_results = []
 	# list in the order of vol_strain, shear_strain, disp
 	

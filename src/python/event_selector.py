@@ -62,10 +62,15 @@ def event_selection(path_to_data_dir = None, box_dim = None, save_results=True, 
 	if re_calc is False:
 		if os.path.exists(path_to_selected_events):
 			print "events already selected, load selected_events.json"
-			return json.load(open(path_to_selected_events,'r'))
+			# if selected_event.json is empty, no events selected
+			try:
+				return json.load(open(path_to_selected_events,'r'))
+			except ValueError:
+				return None
 	print "starting selecting events based on two criteria"
 	accepted_events = event_select_accept(path_to_data_dir)
-	
+	if accepted_events is None:
+		return None
 	# event_energy is a function in util.py that extract energy from log.file.1 using regex module
 	events_energy = event_energy(path_to_data_dir)
 	
@@ -90,6 +95,8 @@ def event_selection(path_to_data_dir = None, box_dim = None, save_results=True, 
 		if single_event_2_criteria(list_of_path, list_of_energy, box_dim):
 			selected_events[x] = list_of_state
 	
+	if selected_events == dict():
+		return None
 	if save_results is True:
 		json.dump(selected_events, open(path_to_selected_events,"w"))
 	return selected_events
@@ -135,6 +142,9 @@ def event_select_accept(path_to_data_dir = None, save_results=True):
 	events = pd.read_csv(path_to_events_list,sep='\s+', header=None)
 	events.columns = ["ini","sad","fin","status"]
 	accepted_events = events.loc[events["status"] == "accepted"]
+	
+	if accepted_events.empty:
+		return None
 	
 	accepted_events = df_to_dict(accepted_events)
 	if save_results is True:
