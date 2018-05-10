@@ -10,7 +10,7 @@ from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
 
-def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = False):
+def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 	"""
 	this function run strain calculations on all tests under multiple processors
 	"""
@@ -18,6 +18,7 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = 
 	box_dim = input_param['box_dim']
 	num_of_tests = input_param['num_of_tests']
 	num_of_proc = input_param['num_of_proc']
+	re_calc = input_param["re_calc"]
 	tests_list = []
 	for i in xrange(num_of_tests+1):
 		path_to_curr_test = path_to_data_dir + "test%s"%i

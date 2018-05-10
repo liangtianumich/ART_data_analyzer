@@ -47,7 +47,7 @@ Before running this script, after user specify all the environmental variables i
 Nice features: 
 support parallel calculation by multiprocessing module, the user can specify the number of processes in the input file
 
-all calculations in the fly of strain calculations will be saved into a pkl file, such as nn_results.pkl, strain_results.pkl, and displacement_results.pkl for initial to saddle configuration, and saddle to final configuration for each event. When rerunning this calculation, these files will be directly read to prevent redundant running. 
+all calculations in the fly of strain calculations will be saved into a pkl file, such as nn_results.pkl, strain_results.pkl, and displacement_results.pkl for initial to saddle configuration, and saddle to final configuration for each event. When rerunning this calculation, these files will be directly read to prevent redundant running. It will skip the tests whose log.file or configuration files (e.g either min1000.dump or min1000) does not exist. It will also skip the test who do not have either accepted or selected events after calculation.
 
 A re_calc argument is included with default False to use the existing calculations. However, when user want to try calculate with a new set of input parameters, they may need to invoke the re_calc to True.
 

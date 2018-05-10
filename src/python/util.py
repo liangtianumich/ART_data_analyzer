@@ -167,8 +167,8 @@ class Configuration(object):
 		"""
 		
 		"""
-		if not path_to_config_dump_data.endswith('.dump'):
-			raise Exception("configuration date file must be a dump file")
+		#if not path_to_config_dump_data.endswith('.dump'):
+		#	raise Exception("configuration date file must be a dump file")
 		
 		self.data = read_data_from_file(path_to_config_dump_data, quiet)
 		self.box_dim = box_dim
@@ -229,10 +229,29 @@ class Configuration(object):
 			i = i + 1
 		return total_distance ** 0.5	
 
-def event_energy(path_to_data_dir):
+def event_distance(path_to_test_dir, event_state, box_dim):
+	"""
+	this function calculates the distance between final and initial configuration
+	of a single event
+	"""
+	
+	event_init,event_sad,event_fin = event_state[0],event_state[1],event_state[2]
+	
+	init_path = path_to_test_dir + '/' + event_init +".dump"
+	sad_path = path_to_test_dir + '/' + event_sad +".dump"
+	fin_path = path_to_test_dir + '/' + event_fin +".dump"
+	
+	init_config = Configuration(init_path,box_dim)
+	fin_config = Configuration(fin_path,box_dim)
+	
+	return Configuration.distance_pbc(init_config,fin_config)
+	
+	
+	
+def event_energy(path_to_test_dir):
 	"""
 	Input:
-		path_to_log_file: str
+		path_to_test_dir: str
 			path of log.file.1 for test1 that contains the energy information
 	
 	Output:
@@ -241,7 +260,7 @@ def event_energy(path_to_data_dir):
 		key being the state str, such as min1000,sad1001 etc
 		value being the float value of the energy
 	"""
-	f=open(path_to_data_dir+"/log.file.1")
+	f=open(path_to_test_dir+"/log.file.1")
 	string=f.read()
 	energy_of_events = dict()
 	pattern = "Configuration[\s]+stored[\s]+in[\s]+file[\s]+:[\s]+([minsad\d]+)\s+.+\s+.+\s+.+\s+.+Starting\s+from\s+minconf.+\n.+Reference\s+Energy\s+.eV.+:\s+([-+.eE\d]+)"
