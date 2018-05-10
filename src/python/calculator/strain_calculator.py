@@ -23,7 +23,6 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param, re_calc = 
 		path_to_curr_test = path_to_data_dir + "test%s"%i
 		if os.path.exists(path_to_curr_test):
 			tests_list.append(path_to_curr_test)
-	
 	disp_ave, disp_std, disp_max , disp_ave_2, disp_std_2, disp_max_2 = [], [], [], [], [], []
 	
 	shear_ave, shear_std, shear_max, shear_ave_2, shear_std_2, shear_max_2 = [], [], [], [], [], []
@@ -236,28 +235,28 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, save_resu
 		
 		test_results.append((init_sad_event_result,sad_fin_event_result))
 		
-		path_to_init_sad_disp_strain = path_to_init_sad + '/disp_shear_strain.png'
-		plot_2d_shear(path_to_init_sad_disp_strain,init_sad[2], init_sad[1])
+		#path_to_init_sad_disp_strain = path_to_init_sad + '/disp_shear_strain.png'
+		#plot_2d_shear(path_to_init_sad_disp_strain,init_sad[2], init_sad[1])
 		
-		path_to_init_sad_disp_vol_strain = path_to_init_sad + '/disp_vol_strain.png'
-		plot_2d_vol(path_to_init_sad_disp_vol_strain,init_sad[2], init_sad[0])
+		#path_to_init_sad_disp_vol_strain = path_to_init_sad + '/disp_vol_strain.png'
+		#plot_2d_vol(path_to_init_sad_disp_vol_strain,init_sad[2], init_sad[0])
 		
-		path_to_sad_fin_disp_strain = path_to_sad_fin + '/disp_shear_strain.png'
-		plot_2d_shear(path_to_sad_fin_disp_strain,sad_fin[2], sad_fin[1])
+		#path_to_sad_fin_disp_strain = path_to_sad_fin + '/disp_shear_strain.png'
+		#plot_2d_shear(path_to_sad_fin_disp_strain,sad_fin[2], sad_fin[1])
 		
-		path_to_sad_fin_disp_vol_strain = path_to_sad_fin + '/disp_vol_strain.png'
-		plot_2d_vol(path_to_sad_fin_disp_vol_strain,init_sad[2], init_sad[0])
+		#path_to_sad_fin_disp_vol_strain = path_to_sad_fin + '/disp_vol_strain.png'
+		#plot_2d_vol(path_to_sad_fin_disp_vol_strain,init_sad[2], init_sad[0])
 		
-		pickle.dump(init_sad[2], open(path_to_init_sad+"/disp_results_list.pkl",'w'))
-		pickle.dump(init_sad[1], open(path_to_init_sad+"/shear_strain_results_list.pkl",'w'))
-		pickle.dump(init_sad[0], open(path_to_init_sad+"/vol_strain_results_list.pkl",'w'))
+		#pickle.dump(init_sad[2], open(path_to_init_sad+"/disp_results_list.pkl",'w'))
+		#pickle.dump(init_sad[1], open(path_to_init_sad+"/shear_strain_results_list.pkl",'w'))
+		#pickle.dump(init_sad[0], open(path_to_init_sad+"/vol_strain_results_list.pkl",'w'))
 		
-		pickle.dump(sad_fin[2], open(path_to_sad_fin+"/disp_results_list.pkl",'w'))
-		pickle.dump(sad_fin[1], open(path_to_sad_fin+"/shear_strain_results_list.pkl",'w'))
-		pickle.dump(sad_fin[0], open(path_to_sad_fin+"/vol_strain_results_list.pkl",'w'))
-		plot_histogram_2(path_to_curr_event + "/disp_histogram.png", [init_sad[2],sad_fin[2]])
-		plot_histogram_2(path_to_curr_event + "/shear_strain_histogram.png", [init_sad[1],sad_fin[1]])
-		plot_histogram_2(path_to_curr_event + "/vol_strain_histogram.png", [init_sad[0],sad_fin[0]])
+		#pickle.dump(sad_fin[2], open(path_to_sad_fin+"/disp_results_list.pkl",'w'))
+		#pickle.dump(sad_fin[1], open(path_to_sad_fin+"/shear_strain_results_list.pkl",'w'))
+		#pickle.dump(sad_fin[0], open(path_to_sad_fin+"/vol_strain_results_list.pkl",'w'))
+		#plot_histogram_2(path_to_curr_event + "/disp_histogram.png", [init_sad[2],sad_fin[2]])
+		#plot_histogram_2(path_to_curr_event + "/shear_strain_histogram.png", [init_sad[1],sad_fin[1]])
+		#plot_histogram_2(path_to_curr_event + "/vol_strain_histogram.png", [init_sad[0],sad_fin[0]])
 	
 	if save_results is True:
 		print "begin saving current test each event statistics results into pkl file"
