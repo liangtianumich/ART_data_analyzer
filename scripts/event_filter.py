@@ -12,7 +12,10 @@ list_of_test_id = [1,2]
 size = 32.130125 - 0.299875
 box_dim = [size, size, size]
 
-event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim)
+# identical_event_criteria
+input_param ={"identical_event_criteria":identical_event_criteria,"list_of_test_id":list_of_test_id,"box_dim":box_dim}
+
+event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim, identical_event_criteria)
 	
 	
 	

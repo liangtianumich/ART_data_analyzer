@@ -37,7 +37,9 @@ def event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim, num_of_pro
 	num_of_selected_events = len(all_selected_events)
 	print "total number of selected events:", num_of_selected_events
 	removed_index = []
+	pool = mp.Pool(processes = num_of_proc)
 	for i in xrange(num_of_selected_events):
+		#pool.map(partial(identical_events,path_to_data_dir=path_to_data_dir,), tests_list)
 		for j in xrange(i+1,num_of_selected_events):
 			is_same = identical_events(path_to_data_dir, all_selected_events[i], all_selected_events[j], box_dim)
 			if is_same:

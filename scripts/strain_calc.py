@@ -24,8 +24,12 @@ size = 32.130125 - 0.299875
 box_dim = [size, size, size]
 num_of_tests = 2000
 num_of_proc = mp.cpu_count()
-re_calc = False
-input_param = {'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests,'num_of_proc':num_of_proc,"re_calc": re_calc}
+re_calc = True
+atom_list = None
+# this will be part of the input file, but not used by strain_calc.py, in 
+# event_filter.py
+identical_event_criteria = {}
+input_param = {'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests,'num_of_proc':num_of_proc,"re_calc": re_calc, "atom_list":atom_list}
 
 	
 if 'num_of_proc' not in input_param:

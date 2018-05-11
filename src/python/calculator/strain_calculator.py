@@ -19,6 +19,11 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 	num_of_tests = input_param['num_of_tests']
 	num_of_proc = input_param['num_of_proc']
 	re_calc = input_param["re_calc"]
+	# default None calculating all atoms, 
+	# if local, make it a dict {"local":8}, only used after calculating all atom strains
+	# and perform correlation modeling to find the local number of atoms, then rerun with local mode
+	atom_list = input_param["atom_list"]
+	
 	tests_list = []
 	for i in xrange(num_of_tests+1):
 		path_to_curr_test = path_to_data_dir + "test%s"%i
@@ -34,7 +39,7 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 	#partial(my_fun2, general_const=my_const), input_list)
 	# search python pool map partial
 	# pool.map result preserve the order of input
-	result_list = pool.map(partial(strain_calculator_run_single_test,cut_off_distance=cut_off_distance, box_dim=box_dim, re_calc=re_calc), tests_list)
+	result_list = pool.map(partial(strain_calculator_run_single_test,cut_off_distance=cut_off_distance, atom_list=atom_list, box_dim=box_dim, re_calc=re_calc), tests_list)
     
 	for curr_test in result_list:
 		# if this test do not have data and strain calculation gives None
@@ -167,10 +172,16 @@ def strain_calculator_run_all_tests_no_mp(path_to_data_dir, input_param, re_calc
 	
 	print "done!"
 
-def strain_calculator_run_single_test(test, cut_off_distance, box_dim, save_results = True, re_calc=False):
+def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list = None, save_results = True, re_calc=False):
 	"""
 	this function perform strain and displacement calculation for a single test
 	whose dir is test
+	
+	this atom_list would be the item_id of local atoms around the triggered atom,
+	which should be event dependent. This means that after we get the number of involved
+	local atoms, we need to write a function to extract the local atoms index around
+	the triggered atom, which will be our atom_list for this event for local event,
+	however, this will not be the issue for the test containing single event
 	"""
 	path_to_curr_result = test + "/results"
 	if not os.path.exists(path_to_curr_result):
@@ -186,8 +197,9 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, save_resu
 	# if no events has been selected in this test
 	if event_list is None:
 		return None
-	test_results = []
+	
 	# list in the order of vol_strain, shear_strain, disp
+	test_results = []	
 	
 	# for each event, init to sad and sad to fin
 	for (index,event) in event_list.items():
@@ -209,6 +221,16 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, save_resu
 		saddle_config_data = read_data_from_file(path_to_file_sad)
 		final_config_data = read_data_from_file(path_to_file_fin)
 		
+		if atom_list is None:
+			atom_list = (initial_config_data["item"]).tolist()
+		
+		# if atom_list is a dict,e.g. {"local":4}
+		# find the atom list of item_id of 4 local atoms around triggered atom
+		if type(atom_list) == dict():
+			triggered_atom_index = read_from_art_input_file(path_to_test_art_input_file)
+			num_of_involved_atom = atom_list["local"]
+			atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom)
+		
 		path_to_init_sad = path_to_curr_event + "/init_sad"
 		path_to_sad_fin = path_to_curr_event + "/sad_fin"
 		
@@ -217,9 +239,9 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, save_resu
 		if not os.path.exists(path_to_sad_fin):
 			os.makedirs(path_to_sad_fin)
 		print "\n initial to saddle: \n"
-		init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, re_calc = re_calc)
+		init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list, re_calc = re_calc)
 		print "\n saddle to final: \n"
-		sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, re_calc = re_calc)
+		sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list, re_calc = re_calc)
 		
 		#init_sad_vol_strain, init_sad_shear_strain, init_sad_displacement = event_strain_disp(init_sad_strain,init_sad_disp)
 		#sad_fin_vol_strain, sad_fin_shear_strain, sad_fin_displacement = event_strain_disp(sad_fin_strain,sad_fin_disp)
@@ -466,7 +488,17 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 	
 	return [mu_hydro, mu_Mises]
 
+def event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom):
+	"""
+	this function get the local atom atom_ids as a list from the triggered atoms item_id
+	and num_of_involved atoms
+	"""
 
+def read_from_art_input_file(path_to_test_art_input_file):
+	"""
+	this function get the triggered atom index from the art input file
+	"""
+	
 def from_ds(data):
 	"""
 	used inside iteration for run time reduction

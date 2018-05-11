@@ -19,6 +19,18 @@ from mpl_toolkits.mplot3d import Axes3D
 # it upgrades successfully, then sys.path updated and importlib.import_module('mpl_toolkits').__path__
 # points to the symlink, brew remove python@2 --ignore-dependencies
 # to remove the python2 dependencies created by brew to use system default python dependencies
+def events_strain_visualization(path_to_data_dir, list_of_test_id):
+	"""
+	this function visualize/plot the strains for each events listed in tests in
+	list_of_test_id
+	
+	plt.savefig
+	if len(list_of_test_id) == 1:
+		plt.show()
+
+	"""
+	
+	
 def strain_events_stats_visualization(path_to_data_dir, list_of_test_id):
 	"""
 	this function visualize the strain statistics from tests listed in
