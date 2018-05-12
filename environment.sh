@@ -4,7 +4,7 @@
 export MY_ART=~/Documents/alabama/ART_data_analyzer
 
 # user need to specify the ART data directory
-export DATA_DIR=/home/ltian/Documents/10^13/2000atoms/ART/Cu64Zr36_newpar/
+export DATA_DIR=$MY_ART/examples/
 
 # user need to specify the test directory for running tests
 export TEST_DIR=$MY_ART/tests/

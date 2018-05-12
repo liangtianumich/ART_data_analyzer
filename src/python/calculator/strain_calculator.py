@@ -330,6 +330,9 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 			a dictionary with key being the item id number of the interested atom
 			values being the calculated various local atomic strains measures 
 			stored inside in a list
+		disp_results: dict()
+			a dictionary with key being the item id number of the itnerested atoms
+			value being the calcualted displacement for this atom under pbc
 			
 	Note:
 		the nearest neighbor is determined through the atomic configuration in
