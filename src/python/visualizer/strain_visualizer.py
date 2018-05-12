@@ -13,7 +13,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cmx
 from mpl_toolkits.mplot3d import Axes3D
-from calculator.strain_calculator import event_strain_disp
+from util import event_strain_disp
 # install mpl_toolkits module may need to add the __init__.py manually in
 # site-packages/ to make it a package, if installed mpl_toolkits
 # if mpl_tookits package not included along with matplotlib, sudo pip install -U matplotlib
@@ -192,15 +192,15 @@ def plot_histogram(path_to_image, x):
 	plt.savefig(path_to_image)
 	plt.close()
 	
-def plot_histogram_2(path_to_image, x):
+def plot_histogram_3(path_to_image, x):
 	"""
 	path to image now point to the event dir
 	x is a two element list, each element is an array
 	"""
 	
 	plt.figure()
-	weights = [np.ones_like(x[0])/float(len(x[0])), np.ones_like(x[1])/float(len(x[1]))]
-	plt.hist(x,bins=10, weights=weights, color=['r','black'],label=["initial-saddle","saddle-final"])
+	weights = [np.ones_like(x[0])/float(len(x[0])), np.ones_like(x[1])/float(len(x[1])), np.ones_like(x[2])/float(len(x[2]))]
+	plt.hist(x,bins=10, weights=weights, color=['r','b','black'],label=["initial-saddle","saddle-final","initial-final"])
 	plt.legend(loc='best')
 	plt.savefig(path_to_image)
 	plt.close()

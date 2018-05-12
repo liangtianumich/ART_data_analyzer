@@ -24,7 +24,7 @@ size = 32.130125 - 0.299875
 box_dim = [size, size, size]
 num_of_tests = 2000
 num_of_proc = mp.cpu_count()
-re_calc = True
+re_calc = False
 atom_list = None
 # this will be part of the input file, but not used by strain_calc.py, in 
 # event_filter.py

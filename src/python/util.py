@@ -272,7 +272,24 @@ def event_energy(path_to_test_dir):
 	for state,energy in match_other:
 		energy_of_events[state] = float(energy)
 	return energy_of_events
+
+def event_strain_disp(event_strain_dict,event_disp_dict):
+	"""
+	this function takes a strain dictionary with the key being atom item_id
+	and value being a list of [volume, von_Mises] converts it into a list
+	"""
+	vol_strain = []
+	shear_strain = []
+	disp = []
 	
+	keys = list(event_strain_dict.keys())
+	keys.sort()
+	for i in keys:
+		vol_strain.append(event_strain_dict[i][0])
+		shear_strain.append(event_strain_dict[i][1])
+		disp.append(event_disp_dict[i])
+	return (vol_strain, shear_strain, disp)
+
 class results(object):
 	def __init__(self, path_test_dir, path_to_data):
 		
