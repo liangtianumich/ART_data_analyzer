@@ -28,8 +28,8 @@ re_calc = False
 atom_list = None
 # this will be part of the input file, but not used by strain_calc.py, in 
 # event_filter.py
-identical_event_criteria = {}
-input_param = {'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests,'num_of_proc':num_of_proc,"re_calc": re_calc, "atom_list":atom_list}
+identical_event_criteria = {"D_init_fin": 0.1, "E_init_fin":0.005, "E_init_sad":0.01}
+input_param = {'cut_off':cut_off_distance,'box_dim':box_dim,'num_of_tests':num_of_tests,'num_of_proc':num_of_proc,"re_calc": re_calc, "atom_list":atom_list,"identical_event_criteria":identical_event_criteria}
 
 	
 if 'num_of_proc' not in input_param:

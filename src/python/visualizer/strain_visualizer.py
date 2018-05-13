@@ -39,21 +39,17 @@ def events_strain_visualization(path_to_data_dir, list_of_test_id):
 		for event in final_selected_events:
 			if event[0] in test_id:
 				final_interested_events.append(event)
-	
 		for event in final_interested_events:
 			single_event_strain_visualization(path_to_data_dir, event)
-				
 	else:
 		for test in list_of_test_id:
 			path_to_test_result = path_to_data_dir + "test%s"%test +"/results"
 			path_to_event_list = path_to_test_result + "/selected_events.json"
-			print "path_to_event_list",path_to_final_event_list
 			if os.path.exists(path_to_event_list):
-				
 				event_list = json.load(open(path_to_event_list,"r"))
 				for value in event_list.values():
 					event = ["test%s"%test,[value[0],value[1],value[2]]]
-					single_event_strain_visualization(path_to_data_dir, event)			
+					single_event_strain_visualization(path_to_data_dir, event)
 			else:
 				print "skip current test:", "test%s"%test, "there is no selected events"	
 	print "done plotting for the interested tests whose test_id is in the list",list_of_test_id
@@ -67,6 +63,7 @@ def single_event_strain_visualization(path_to_data_dir, event):
 	path_to_curr_event = path_to_test_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_init_sad = path_to_curr_event + "/init_sad"
 	path_to_sad_fin = path_to_curr_event + "/sad_fin"
+	path_to_init_fin = path_to_curr_event + "/init_fin"
 	
 	path_to_init_sad_strain = path_to_init_sad  + "/strain_results_dict.pkl"
 	path_to_init_sad_displacement = path_to_init_sad + "/displacement_results_dict.pkl"
@@ -74,13 +71,21 @@ def single_event_strain_visualization(path_to_data_dir, event):
 	path_to_sad_fin_strain = path_to_sad_fin  + "/strain_results_dict.pkl"
 	path_to_sad_fin_displacement = path_to_sad_fin + "/displacement_results_dict.pkl"
 	
+	path_to_init_fin_strain = path_to_init_fin + "/strain_results_dict.pkl"
+	path_to_init_fin_displacement = path_to_init_fin + "/displacement_results_dict.pkl"
+	
 	init_sad_strain = pickle.load(open(path_to_init_sad_strain,'r'))
 	init_sad_displacement = pickle.load(open(path_to_init_sad_displacement,'r'))
+	
 	sad_fin_strain = pickle.load(open(path_to_sad_fin_strain,'r'))
 	sad_fin_displacement = pickle.load(open(path_to_sad_fin_displacement,'r'))
 	
+	init_fin_strain = pickle.load(open(path_to_init_fin_strain,'r'))
+	init_fin_displacement = pickle.load(open(path_to_init_fin_displacement,'r'))
+	
 	init_sad_vol_strain, init_sad_shear_strain, init_sad_disp = event_strain_disp(init_sad_strain,init_sad_displacement)
 	sad_fin_vol_strain, sad_fin_shear_strain, sad_fin_disp = event_strain_disp(sad_fin_strain, sad_fin_displacement)
+	init_fin_vol_strain, init_fin_shear_strain, init_fin_disp = event_strain_disp(init_fin_strain, init_fin_displacement)
 	
 	path_to_init_sad_disp_strain = path_to_init_sad + '/disp_shear_strain.png'
 	plot_2d_shear(path_to_init_sad_disp_strain,init_sad_disp,init_sad_shear_strain)
@@ -95,9 +100,16 @@ def single_event_strain_visualization(path_to_data_dir, event):
 	path_to_sad_fin_disp_vol_strain = path_to_sad_fin + '/disp_vol_strain.png'
 	plot_2d_vol(path_to_sad_fin_disp_vol_strain,sad_fin_disp,sad_fin_vol_strain)
 	
-	plot_histogram_2(path_to_curr_event + "/disp_histogram.png", [init_sad_disp,sad_fin_disp])
-	plot_histogram_2(path_to_curr_event + "/shear_strain_histogram.png", [init_sad_shear_strain,sad_fin_shear_strain])
-	plot_histogram_2(path_to_curr_event + "/vol_strain_histogram.png", [init_sad_vol_strain,sad_fin_vol_strain])
+	path_to_init_fin_disp_strain = path_to_init_fin + '/disp_shear_strain.png'
+	plot_2d_shear(path_to_init_fin_disp_strain,init_fin_disp,init_fin_shear_strain)
+	
+	path_to_init_fin_disp_vol_strain = path_to_init_fin + '/disp_vol_strain.png'
+	plot_2d_vol(path_to_init_fin_disp_vol_strain,init_fin_disp,init_fin_vol_strain)
+	
+	
+	plot_histogram_2(path_to_curr_event + "/disp_histogram.png", [init_sad_disp,sad_fin_disp,init_fin_disp])
+	plot_histogram_2(path_to_curr_event + "/shear_strain_histogram.png", [init_sad_shear_strain,sad_fin_shear_strain,init_fin_shear_strain])
+	plot_histogram_2(path_to_curr_event + "/vol_strain_histogram.png", [init_sad_vol_strain,sad_fin_vol_strain,init_fin_vol_strain])
 	
 	print "done plotting for the current event:"+ event[0] + "/event_" + init + "_" + sad + "_" + fin
 			

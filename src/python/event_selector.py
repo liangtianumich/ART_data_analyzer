@@ -9,7 +9,7 @@ import numpy as np
 import multiprocessing as mp
 from util import event_energy, Configuration, event_distance
 
-def event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim, num_of_proc=1, save_results=True, re_calc = False):
+def event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim, identical_event_criteria, num_of_proc=1, save_results=True, re_calc = False):
 	"""
 	this function implement stage 2 criteria 3 to remove the redundancy of event pairs
 	it will sort all event pair and finally save the unique events into
@@ -41,7 +41,7 @@ def event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim, num_of_pro
 	for i in xrange(num_of_selected_events):
 		#pool.map(partial(identical_events,path_to_data_dir=path_to_data_dir,), tests_list)
 		for j in xrange(i+1,num_of_selected_events):
-			is_same = identical_events(path_to_data_dir, all_selected_events[i], all_selected_events[j], box_dim)
+			is_same = identical_events(path_to_data_dir, all_selected_events[i], all_selected_events[j], box_dim, identical_event_criteria)
 			if is_same:
 				removed_index.append(j)
 	removed_index = np.unique(removed_index)
@@ -76,16 +76,20 @@ def get_list_of_selected_events_str(path_to_data_dir, list_of_test_id):
 				all_selected_events.append(event_str)
 	return all_selected_events
 
-def identical_events(path_to_data_dir,event_1, event_2, box_dim):
+def identical_events(path_to_data_dir,event_1, event_2, box_dim, identical_event_criteria={"D_init_fin": 0.1, "E_init_fin":0.005, "E_init_sad":0.01}):
 	"""
 	this function return True if two events are identical
 	
 	criteria 3:
-	for the remaining refined searches, any pair is redundant if 
-	abs(D(fin - init)_1-D(fin-init)_2) < 0.1 (A)
-	AND abs(E(fin-init)_1-E(fin-init)_2) < 0.005(eV)
-	AND abs(E(sad-init)_1-E(sad-init)_2) < 0.01(eV)
+	for the remaining refined searches, any pair is redundant if
+	abs(D(fin - init)_1-D(fin-init)_2) < D_init_fin e.g. 0.1 (A) for Cu-Zr
+	AND abs(E(fin-init)_1-E(fin-init)_2) < E_init_fin e.g. 0.005(eV) for Cu-Zr
+	AND abs(E(sad-init)_1-E(sad-init)_2) < E_init_sad e.g. 0.01(eV) for Cu-Zr
 	"""
+	D_init_fin = identical_event_criteria["D_init_fin"]
+	E_init_fin = identical_event_criteria["E_init_fin"]
+	E_init_sad = identical_event_criteria["E_init_sad"]
+	
 	path_to_event_1_test = path_to_data_dir + event_1[0]
 	path_to_event_2_test = path_to_data_dir + event_2[0]
 	event_1_init,event_1_sad, event_1_fin = event_1[1][0],event_1[1][1],event_1[1][2]
@@ -99,15 +103,15 @@ def identical_events(path_to_data_dir,event_1, event_2, box_dim):
 	
 	event_2_init_eng,event_2_sad_eng,event_2_fin_eng= event_2_energy[event_2_init],event_2_energy[event_2_sad],event_2_energy[event_2_fin]
 	
-	cond_1 = abs(event_1_fin_eng - event_1_init_eng - (event_2_fin_eng - event_2_init_eng)) < 0.005
+	cond_1 = abs(event_1_fin_eng - event_1_init_eng - (event_2_fin_eng - event_2_init_eng)) < E_init_fin 
 	
-	cond_2 = abs(event_1_sad_eng - event_1_init_eng - (event_2_sad_eng - event_2_init_eng)) < 0.01
+	cond_2 = abs(event_1_sad_eng - event_1_init_eng - (event_2_sad_eng - event_2_init_eng)) < E_init_sad
 	
 	distance_1 = event_distance(path_to_event_1_test, [event_1_init,event_1_sad, event_1_fin],box_dim)
 	
 	distance_2 = event_distance(path_to_event_2_test, [event_2_init,event_2_sad, event_2_fin],box_dim)
 	
-	cond_3 = abs(distance_1 -distance_2) < 0.1
+	cond_3 = abs(distance_1 -distance_2) < D_init_fin
 	
 	if cond_1 and cond_2 and cond_3:
 		return True
