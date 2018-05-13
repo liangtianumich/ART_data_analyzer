@@ -65,7 +65,7 @@ def single_event_strain_visualization(path_to_data_dir, event):
 	path_to_sad_fin = path_to_curr_event + "/sad_fin"
 	path_to_init_fin = path_to_curr_event + "/init_fin"
 	
-	path_to_init_sad_strain = path_to_init_sad  + "/strain_results_dict.pkl"
+	path_to_init_sad_strain = path_to_init_sad + "/strain_results_dict.pkl"
 	path_to_init_sad_displacement = path_to_init_sad + "/displacement_results_dict.pkl"
 	
 	path_to_sad_fin_strain = path_to_sad_fin  + "/strain_results_dict.pkl"
@@ -107,9 +107,9 @@ def single_event_strain_visualization(path_to_data_dir, event):
 	plot_2d_vol(path_to_init_fin_disp_vol_strain,init_fin_disp,init_fin_vol_strain)
 	
 	
-	plot_histogram_2(path_to_curr_event + "/disp_histogram.png", [init_sad_disp,sad_fin_disp,init_fin_disp])
-	plot_histogram_2(path_to_curr_event + "/shear_strain_histogram.png", [init_sad_shear_strain,sad_fin_shear_strain,init_fin_shear_strain])
-	plot_histogram_2(path_to_curr_event + "/vol_strain_histogram.png", [init_sad_vol_strain,sad_fin_vol_strain,init_fin_vol_strain])
+	plot_histogram_3(path_to_curr_event + "/disp_histogram.png", [init_sad_disp,sad_fin_disp,init_fin_disp])
+	plot_histogram_3(path_to_curr_event + "/shear_strain_histogram.png", [init_sad_shear_strain,sad_fin_shear_strain,init_fin_shear_strain])
+	plot_histogram_3(path_to_curr_event + "/vol_strain_histogram.png", [init_sad_vol_strain,sad_fin_vol_strain,init_fin_vol_strain])
 	
 	print "done plotting for the current event:"+ event[0] + "/event_" + init + "_" + sad + "_" + fin
 			
@@ -132,11 +132,11 @@ def strain_events_stats_visualization(path_to_data_dir, list_of_test_id):
 		
 	"""
 	# set up the statistical quantities for the tests
-	disp_ave, disp_std, disp_max , disp_ave_2, disp_std_2, disp_max_2 = [], [], [], [], [], []
+	disp_ave, disp_std, disp_max , disp_ave_2, disp_std_2, disp_max_2, disp_ave_3, disp_std_3, disp_max_3 = [], [], [], [], [], [], [], [], []
 	
-	shear_ave, shear_std, shear_max, shear_ave_2, shear_std_2, shear_max_2 = [], [], [], [], [], []
+	shear_ave, shear_std, shear_max, shear_ave_2, shear_std_2, shear_max_2, shear_ave_3, shear_std_3, shear_max_3 = [], [], [], [], [], [], [], [], []
 	
-	vol_ave, vol_std, vol_max, vol_ave_2, vol_std_2, vol_max_2 = [], [], [], [], [], []
+	vol_ave, vol_std, vol_max, vol_ave_2, vol_std_2, vol_max_2, vol_ave_3, vol_std_3, vol_max_3 = [], [], [], [], [], [], [], [], []
 	
 	for i in list_of_test_id:
 		path_to_curr_test = path_to_data_dir + "test%s"%i
@@ -148,6 +148,7 @@ def strain_events_stats_visualization(path_to_data_dir, list_of_test_id):
 			for event in result:
 				init_sad = event[0]
 				sad_fin = event[1]
+				init_fin = event[2]
 				# calculate the statistics of init_sad and sad_fin		
 				disp_ave.append(init_sad["ave"][2])
 				disp_std.append(init_sad["std"][2])
@@ -172,18 +173,31 @@ def strain_events_stats_visualization(path_to_data_dir, list_of_test_id):
 				vol_ave_2.append(sad_fin["ave"][0])
 				vol_std_2.append(sad_fin["std"][0])
 				vol_max_2.append(sad_fin["max"][0])
+				
+					
+				disp_ave_3.append(init_fin["ave"][2])
+				disp_std_3.append(init_fin["std"][2])
+				disp_max_3.append(init_fin["max"][2])
+				
+				shear_ave_3.append(init_fin["ave"][1])
+				shear_std_3.append(init_fin["std"][1])
+				shear_max_3.append(init_fin["max"][1])
+				
+				vol_ave_3.append(init_fin["ave"][0])
+				vol_std_3.append(init_fin["std"][0])
+				vol_max_3.append(init_fin["max"][0])
 	
-	plot_histogram_2(path_to_data_dir+"/disp_ave.png", [disp_ave,disp_ave_2])
-	plot_histogram_2(path_to_data_dir+"/disp_std.png", [disp_std,disp_std_2])
-	plot_histogram_2(path_to_data_dir+"/disp_max.png", [disp_max,disp_max_2])
+	plot_histogram_3(path_to_data_dir+"/disp_ave.png", [disp_ave,disp_ave_2,disp_ave_3])
+	plot_histogram_3(path_to_data_dir+"/disp_std.png", [disp_std,disp_std_2,disp_std_3])
+	plot_histogram_3(path_to_data_dir+"/disp_max.png", [disp_max,disp_max_2,disp_max_3])
 	
-	plot_histogram_2(path_to_data_dir+"/shear_ave.png", [shear_ave,shear_ave_2])
-	plot_histogram_2(path_to_data_dir+"/shear_std.png", [shear_std,shear_std_2])
-	plot_histogram_2(path_to_data_dir+"/shear_max.png", [shear_max,shear_max_2])
+	plot_histogram_3(path_to_data_dir+"/shear_ave.png", [shear_ave,shear_ave_2,shear_ave_3])
+	plot_histogram_3(path_to_data_dir+"/shear_std.png", [shear_std,shear_std_2,shear_std_3])
+	plot_histogram_3(path_to_data_dir+"/shear_max.png", [shear_max,shear_max_2,shear_max_3])
 	
-	plot_histogram_2(path_to_data_dir+"/vol_ave.png", [vol_ave,vol_ave_2])
-	plot_histogram_2(path_to_data_dir+"/vol_std.png", [vol_std,vol_std_2])
-	plot_histogram_2(path_to_data_dir+"/vol_max.png", [vol_max,vol_max_2])	
+	plot_histogram_3(path_to_data_dir+"/vol_ave.png", [vol_ave,vol_ave_2,vol_ave_3])
+	plot_histogram_3(path_to_data_dir+"/vol_std.png", [vol_std,vol_std_2,vol_std_3])
+	plot_histogram_3(path_to_data_dir+"/vol_max.png", [vol_max,vol_max_2,vol_max_3])	
 	print "done plotting strain statistics for all interested tests!"
 
 def scatter3d(x,y,z, cs, colorsMap='jet'):

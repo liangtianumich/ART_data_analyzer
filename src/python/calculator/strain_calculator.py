@@ -287,7 +287,7 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 		init_fin_event_result['max']=[np.max(init_fin[0]),np.max(init_fin[1]),np.max(init_fin[2])]
 		
 		
-		test_results.append((init_sad_event_result,sad_fin_event_result,init_sad_event_result))
+		test_results.append((init_sad_event_result,sad_fin_event_result,init_fin_event_result))
 		
 		#path_to_init_sad_disp_strain = path_to_init_sad + '/disp_shear_strain.png'
 		#plot_2d_shear(path_to_init_sad_disp_strain,init_sad[2], init_sad[1])
