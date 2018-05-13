@@ -16,7 +16,8 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 	"""
 	cut_off_distance = input_param["cut_off"]
 	box_dim = input_param['box_dim']
-	num_of_tests = input_param['num_of_tests']
+	#num_of_tests = input_param['num_of_tests']
+	list_of_test_id = input_param['list_of_test_id']
 	num_of_proc = input_param['num_of_proc']
 	re_calc = input_param["re_calc"]
 	# default None calculating all atoms, 
@@ -25,7 +26,8 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 	atom_list = input_param["atom_list"]
 	
 	tests_list = []
-	for i in xrange(num_of_tests+1):
+	#for i in xrange(num_of_tests+1):
+	for i in list_of_test_id:
 		path_to_curr_test = path_to_data_dir + "test%s"%i
 		if os.path.exists(path_to_curr_test):
 			tests_list.append(path_to_curr_test)
@@ -216,11 +218,29 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 	if event_list is None:
 		return None
 	
+	# if final_selected_events.json exists, this means that event redudancy check
+	# happens before calculating all strains
+	# check if each event is in the final_selected_events.json file
+	path_to_data_dir,test_id = os.path.split(test)
+	path_to_final_events = path_to_data_dir + "/final_selected_events.json"
+	event_list = event_list.values()
+	
+	
+	if os.path.exists(path_to_final_events):
+		target_events = []
+		final_events = json.load(open(path_to_final_events,'r'))
+		for event in final_events:
+			if event[0] == test_id:
+				if event[1] in event_list:
+					target_events.append(event[1])
+		event_list = target_events
+					
+	
 	# list in the order of vol_strain, shear_strain, disp
 	test_results = []
 	
 	# for each event, init to sad and sad to fin
-	for (index,event) in event_list.items():
+	for event in event_list:
 		init_sad_event_result = dict()
 		sad_fin_event_result = dict()
 		init_fin_event_result = dict()
