@@ -7,9 +7,10 @@ import json
 import os
 import numpy as np
 import multiprocessing as mp
+from functools import partial
 from util import event_energy, Configuration, event_distance
 
-def event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim, identical_event_criteria, num_of_proc=1, save_results=True, re_calc = False):
+def event_redudancy_check(path_to_data_dir, input_param, save_results=True, re_calc = False):
 	"""
 	this function implement stage 2 criteria 3 to remove the redundancy of event pairs
 	it will sort all event pair and finally save the unique events into
@@ -21,12 +22,20 @@ def event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim, identical_
 	AND abs(E(fin-init)_1-E(fin-init))_2 < 0.005(eV)
 	AND abs(E(sad-init)_1-E(sad-init))_2 < 0.01(eV)
 	"""
+	list_of_test_id = input_param["list_of_test_id"]
+	box_dim = input_param["box_dim"]
+	identical_event_criteria = input_param["identical_event_criteria"]
+	if "num_of_proc" in input_param and "re_calc" in input_param:
+		num_of_proc = input_param["num_of_proc"]
+		re_calc = input_param["re_calc"]
+	
 	if re_calc is False:
 		path_to_final_selected_events = path_to_data_dir + "final_selected_events.json"
 		if os.path.exists(path_to_final_selected_events):
 			print "reduadancy has already been checked, total number of final selected events:"
 			final_events= json.load(open(path_to_final_selected_events,'r'))
 			print len(final_events)
+			return
 			
 		
 	all_selected_events = get_list_of_selected_events_str(path_to_data_dir, list_of_test_id)
@@ -39,11 +48,17 @@ def event_redudancy_check(path_to_data_dir, list_of_test_id, box_dim, identical_
 	removed_index = []
 	pool = mp.Pool(processes = num_of_proc)
 	for i in xrange(num_of_selected_events):
-		#pool.map(partial(identical_events,path_to_data_dir=path_to_data_dir,), tests_list)
-		for j in xrange(i+1,num_of_selected_events):
-			is_same = identical_events(path_to_data_dir, all_selected_events[i], all_selected_events[j], box_dim, identical_event_criteria)
-			if is_same:
-				removed_index.append(j)
+		tests_list = [all_selected_events[j] for j in xrange(i+1,num_of_selected_events)]
+		result = pool.map(partial(identical_events,path_to_data_dir=path_to_data_dir,event_1 = all_selected_events[i], box_dim=box_dim,identical_event_criteria=identical_event_criteria), tests_list)
+		#for j in xrange(i+1,num_of_selected_events):
+		#	is_same = identical_events(path_to_data_dir, all_selected_events[i], all_selected_events[j], box_dim, identical_event_criteria)
+		#	if is_same:
+		#		removed_index.append(j)
+		k=0
+		for x in result:
+			if x == True:
+				removed_index.append(k+i+1)
+			k = k+1
 	removed_index = np.unique(removed_index)
 	# final_selected_events = np.delete(all_selected_events, removed_index).tolist()
 	final_selected_events = [i for j, i in enumerate(all_selected_events) if j not in removed_index]
@@ -76,7 +91,7 @@ def get_list_of_selected_events_str(path_to_data_dir, list_of_test_id):
 				all_selected_events.append(event_str)
 	return all_selected_events
 
-def identical_events(path_to_data_dir,event_1, event_2, box_dim, identical_event_criteria={"D_init_fin": 0.1, "E_init_fin":0.005, "E_init_sad":0.01}):
+def identical_events(event_2, path_to_data_dir,event_1, box_dim, identical_event_criteria={"D_init_fin": 0.1, "E_init_fin":0.005, "E_init_sad":0.01}):
 	"""
 	this function return True if two events are identical
 	
