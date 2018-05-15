@@ -7,9 +7,9 @@ import pickle
 import os
 import json
 import re
-import ast
-import inspect
-import multiprocessing as mp
+#import pathos.helpers as multiprocessing
+from pathos.multiprocessing import ProcessingPool as Pool
+#import multiprocessing as mp
 from data_reader import *
 from periodic_kdtree import PeriodicCKDTree
 
@@ -294,6 +294,11 @@ def event_strain_disp(event_strain_dict,event_disp_dict):
 		disp.append(event_disp_dict[i])
 	return (vol_strain, shear_strain, disp)
 
+#def operation(event):
+#	"""
+#	"""
+	
+	
 def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc=1):
 	"""
 	this function perform an operation function on each events listed in tests in
@@ -303,7 +308,7 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 			an operation acting on a single event
 	"""
 	test_id = ["test%s"%i for i in list_of_test_id]
-	pool = mp.Pool(processes = num_of_proc)
+	pool = Pool(processes = num_of_proc)
 	path_to_final_selected_events = path_to_data_dir + "final_selected_events.json"
 	if os.path.exists(path_to_final_selected_events):
 		final_selected_events = json.load(open(path_to_final_selected_events,"r"))
@@ -330,15 +335,18 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 		#result_list = pool.map(operation,final_interested_events)
 			else:
 				print "skip current test:", "test%s"%test, "there is no selected events"
+	
 	# check if the function operation contains explicit return statement
-	contains_explicit_return = any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(operation))))
-	if contains_explicit_return is True:
-		result_list = pool.map(operation,final_interested_events)
-		print "done operating for the interested tests whose test_id is in the list",list_of_test_id
-		return result_list
-	else:
-		pool.map(operation,final_interested_events)
-		print "done operating for the interested tests whose test_id is in the list",list_of_test_id
+	#contains_explicit_return = any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(operation))))
+	#if contains_explicit_return is True:
+	
+	# if function operation has no return value, it will return a list of Nones
+	result_list = pool.map(operation,final_interested_events)
+	print "done operating for the interested tests whose test_id is in the list",list_of_test_id
+	return result_list
+	#else:
+	#	pool.map(operation,final_interested_events)
+	#	print "done operating for the interested tests whose test_id is in the list",list_of_test_id
 
 class results(object):
 	def __init__(self, path_test_dir, path_to_data):

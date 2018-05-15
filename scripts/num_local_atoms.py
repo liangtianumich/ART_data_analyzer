@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import pickle
 import multiprocessing as mp
 from correlation_model.correlation_model import events_correlation_model
 

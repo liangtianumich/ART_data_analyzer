@@ -1,6 +1,9 @@
 """
 this module implements correlation model
 """
+import os
+import pickle
+import numpy as np
 import multiprocessing as mp
 from sklearn import linear_model
 from visualizer.strain_visualizer import plot_histogram_3
@@ -32,7 +35,7 @@ def events_correlation_model(path_to_data_dir, input_param):
 		init_fin.append(event_res[2])
 	path_to_image = path_to_data_dir + "/num_local_atoms.png"
 	plot_histogram_3(path_to_image,[init_sad,sad_fin,init_fin])
-	print "the average number of local atoms"
+	print "the average number of local atoms:", sum(init_fin)*1.0/len(init_fin)
 	print "done plotting for number of local atoms for all final selected events in interested tests"
 
 def single_event_correlation(event,path_to_data_dir,model,feature,target):
@@ -65,9 +68,9 @@ def single_event_correlation(event,path_to_data_dir,model,feature,target):
 	
 	#path_to_init_fin_strain_results = path_to_init_fin + "/strain_results_dict.pkl"
 	#path_to_init_fin_displacement = path_to_init_fin + "/displacement_results_dict.pkl"
-	init_sad_num = outlier_correlation_model(model,init_sad_X,init_sad_y)
-	sad_fin_num = outlier_correlation_model(model,sad_fin_X,sad_fin_y)
-	init_fin_num = outlier_correlation_model(model,init_fin_X,init_fin_y)
+	init_sad_num = outlier_correlation_model(init_sad_X,init_sad_y,model)
+	sad_fin_num = outlier_correlation_model(sad_fin_X,sad_fin_y,model)
+	init_fin_num = outlier_correlation_model(init_fin_X,init_fin_y,model)
 
 	return [init_sad_num,sad_fin_num,init_fin_num]
 	
@@ -122,7 +125,7 @@ def outlier_linear_model(feature,target,model=None):
 	#If base_estimator is None, then base_estimator=sklearn.linear_model.LinearRegression() is used 
 	# for target values of dtype float
 	if model is None:
-		model = linear_model.RANSACRegressor()
+		model = linear_model.RANSACRegressor(random_state=1)
 	model.fit(feature,target)
 	inlier_mask = model.inlier_mask_
 	outlier_mask = np.logical_not(inlier_mask)
