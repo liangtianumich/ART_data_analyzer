@@ -13,7 +13,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cmx
 from mpl_toolkits.mplot3d import Axes3D
-from util import event_strain_disp
+from util import event_strain_disp,operation_on_events
 # install mpl_toolkits module may need to add the __init__.py manually in
 # site-packages/ to make it a package, if installed mpl_toolkits
 # if mpl_tookits package not included along with matplotlib, sudo pip install -U matplotlib
@@ -21,7 +21,12 @@ from util import event_strain_disp
 # it upgrades successfully, then sys.path updated and importlib.import_module('mpl_toolkits').__path__
 # points to the symlink, brew remove python@2 --ignore-dependencies
 # to remove the python2 dependencies created by brew to use system default python dependencies
-def events_strain_visualization(path_to_data_dir, list_of_test_id):
+def events_strain_visualization(path_to_data_dir, input_param):
+	list_of_test_id = input_param["list_of_test_id"]
+	num_of_proc = input_param["num_of_proc"]
+	operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_strain_visualization(path_to_data_dir,x), num_of_proc)
+
+def events_strain_visualization_old(path_to_data_dir, list_of_test_id):
 	"""
 	this function visualize/plot the strains for each events listed in tests in
 	list_of_test_id
@@ -53,7 +58,12 @@ def events_strain_visualization(path_to_data_dir, list_of_test_id):
 			else:
 				print "skip current test:", "test%s"%test, "there is no selected events"	
 	print "done plotting for the interested tests whose test_id is in the list",list_of_test_id
-		
+	
+#def single_event_strain_visualization_wrapper(**args):
+#	path_to_data_dir = args[0]
+#	event = args[1]
+#	single_event_strain_visualization(path_to_data_dir, event)
+	
 def single_event_strain_visualization(path_to_data_dir, event):
 	"""
 	this function plot the shear strain volumetric strain and displacement for a single event 
@@ -114,10 +124,90 @@ def single_event_strain_visualization(path_to_data_dir, event):
 	print "done plotting for the current event:"+ event[0] + "/event_" + init + "_" + sad + "_" + fin
 			
 			
+def strain_events_stats_visualization(path_to_data_dir, input_param):
+	"""
+	use this new version of strain_events_stats_visualization need to reran the
+	new strain_calc.py to overwrite events_stats.pkl with added event_state
+	"""
+	list_of_test_id = input_param["list_of_test_id"]
+	num_of_proc = input_param["num_of_proc"]
+	all_events_results = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_strain_stats(path_to_data_dir,x), num_of_proc)
 	
 	
+	disp_ave, disp_std, disp_max , disp_ave_2, disp_std_2, disp_max_2, disp_ave_3, disp_std_3, disp_max_3 = [], [], [], [], [], [], [], [], []
 	
-def strain_events_stats_visualization(path_to_data_dir, list_of_test_id):
+	shear_ave, shear_std, shear_max, shear_ave_2, shear_std_2, shear_max_2, shear_ave_3, shear_std_3, shear_max_3 = [], [], [], [], [], [], [], [], []
+	
+	vol_ave, vol_std, vol_max, vol_ave_2, vol_std_2, vol_max_2, vol_ave_3, vol_std_3, vol_max_3 = [], [], [], [], [], [], [], [], []
+	
+	for event_res in all_events_results:
+		init_sad = event_res[0]
+		sad_fin = event_res[1]
+		init_fin = event_res[2]
+		# calculate the statistics of init_sad and sad_fin		
+		disp_ave.append(init_sad["ave"][2])
+		disp_std.append(init_sad["std"][2])
+		disp_max.append(init_sad["max"][2])
+		
+		shear_ave.append(init_sad["ave"][1])
+		shear_std.append(init_sad["std"][1])
+		shear_max.append(init_sad["max"][1])
+		
+		vol_ave.append(init_sad["ave"][0])
+		vol_std.append(init_sad["std"][0])
+		vol_max.append(init_sad["max"][0])
+		
+		disp_ave_2.append(sad_fin["ave"][2])
+		disp_std_2.append(sad_fin["std"][2])
+		disp_max_2.append(sad_fin["max"][2])
+		
+		shear_ave_2.append(sad_fin["ave"][1])
+		shear_std_2.append(sad_fin["std"][1])
+		shear_max_2.append(sad_fin["max"][1])
+		
+		vol_ave_2.append(sad_fin["ave"][0])
+		vol_std_2.append(sad_fin["std"][0])
+		vol_max_2.append(sad_fin["max"][0])
+		
+		disp_ave_3.append(init_fin["ave"][2])
+		disp_std_3.append(init_fin["std"][2])
+		disp_max_3.append(init_fin["max"][2])
+		
+		shear_ave_3.append(init_fin["ave"][1])
+		shear_std_3.append(init_fin["std"][1])
+		shear_max_3.append(init_fin["max"][1])
+		
+		vol_ave_3.append(init_fin["ave"][0])
+		vol_std_3.append(init_fin["std"][0])
+		vol_max_3.append(init_fin["max"][0])
+	plot_histogram_3(path_to_data_dir+"/disp_ave.png", [disp_ave,disp_ave_2,disp_ave_3])
+	plot_histogram_3(path_to_data_dir+"/disp_std.png", [disp_std,disp_std_2,disp_std_3])
+	plot_histogram_3(path_to_data_dir+"/disp_max.png", [disp_max,disp_max_2,disp_max_3])
+	
+	plot_histogram_3(path_to_data_dir+"/shear_ave.png", [shear_ave,shear_ave_2,shear_ave_3])
+	plot_histogram_3(path_to_data_dir+"/shear_std.png", [shear_std,shear_std_2,shear_std_3])
+	plot_histogram_3(path_to_data_dir+"/shear_max.png", [shear_max,shear_max_2,shear_max_3])
+	
+	plot_histogram_3(path_to_data_dir+"/vol_ave.png", [vol_ave,vol_ave_2,vol_ave_3])
+	plot_histogram_3(path_to_data_dir+"/vol_std.png", [vol_std,vol_std_2,vol_std_3])
+	plot_histogram_3(path_to_data_dir+"/vol_max.png", [vol_max,vol_max_2,vol_max_3])	
+	print "done plotting strain statistics for all interested tests!"
+		
+def single_event_strain_stats(path_to_data_dir,event):
+	
+	path_to_curr_test = path_to_data_dir + event[0]
+	path_to_curr_event = path_to_curr_test + "/results/events_stats.pkl"
+	if os.path.exists(path_to_curr_event):
+		result = pickle.load(open(path_to_curr_event,'r'))
+		for event_res in result:
+			# event_res[3] is the event state, if equal to curr event state: event
+			if event_res[3] == event:
+				init_sad = event_res[0]
+				sad_fin = event_res[1]
+				init_fin = event_res[2]
+	return (init_sad, sad_fin, init_fin)	
+	
+def strain_events_stats_visualization_old(path_to_data_dir, list_of_test_id):
 	"""
 	this function visualize the strain statistics from tests listed in
 	list_of_test_id, the user can customize the tests they want to know

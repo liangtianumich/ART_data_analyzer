@@ -5,7 +5,11 @@ import numpy as np
 import pandas as pd
 import pickle
 import os
+import json
 import re
+import ast
+import inspect
+import multiprocessing as mp
 from data_reader import *
 from periodic_kdtree import PeriodicCKDTree
 
@@ -289,6 +293,52 @@ def event_strain_disp(event_strain_dict,event_disp_dict):
 		shear_strain.append(event_strain_dict[i][1])
 		disp.append(event_disp_dict[i])
 	return (vol_strain, shear_strain, disp)
+
+def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc=1):
+	"""
+	this function perform an operation function on each events listed in tests in
+	list_of_test_id
+	Input arguments:
+		operation: function
+			an operation acting on a single event
+	"""
+	test_id = ["test%s"%i for i in list_of_test_id]
+	pool = mp.Pool(processes = num_of_proc)
+	path_to_final_selected_events = path_to_data_dir + "final_selected_events.json"
+	if os.path.exists(path_to_final_selected_events):
+		final_selected_events = json.load(open(path_to_final_selected_events,"r"))
+		final_interested_events = []
+		for event in final_selected_events:
+			if event[0] in test_id:
+				final_interested_events.append(event)
+		#for event in final_interested_events:
+			#operation(path_to_data_dir, event)
+			#operation(event)
+		#result_list = pool.map(operation,final_interested_events)
+	else:
+		final_interested_events = []
+		for test in list_of_test_id:
+			path_to_test_result = path_to_data_dir + "test%s"%test +"/results"
+			path_to_event_list = path_to_test_result + "/selected_events.json"
+			if os.path.exists(path_to_event_list):
+				event_list = json.load(open(path_to_event_list,"r"))
+				for value in event_list.values():
+					event = ["test%s"%test,[value[0],value[1],value[2]]]
+					final_interested_events.append(event)
+					#operation(path_to_data_dir, event)
+					#operation(event)
+		#result_list = pool.map(operation,final_interested_events)
+			else:
+				print "skip current test:", "test%s"%test, "there is no selected events"
+	# check if the function operation contains explicit return statement
+	contains_explicit_return = any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(operation))))
+	if contains_explicit_return is True:
+		result_list = pool.map(operation,final_interested_events)
+		print "done operating for the interested tests whose test_id is in the list",list_of_test_id
+		return result_list
+	else:
+		pool.map(operation,final_interested_events)
+		print "done operating for the interested tests whose test_id is in the list",list_of_test_id
 
 class results(object):
 	def __init__(self, path_test_dir, path_to_data):
