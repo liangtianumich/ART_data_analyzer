@@ -4,12 +4,33 @@ this module implements correlation model
 import os
 import pickle
 import numpy as np
+import matplotlib.pyplot as plt
 import multiprocessing as mp
 from sklearn import linear_model
 from visualizer.strain_visualizer import plot_histogram_3
 from util import operation_on_events
 
-def events_correlation_model(path_to_data_dir, input_param):
+def events_local_atoms_threshold_sweep(path_to_data_dir, input_param):
+	# do more on the number of events sweep also and min_sample sweep
+	
+	# these two parameters are list that containg all parameters need to be sweeped
+	#min_samples = input_param["residual_threshold"]
+	residual_threshold = input_param["residual_threshold"]
+	ave_local_atoms = []
+	print "residual_threshold:",residual_threshold
+	for x in residual_threshold:
+		ave_local_atoms.append(events_local_atoms(path_to_data_dir, input_param, x))
+	
+	plt.figure()
+	path_to_image = path_to_data_dir + "/ave_num_local_atoms_residual_threshold.png"
+	plt.plot(residual_threshold,ave_local_atoms,'ro',markersize=2)
+	plt.xlabel('residual_threshold',fontsize=20)
+	plt.ylabel('ave_num_local_atoms',fontsize=20)
+	plt.savefig(path_to_image)
+	plt.close()
+	print "done residual threshold parameter sweep for average number of locally involved atoms!"
+
+def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
 	"""
 	this function developed correlation model between feature and target using model 
 	for all events available in tests with list_of_test_id
@@ -25,9 +46,9 @@ def events_correlation_model(path_to_data_dir, input_param):
 	feature = input_param["feature"]
 	target = input_param["target"]
 	num_of_proc = input_param["num_of_proc"]
-	
+	print "current residual_threshold:", residual_threshold
 	# perform a function on all events in all tests in list_of_test_id with num_of_proc
-	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_correlation(x,path_to_data_dir,model,feature,target),num_of_proc)
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atoms(x, path_to_data_dir, model, feature, target, residual_threshold),num_of_proc)
 	init_sad,sad_fin,init_fin = [],[],[]
 	for event_res in result_list:
 		init_sad.append(event_res[0])
@@ -35,10 +56,12 @@ def events_correlation_model(path_to_data_dir, input_param):
 		init_fin.append(event_res[2])
 	path_to_image = path_to_data_dir + "/num_local_atoms.png"
 	plot_histogram_3(path_to_image,[init_sad,sad_fin,init_fin])
-	print "the average number of local atoms:", sum(init_fin)*1.0/len(init_fin)
+	ave_num_local_atoms = sum(init_fin)*1.0/len(init_fin)
+	print "the average number of local atoms:", ave_num_local_atoms
 	print "done plotting for number of local atoms for all final selected events in interested tests"
+	return ave_num_local_atoms
 
-def single_event_correlation(event,path_to_data_dir,model,feature,target):
+def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residual_threshold =0.5):
 	"""
 	this function developed correlation model between feature and target
 	for a single event whose state is saved into event
@@ -68,9 +91,9 @@ def single_event_correlation(event,path_to_data_dir,model,feature,target):
 	
 	#path_to_init_fin_strain_results = path_to_init_fin + "/strain_results_dict.pkl"
 	#path_to_init_fin_displacement = path_to_init_fin + "/displacement_results_dict.pkl"
-	init_sad_num = outlier_correlation_model(init_sad_X,init_sad_y,model)
-	sad_fin_num = outlier_correlation_model(sad_fin_X,sad_fin_y,model)
-	init_fin_num = outlier_correlation_model(init_fin_X,init_fin_y,model)
+	init_sad_num = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold)
+	sad_fin_num = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold)
+	init_fin_num = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold)
 
 	return [init_sad_num,sad_fin_num,init_fin_num]
 	
@@ -94,14 +117,14 @@ def get_strain_disp(path_to_test_dir):
 			
 	
 	
-def outlier_correlation_model(feature,target,model=None):
+def outlier_detector(feature,target,model=None,residual_threshold = 0.5):
 	if model == "linear_model" or model == None:
-		return outlier_linear_model(feature,target)
+		return outlier_linear_detector(feature,target,residual_threshold)
 	#if model == "SVM":
 		# use SVM classification to find inliers, then count outliers
 		#
 
-def outlier_linear_model(feature,target,model=None):
+def outlier_linear_detector(feature, target, residual_threshold = 0.5):
 	"""
 	Input argument:
 		model: str
@@ -124,8 +147,9 @@ def outlier_linear_model(feature,target,model=None):
 	#base_model = linear_model.LinearRegression()
 	#If base_estimator is None, then base_estimator=sklearn.linear_model.LinearRegression() is used 
 	# for target values of dtype float
-	if model is None:
-		model = linear_model.RANSACRegressor(random_state=1)
+	
+	residual_threshold = (np.max(target) -np.min(target))*residual_threshold
+	model = linear_model.RANSACRegressor(random_state=1,min_samples=0.1,residual_threshold=residual_threshold)
 	model.fit(feature,target)
 	inlier_mask = model.inlier_mask_
 	outlier_mask = np.logical_not(inlier_mask)
@@ -145,7 +169,7 @@ def feature_to_y(target):
 	"""
 	
 
-def outlier_detector(model,X,y):
+#def outlier_detector(model,X,y):
 	"""
 	Input arguments:
 		model: scikit-learn class

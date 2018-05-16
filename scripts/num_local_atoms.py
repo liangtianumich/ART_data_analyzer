@@ -2,7 +2,7 @@
 import os
 import pickle
 import multiprocessing as mp
-from correlation_model.correlation_model import events_correlation_model
+from correlation_model.correlation_model import events_local_atoms
 
 #input
 path_to_data_dir = os.environ['DATA_DIR']
@@ -15,4 +15,4 @@ model = "linear_model"
 feature = "displacement"
 target =  "shear_strain"
 input_param = {"list_of_test_id":list_of_test_id, "num_of_proc": num_of_proc,"model":model,"feature":feature,"target": target}
-events_correlation_model(path_to_data_dir, input_param)
+events_local_atoms(path_to_data_dir, input_param)
