@@ -348,6 +348,95 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 	#	pool.map(operation,final_interested_events)
 	#	print "done operating for the interested tests whose test_id is in the list",list_of_test_id
 
+
+
+def event_local_atom_index(initial_config_data, triggered_atom_list, num_of_involved_atom, path_to_init_sad, box_dim, save_results = False, re_calc = False):
+	"""
+	this function get the local atom atom_ids as a list of lists (that will be flattern into a single list)
+	from the triggered atoms (whose item_ids in triggered_atom_list) item_ids
+	and num_of_involved atoms NN
+	For example, each trigger atom has k th NN. Then for x triggered atoms,
+	it would be a x element list of lists (each list with k elements). 
+	It will be flattern into a list with k*N, that will be returned 
+	
+	As in NN_finder_all, PeriodicCkDtree can be easily extended to
+	find kth NN for each of the triggered atoms.
+	
+	Currently, only one atom is triggered,
+	In this case, triggered_atom_list is a single element list
+	
+	return: 
+	triggered_atoms_NN_list: a flatten numpy array shape (len(triggered_atom_list)*k, )
+		a numpy contains all NN of all triggered atoms preserving the order
+		of the appearance of triggered atom in triggered_atom_list
+		e.g. 1st k elements in triggered_atoms_NN_list belongs to the 1st
+		element of triggered_atom_list, etc
+	"""
+	
+	path_to_local_nn_results = path_to_init_sad + "/local_nn_results_dict.pkl"
+	
+	if re_calc is False:
+		if os.path.exists(path_to_local_nn_results):
+			print "local nn results already calculated and saved in local_nn_results_dict.pkl file, skip calculation"
+			local_nn = pickle.load(open(path_to_local_nn_results,'r'))
+			return np.array(local_nn.values()).flatten()
+	local_nn = dict()
+	
+	if triggered_atom_list is None:
+		raise Exception("try to calculate the NN for triggered atoms, but no triggered atom has been specified")
+	
+	_data = initial_config_data
+	
+	_interested_data = _data.loc[_data['item'].isin(triggered_atom_list)]
+	
+	result_tree = PeriodicCKDTree(box_dim, _data[['x','y','z']].values)
+	# the query method calculated NN includes the triggered atom itself as the 1st NN with distance 0
+	distances,locations = result_tree.query(_interested_data[['x','y','z']].values, num_of_involved_atom)
+	
+	if len(triggered_atom_list) > 1 and num_of_involved_atom >1:
+		# the 1st element in the return numpy array with shape (k*len(triggered_atom_list),) 
+		# is the triggered atom since the distance to itself is 0, which is the minumum
+		# locations are ordered in terms of their increasing distance to the triggered atom
+		k=0
+		for index,row in _interested_data.iterrows():
+			local_nn[row['item']]= (locations[k]).tolist()
+			k=k+1
+		final_locations = locations.flatten()
+	elif len(triggered_atom_list) == 1:
+		if type(locations) == int or type(locations) == float:
+			locations = np.array([locations])
+		local_nn[triggered_atom_list[0]] = locations.tolist()
+		final_locations = locations
+	else:
+		# len(triggered_atom_list) >1 and num_of_involved_atom == 1:
+		for x in triggered_atom_list:
+			local_nn[x] = [x]
+		final_locations = np.array(triggered_atom_list)
+
+	if save_results is True:
+		with open(path_to_local_nn_results, 'w') as f:
+			pickle.dump(local_nn,f)
+			f.close()
+	return final_locations
+
+def read_from_art_input_file(path_to_test_dir):
+	"""
+	this function get the triggered atom index from the art input file bart.sh
+	"""
+	path_to_test_bart = path_to_test_dir + "/bart.sh"
+	f=open(path_to_test_bart)
+	string=f.read()
+	pattern = "([#\n])setenv[\s]+Central_Atom[\s]+([1-9]+)"
+	#pattern  #setenv Central_Atom        1
+	match = re.search(pattern, string)
+	if match.group(1) == "#":
+		return [1]
+	elif match.group(1) == "\n":
+		return [int(match.group(2))]
+	
+	
+	
+	
 class results(object):
 	def __init__(self, path_test_dir, path_to_data):
 		

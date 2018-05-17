@@ -5,7 +5,7 @@ import multiprocessing as mp
 import pickle
 import json
 from functools import partial
-from util import Atom, NN_finder_all, event_strain_disp
+from util import Atom, NN_finder_all, event_strain_disp,event_local_atom_index,read_from_art_input_file
 from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
@@ -266,7 +266,7 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 		# if atom_list is a dict,e.g. {"local":4}
 		# find the atom list of item_id of 4 local atoms around triggered atom
 		if type(atom_list) == dict():
-			triggered_atom_index = read_from_art_input_file(path_to_test_art_input_file)
+			triggered_atom_index = read_from_art_input_file(test)
 			num_of_involved_atom = atom_list["local"]
 			atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom)
 		
@@ -542,17 +542,6 @@ def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, a
 	
 	return [mu_hydro, mu_Mises]
 
-def event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom):
-	"""
-	this function get the local atom atom_ids as a list from the triggered atoms item_id
-	and num_of_involved atoms
-	"""
-
-def read_from_art_input_file(path_to_test_art_input_file):
-	"""
-	this function get the triggered atom index from the art input file
-	"""
-	
 def from_ds(data):
 	"""
 	used inside iteration for run time reduction
