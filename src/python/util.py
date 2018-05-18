@@ -350,7 +350,7 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 
 
 
-def event_local_atom_index(initial_config_data, triggered_atom_list, num_of_involved_atom, path_to_init_sad, box_dim, save_results = False, re_calc = False):
+def event_local_atom_index(initial_config_data, triggered_atom_list, num_of_involved_atom, path_to_init_sad, box_dim, save_results = True, re_calc = False):
 	"""
 	this function get the local atom atom_ids as a list of lists (that will be flattern into a single list)
 	from the triggered atoms (whose item_ids in triggered_atom_list) item_ids
@@ -366,7 +366,8 @@ def event_local_atom_index(initial_config_data, triggered_atom_list, num_of_invo
 	In this case, triggered_atom_list is a single element list
 	
 	return: 
-	triggered_atoms_NN_list: a flatten numpy array shape (len(triggered_atom_list)*k, )
+	triggered_atoms_NN_list: a list 
+		comes from a flatten numpy array shape (len(triggered_atom_list)*k, )
 		a numpy contains all NN of all triggered atoms preserving the order
 		of the appearance of triggered atom in triggered_atom_list
 		e.g. 1st k elements in triggered_atoms_NN_list belongs to the 1st
@@ -374,12 +375,12 @@ def event_local_atom_index(initial_config_data, triggered_atom_list, num_of_invo
 	"""
 	
 	path_to_local_nn_results = path_to_init_sad + "/local_nn_results_dict.pkl"
-	
+	print "the triggering atoms are:", triggered_atom_list
 	if re_calc is False:
 		if os.path.exists(path_to_local_nn_results):
 			print "local nn results already calculated and saved in local_nn_results_dict.pkl file, skip calculation"
 			local_nn = pickle.load(open(path_to_local_nn_results,'r'))
-			return np.array(local_nn.values()).flatten()
+			return (np.array(local_nn.values()).flatten()).tolist()
 	local_nn = dict()
 	
 	if triggered_atom_list is None:
@@ -399,20 +400,25 @@ def event_local_atom_index(initial_config_data, triggered_atom_list, num_of_invo
 		# locations are ordered in terms of their increasing distance to the triggered atom
 		k=0
 		for index,row in _interested_data.iterrows():
-			local_nn[row['item']]= (locations[k]).tolist()
+			NN_array = np.array((_data.iloc[locations[k]])['item'])
+			local_nn[row['item']]= (NN_array).tolist()
 			k=k+1
-		final_locations = locations.flatten()
+		loc_index = locations.flatten()
+		final_locations = np.array((_data.iloc[loc_index])['item']).tolist()
 	elif len(triggered_atom_list) == 1:
+		
 		if type(locations) == int or type(locations) == float:
-			locations = np.array([locations])
-		local_nn[triggered_atom_list[0]] = locations.tolist()
+			loc_index = np.array([locations])
+		else:
+			loc_index = locations.flatten()
+		locations = np.array((_data.iloc[loc_index])['item']).tolist()
+		local_nn[triggered_atom_list[0]] = locations
 		final_locations = locations
 	else:
 		# len(triggered_atom_list) >1 and num_of_involved_atom == 1:
 		for x in triggered_atom_list:
 			local_nn[x] = [x]
-		final_locations = np.array(triggered_atom_list)
-
+		final_locations = triggered_atom_list
 	if save_results is True:
 		with open(path_to_local_nn_results, 'w') as f:
 			pickle.dump(local_nn,f)

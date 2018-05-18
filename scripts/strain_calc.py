@@ -25,8 +25,8 @@ box_dim = [size, size, size]
 # num_of_tests = 2000
 list_of_test_id = [x+1 for x in xrange(2000)]
 num_of_proc = mp.cpu_count()
-re_calc = False
-atom_list = None
+re_calc = True
+atom_list = {"local":6}
 # this will be part of the input file, but not used by strain_calc.py, in 
 # event_filter.py
 identical_event_criteria = {"D_init_fin": 0.1, "E_init_fin":0.005, "E_init_sad":0.01}

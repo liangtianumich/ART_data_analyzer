@@ -239,6 +239,7 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 	# list in the order of vol_strain, shear_strain, disp
 	test_results = []
 	
+	test_atom_list = atom_list
 	# for each event, init to sad and sad to fin
 	for event in event_list:
 		init_sad_event_result = dict()
@@ -259,16 +260,20 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 		initial_config_data = read_data_from_file(path_to_file_ini)
 		saddle_config_data = read_data_from_file(path_to_file_sad)
 		final_config_data = read_data_from_file(path_to_file_fin)
-		
-		if atom_list is None:
+		if test_atom_list is None:
 			atom_list = (initial_config_data["item"]).tolist()
 		
 		# if atom_list is a dict,e.g. {"local":4}
 		# find the atom list of item_id of 4 local atoms around triggered atom
-		if type(atom_list) == dict():
+		if type(test_atom_list) == dict:
+			print "\n starting local mode strain calculations"
 			triggered_atom_index = read_from_art_input_file(test)
-			num_of_involved_atom = atom_list["local"]
-			atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom)
+			num_of_involved_atom = test_atom_list["local"]
+			# triggered atom is only related to initial config, for sad_fin, 
+			# also use the initial config to find the local NN index
+			atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
+			print "NN item_id list (distance in increasing order including triggering atoms) of the triggering atoms"
+			print "in initial configuration that will be used for all local strain calculations:", atom_list
 		
 		path_to_init_sad = path_to_curr_event + "/init_sad"
 		path_to_sad_fin = path_to_curr_event + "/sad_fin"
@@ -422,7 +427,6 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		item_nn = nn[item]
 		NN_list = item_nn["item"].tolist()
 		NN_list.append(item)
-		
 		# NN_intial is the pandas.Dataframe of intial data with interested_atom and its NN
 		NN_initial = initial_config_data.loc[initial_config_data["item"].isin(NN_list)]
 		
@@ -448,6 +452,7 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 			pickle.dump(disp_results,f)
 			f.close()
 		print "atomic strain and displacement results saved into pkl file as dictionary"
+	print "done strain and displacement calculations!"
 	return (strain, disp_results)
 
 
