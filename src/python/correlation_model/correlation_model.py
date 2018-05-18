@@ -17,17 +17,29 @@ def events_local_atoms_threshold_sweep(path_to_data_dir, input_param):
 	#min_samples = input_param["residual_threshold"]
 	residual_threshold = input_param["residual_threshold"]
 	ave_local_atoms = []
+	ave_k = []
 	print "residual_threshold:",residual_threshold
 	for x in residual_threshold:
-		ave_local_atoms.append(events_local_atoms(path_to_data_dir, input_param, x))
+		curr_result = events_local_atoms(path_to_data_dir, input_param, x)
+		ave_local_atoms.append(curr_result[0])
+		ave_k.append(curr_result[1])
+	fig, ax1 = plt.subplots()
+	ax1.plot(residual_threshold,ave_local_atoms,'rx',markersize=5)
+	ax1.set_xlabel('relative residual_threshold')
+	ax1.set_ylabel('ave_num_local_atoms')
 	
-	plt.figure()
-	path_to_image = path_to_data_dir + "/ave_num_local_atoms_residual_threshold.png"
-	plt.plot(residual_threshold,ave_local_atoms,'ro',markersize=2)
-	plt.xlabel('residual_threshold',fontsize=20)
-	plt.ylabel('ave_num_local_atoms',fontsize=20)
+	ax2 = ax1.twinx()
+	ax2.plot(residual_threshold, ave_k, 'bo')
+	ax2.set_ylabel('ave_slope')
+	path_to_image = path_to_data_dir + "/ave_num_k_local_atoms_residual_threshold.png"
 	plt.savefig(path_to_image)
-	plt.close()
+	#plt.figure()
+	#path_to_image = path_to_data_dir + "/ave_num_local_atoms_residual_threshold.png"
+	#plt.plot(residual_threshold,ave_local_atoms,'rx',markersize=5)
+	#plt.xlabel('residual_threshold',fontsize=20)
+	#plt.ylabel('ave_num_local_atoms',fontsize=20)
+	#plt.savefig(path_to_image)
+	#plt.close()
 	print "done residual threshold parameter sweep for average number of locally involved atoms!"
 
 def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
@@ -49,17 +61,27 @@ def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
 	print "current residual_threshold:", residual_threshold
 	# perform a function on all events in all tests in list_of_test_id with num_of_proc
 	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atoms(x, path_to_data_dir, model, feature, target, residual_threshold),num_of_proc)
-	init_sad,sad_fin,init_fin = [],[],[]
+	init_sad_num,sad_fin_num,init_fin_num = [],[],[]
+	init_sad_k,sad_fin_k,init_fin_k = [],[],[]
 	for event_res in result_list:
-		init_sad.append(event_res[0])
-		sad_fin.append(event_res[1])
-		init_fin.append(event_res[2])
-	path_to_image = path_to_data_dir + "/num_local_atoms.png"
-	plot_histogram_3(path_to_image,[init_sad,sad_fin,init_fin])
-	ave_num_local_atoms = sum(init_fin)*1.0/len(init_fin)
+		init_sad_num.append(event_res[0][0])
+		sad_fin_num.append(event_res[1][0])
+		init_fin_num.append(event_res[2][0])
+		init_sad_k.append(event_res[0][1])
+		sad_fin_k.append(event_res[1][1])
+		init_fin_k.append(event_res[2][1])
+	path_to_image_1 = path_to_data_dir + "/num_local_atoms.png"
+	plot_histogram_3(path_to_image_1,[init_sad_num,sad_fin_num,init_fin_num])
+	
+	path_to_image_2 = path_to_data_dir + "/slope.png"
+	plot_histogram_3(path_to_image_2,[init_sad_k,sad_fin_k,init_fin_k])
+	#ave_num_local_atoms = sum(init_fin)*1.0/len(init_fin)
+	ave_num_local_atoms = np.mean(init_sad_num)
+	ave_slope = np.mean(init_sad_k)
 	print "the average number of local atoms:", ave_num_local_atoms
+	print "the average number of slope:", ave_slope
 	print "done plotting for number of local atoms for all final selected events in interested tests"
-	return ave_num_local_atoms
+	return ave_num_local_atoms, ave_slope
 
 def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residual_threshold =0.5):
 	"""
@@ -91,11 +113,11 @@ def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residua
 	
 	#path_to_init_fin_strain_results = path_to_init_fin + "/strain_results_dict.pkl"
 	#path_to_init_fin_displacement = path_to_init_fin + "/displacement_results_dict.pkl"
-	init_sad_num = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold)
-	sad_fin_num = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold)
-	init_fin_num = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold)
+	init_sad = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold)
+	sad_fin = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold)
+	init_fin = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold)
 
-	return [init_sad_num,sad_fin_num,init_fin_num]
+	return [init_sad,sad_fin,init_fin]
 	
 def get_strain_disp(path_to_test_dir):
 	path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
@@ -154,7 +176,8 @@ def outlier_linear_detector(feature, target, residual_threshold = 0.5):
 	inlier_mask = model.inlier_mask_
 	outlier_mask = np.logical_not(inlier_mask)
 	num_of_outlier = sum(outlier_mask)
-	return num_of_outlier
+	slope = model.estimator_.coef_[0][0]
+	return (num_of_outlier,slope)
 
 def feature_to_X(feature):
 	"""
