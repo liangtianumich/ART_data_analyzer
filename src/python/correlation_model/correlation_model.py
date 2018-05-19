@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import multiprocessing as mp
 from sklearn import linear_model
 from visualizer.strain_visualizer import plot_histogram_3
-from util import operation_on_events
+from util import operation_on_events, Configuration, state_energy_barrier
 
 def events_local_atoms_threshold_sweep(path_to_data_dir, input_param):
 	# do more on the number of events sweep also and min_sample sweep
@@ -192,31 +192,44 @@ def feature_to_y(target):
 	"""
 	
 
-#def outlier_detector(model,X,y):
-	"""
-	Input arguments:
-		model: scikit-learn class
-			choice of scikit-learn class object
-		X : numpy array or sparse matrix of shape [n_samples,n_features] Training data
-		y: numpy array of shape [n_samples,n_targets] Target values Will be cast to dtype if necessary
-	return:
-		number of outlier points:
-		
-		r_cut:
-		
-		index of data outlier points:
-	"""
-	
 
-
-def PEL_config_distance_activiation_energy(path_to_test_dir, event_state):
+def basin_config_distance_activation_energy(path_to_test_dir, event_state):
 	"""
-	event_state is a list containing the strings of all states,
-	init_state, sad_state, fin_state, with intermediate states
+	each test is corresponding to the triggering of a single atom, which search the
+	potential energy trajectory around that basin of that atom located
 	
+	event_state is a list of ordered states (corresponding to their appearance order), 
+	each event state contains the strings of all states, init_state, sad_state, fin_state, 
+	with intermediate states that can be obtained from ART output
 	"""
 	# trajectory
+	i=0
+	config_distance, eng_barrier = []
+	for state in event_state:
+		
+		if i == 0:
+			init = state
+			path_to_init_file = path_to_test_dir + '/' + init + ".dump"
+			init_config = Configuration(path_to_init_file)
+			config_distance.append(0)
+			eng_barrier.append(0)
+		else:
+			path_to_state_file = path_to_test_dir + '/' + state + ".dump"
+			
+			state_config = Configuration(path_to_state_file)
+			
+			state_act_eng = state_energy_barrier(path_to_test_dir, init, state)
+			
+			state_distance = Configuration.distance_pbc(state_config, init_config)
+			
+			config_distance.append(state_distance)
+			
+			eng_barrier.append(state_act_eng)
+	return (config_distance, eng_barrier)
+			
 	
+			
+			
 	#Configuration(path_to_init_file)
 	
 	#Configuration(path_to_sad_file)

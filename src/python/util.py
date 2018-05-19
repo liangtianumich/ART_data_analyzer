@@ -250,8 +250,51 @@ def event_distance(path_to_test_dir, event_state, box_dim):
 	
 	return Configuration.distance_pbc(init_config,fin_config)
 	
+def event_activation_energy(path_to_data_dir,event):
+	"""
+	this function calculates the activiation energy for a single event
+	from the test/log.file.1
 	
+	Input:
+		path_to_data_dir:
+		
+		event: a list
+		a list with the 1st element being the test_id, e.g test1
+		with the 2nd element being a list of event_str,[init, sad, fin]
 	
+	return:
+		a tuple of event_state, and its activation energy
+	"""
+	path_to_test_dir = path_to_data_dir + '/'+ event[0]
+	test_energy_list = event_energy(path_to_test_dir)
+	init_eng = test_energy_list[event[1][0]]
+	sad_eng = test_energy_list[event[1][1]]
+	fin_eng = test_energy_list[event[1][2]]
+	act_eng = sad_eng - init_eng
+	return (event, act_eng)
+
+def state_energy_barrier(path_to_test_dir, init, state):
+	"""
+	this function calculates the activiation energy for a initial state and 
+	another interested state in a test
+	from the test/log.file.1
+	
+	Input:
+		path_to_test_dir
+		
+		init: a str
+		
+		state: a str
+	
+	return:
+		a tuple of event_state, and its activation energy
+	"""
+	test_energy_list = event_energy(path_to_test_dir)
+	init_eng = test_energy_list[init]
+	state_eng = test_energy_list[state]
+	eng_barrier = state_eng - init_eng
+	return eng_barrier
+
 def event_energy(path_to_test_dir):
 	"""
 	Input:
