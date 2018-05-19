@@ -409,6 +409,9 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
 		path_to_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
 	elif local is True:
+		path_to_all_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
+		path_to_all_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
+		
 		path_to_strain_results = path_to_test_dir + "/local_strain_results_dict.pkl"
 		path_to_displacement = path_to_test_dir + "/local_displacement_results_dict.pkl"
 	else:
@@ -418,7 +421,14 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		if os.path.exists(path_to_strain_results) and os.path.exists(path_to_displacement):
 			print "atomic strain and displacement has already been calculated and saved in pkl file, skip"
 			return (pickle.load(open(path_to_strain_results,'r')), pickle.load(open(path_to_displacement,'r')))
-	
+		if local is True:
+			if os.path.exists(path_to_all_strain_results) and os.path.exists(path_to_all_displacement):
+				all_strains = pickle.load(open(path_to_all_strain_results,'r'))
+				all_disp = pickle.load(open(path_to_all_displacement,'r'))
+				local_strains = dict((k, all_strains[k]) for k in atom_list if k in all_strains)
+				local_disp = dict((k, all_disp[k]) for k in atom_list if k in all_disp)
+				return (local_strains, local_disp)
+
 	print "starting calculating atomic strain and displacement magnitude"
 	strain = dict()
 	disp_results = dict()
