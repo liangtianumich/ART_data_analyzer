@@ -201,8 +201,20 @@ def basin_config_distance_activation_energy(path_to_test_dir, event_state):
 	event_state is a list of ordered states (corresponding to their appearance order), 
 	each event state contains the strings of all states, init_state, sad_state, fin_state, 
 	with intermediate states that can be obtained from ART output
+	
+	Input:
+		
+		event_state: a list
+			a list of strs with each str being an state, e,g min1000
+	
+	Returns:
+	
+		config_distance: a list
+			a list of distances from current state to the initial state
+		
+		eng_barrier: a list
+			a list of energy barriers from current state to the initial state
 	"""
-	# trajectory
 	i=0
 	config_distance, eng_barrier = []
 	for state in event_state:
@@ -226,13 +238,4 @@ def basin_config_distance_activation_energy(path_to_test_dir, event_state):
 			
 			eng_barrier.append(state_act_eng)
 	return (config_distance, eng_barrier)
-			
-	
-			
-			
-	#Configuration(path_to_init_file)
-	
-	#Configuration(path_to_sad_file)
-	
-	#Cinfiguration(path_to_fin_file)
 

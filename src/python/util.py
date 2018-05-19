@@ -337,9 +337,36 @@ def event_strain_disp(event_strain_dict,event_disp_dict):
 		disp.append(event_disp_dict[i])
 	return (vol_strain, shear_strain, disp)
 
-#def operation(event):
-#	"""
-#	"""
+def triggered_atom_is_max_disp(path_to_data_dir, event):
+	"""
+	this function check if a single event the maximum displacement aton is
+	the triggered atom stored inside the bart.sh
+	"""
+	path_to_test_dir = path_to_data_dir + '/' + event[0]
+	
+	triggered_atom_index = read_from_art_input_file(path_to_test_dir)
+	
+	init, sad, fin = event[1][0],event[1][1],event[1][2]
+	
+	path_to_event = path_to_test_dir + "/results/event_" + init + "_" + sad + "_" + fin
+	
+	path_to_init_sad = path_to_event + "/init_sad"
+	
+	path_to_displacement = path_to_init_sad + "/displacement_results_dict.pkl"
+	
+	if os.path.exists(path_to_displacement):
+		print "path to displacement:", path_to_displacement
+		event_disp = pickle.load(open(path_to_displacement,'r'))
+		index_max_disp = max(event_disp.iteritems(), key=operator.itemgetter(1))[0]
+		if len(triggered_atom_index) == 1:
+			if triggered_atom_index[0] == index_max_disp
+				return True
+			else:
+				return False
+		else:
+			print "multiple triggering atoms exists!"	
+	else:
+		raise Exception("no displacement data has been calculated in current event")
 	
 	
 def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc=1):
