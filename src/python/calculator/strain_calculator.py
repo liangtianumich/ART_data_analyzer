@@ -260,6 +260,18 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 		initial_config_data = read_data_from_file(path_to_file_ini)
 		saddle_config_data = read_data_from_file(path_to_file_sad)
 		final_config_data = read_data_from_file(path_to_file_fin)
+		
+		path_to_init_sad = path_to_curr_event + "/init_sad"
+		path_to_sad_fin = path_to_curr_event + "/sad_fin"
+		path_to_init_fin = path_to_curr_event + "/init_fin"
+		
+		if not os.path.exists(path_to_init_sad):
+			os.makedirs(path_to_init_sad)
+		if not os.path.exists(path_to_sad_fin):
+			os.makedirs(path_to_sad_fin)
+		if not os.path.exists(path_to_init_fin):
+			os.makedirs(path_to_init_fin)		
+		
 		if test_atom_list is None:
 			atom_list = (initial_config_data["item"]).tolist()
 		
@@ -274,24 +286,21 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 			atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
 			print "NN item_id list (distance in increasing order including triggering atoms) of the triggering atoms"
 			print "in initial configuration that will be used for all local strain calculations:", atom_list
-		
-		path_to_init_sad = path_to_curr_event + "/init_sad"
-		path_to_sad_fin = path_to_curr_event + "/sad_fin"
-		path_to_init_fin = path_to_curr_event + "/init_fin"
-		
-		if not os.path.exists(path_to_init_sad):
-			os.makedirs(path_to_init_sad)
-		if not os.path.exists(path_to_sad_fin):
-			os.makedirs(path_to_sad_fin)
-		if not os.path.exists(path_to_init_fin):
-			os.makedirs(path_to_init_fin)
-		print "\n initial to saddle: \n"
-		init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list, re_calc = re_calc)
-		print "\n saddle to final: \n"
-		sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list, re_calc = re_calc)
-		print "\n initial to final: \n"
-		init_fin_strain,init_fin_disp = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list, re_calc = re_calc)
-		
+			
+			print "\n initial to saddle: \n"
+			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list,local=True,re_calc = re_calc)
+			print "\n saddle to final: \n"
+			sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list,local=True,re_calc = re_calc)
+			print "\n initial to final: \n"
+			init_fin_strain,init_fin_disp = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list,local=True,re_calc = re_calc)
+		else:
+			print "\n initial to saddle: \n"
+			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list, re_calc = re_calc)
+			print "\n saddle to final: \n"
+			sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list, re_calc = re_calc)
+			print "\n initial to final: \n"
+			init_fin_strain,init_fin_disp = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list, re_calc = re_calc)
+			
 		#init_sad_vol_strain, init_sad_shear_strain, init_sad_displacement = event_strain_disp(init_sad_strain,init_sad_disp)
 		#sad_fin_vol_strain, sad_fin_shear_strain, sad_fin_displacement = event_strain_disp(sad_fin_strain,sad_fin_disp)
 		init_sad = event_strain_disp(init_sad_strain,init_sad_disp)
@@ -345,7 +354,7 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 			f.close()
 	return test_results
 
-def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True, re_calc = False):
+def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, local=False, save_results = True, re_calc = False):
 	"""
 	this function calculate various local atomic strain quantities for atoms whose item id stored inside
 	the atom_list under periodic boundary condition for orthogonal simulation box
@@ -396,8 +405,14 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 	"""
 	
 	# check if the strain_results_dict.pkl nn_results_dict.pkl file exists or not
-	path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
-	path_to_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
+	if local is False:
+		path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
+		path_to_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
+	elif local is True:
+		path_to_strain_results = path_to_test_dir + "/local_strain_results_dict.pkl"
+		path_to_displacement = path_to_test_dir + "/local_displacement_results_dict.pkl"
+	else:
+		raise Exception("local mode is either True or False")
 	
 	if re_calc is False:
 		if os.path.exists(path_to_strain_results) and os.path.exists(path_to_displacement):
