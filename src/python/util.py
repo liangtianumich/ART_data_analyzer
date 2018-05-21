@@ -359,7 +359,7 @@ def triggered_atom_is_max_disp(path_to_data_dir, event):
 		event_disp = pickle.load(open(path_to_displacement,'r'))
 		index_max_disp = max(event_disp.iteritems(), key=operator.itemgetter(1))[0]
 		if len(triggered_atom_index) == 1:
-			if triggered_atom_index[0] == index_max_disp
+			if triggered_atom_index[0] == index_max_disp:
 				return True
 			else:
 				return False

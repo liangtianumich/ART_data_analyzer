@@ -23,6 +23,14 @@ def event_redudancy_check(path_to_data_dir, input_param, save_results=True, re_c
 	AND abs(E(sad-init)_1-E(sad-init))_2 < 0.01(eV)
 	"""
 	list_of_test_id = input_param["list_of_test_id"]
+	
+	existed_tests = []
+	for i in list_of_test_id:
+		path_to_curr_test = path_to_data_dir + "test%s"%i
+		if os.path.exists(path_to_curr_test):
+			existed_tests.append(i)
+	list_of_test_id = existed_tests
+	
 	box_dim = input_param["box_dim"]
 	identical_event_criteria = input_param["identical_event_criteria"]
 	if "num_of_proc" in input_param and "re_calc" in input_param:
@@ -39,8 +47,6 @@ def event_redudancy_check(path_to_data_dir, input_param, save_results=True, re_c
 			
 		
 	all_selected_events = get_list_of_selected_events_str(path_to_data_dir, list_of_test_id)
-	
-	print "all_selected_events:", all_selected_events
 	
 	# remove the 2nd identical pair events found
 	num_of_selected_events = len(all_selected_events)
