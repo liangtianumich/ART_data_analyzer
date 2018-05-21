@@ -10,6 +10,53 @@ from sklearn import linear_model
 from visualizer.strain_visualizer import plot_histogram_3
 from util import operation_on_events, Configuration, state_energy_barrier
 
+def ave_local_atoms_w_criteria(path_to_data_dir, input_param):
+	"""
+	this function did a parameter sweep on relative residual threshold
+	from 0.01 to 1, the iteration stops when the change of 
+	ave_local_atoms[i] - ave_local_atoms[i-1]/relative_threshold[i]-relative_threshold[i-1]
+	< -0.2/0.01= -20
+	Note: 
+	this criteria may be system dependent, need to check for the material system
+	
+	return:
+		ave_local_atoms:
+		
+	
+	"""
+	residual_threshold = input_param["residual_threshold"]
+	ave_local_atoms = []
+	ave_k = []
+	print "all residual_threshold:",residual_threshold
+	i=0
+	for x in residual_threshold:
+		curr_result = events_local_atoms(path_to_data_dir, input_param, x)
+		ave_local_atoms.append(curr_result[0])
+		ave_k.append(curr_result[1])
+		if i>=1:
+			check_criteria = float(ave_local_atoms[i] - ave_local_atoms[i-1])/(residual_threshold[i] - residual_threshold[i-1])
+			if check_criteria >= -10:
+				print "stopping at relative threshold:", x
+				break
+		i=i+1
+	
+	fig, ax1 = plt.subplots()
+	ax1.plot(residual_threshold[0:i+1],ave_local_atoms,'rx',markersize=5)
+	ax1.set_xlabel('relative residual_threshold')
+	ax1.set_ylabel('ave_num_local_atoms')
+	
+	ax2 = ax1.twinx()
+	ax2.plot(residual_threshold[0:i+1], ave_k, 'bo')
+	ax2.set_ylabel('ave_slope')
+	path_to_image = path_to_data_dir + "/ave_num_k_local_atoms_residual_threshold.png"
+	plt.savefig(path_to_image)
+	
+	print "finally, at relative threshold:%s, average number of locally involved atoms:"%x, ave_local_atoms[-1]
+	print "finally, at relative threshold:%s, average slope:"%x, ave_k[-1]
+	print "done finding average number of locally involved atoms for current sample at %s"%path_to_data_dir
+	return ave_local_atoms[-1], ave_k[-1]
+
+
 def events_local_atoms_threshold_sweep(path_to_data_dir, input_param):
 	# do more on the number of events sweep also and min_sample sweep
 	
