@@ -15,6 +15,6 @@ model = "linear_model"
 feature = "displacement"
 target =  "shear_strain"
 #residual_threshold = np.arange(0.3, 1.0, 0.01)
-residual_threshold = np.arange(0.01, 0.3, 0.01)
+residual_threshold = np.arange(0.01, 1.0, 0.1)
 input_param = {"list_of_test_id":list_of_test_id, "num_of_proc": num_of_proc,"model":model,"feature":feature,"target": target,"residual_threshold":residual_threshold}
 events_local_atoms_threshold_sweep(path_to_data_dir, input_param)

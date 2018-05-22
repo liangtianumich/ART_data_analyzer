@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import multiprocessing as mp
 from sklearn import linear_model
+from sklearn.svm import LinearSVC, LinearSVR
 from visualizer.strain_visualizer import plot_histogram_3
 from util import operation_on_events, Configuration, state_energy_barrier
 
@@ -189,9 +190,12 @@ def get_strain_disp(path_to_test_dir):
 def outlier_detector(feature,target,model=None,residual_threshold = 0.5):
 	if model == "linear_model" or model == None:
 		return outlier_linear_detector(feature,target,residual_threshold)
-	#if model == "SVM":
+	#if model == "LinearSVC":
 		# use SVM classification to find inliers, then count outliers
-		#
+	#	return outlier_linearSVC_detector(feature,target,residual_threshold)
+	if model == "LinearSVR":
+		# use SVM classification to find inliers, then count outliers
+		return outlier_linearSVR_detector(feature,target,residual_threshold)
 
 def outlier_linear_detector(feature, target, residual_threshold = 0.5):
 	"""
@@ -225,6 +229,47 @@ def outlier_linear_detector(feature, target, residual_threshold = 0.5):
 	num_of_outlier = sum(outlier_mask)
 	slope = model.estimator_.coef_[0][0]
 	return (num_of_outlier,slope)
+
+def outlier_linearSVC_detector(feature,target,residual_threshold):
+	"""
+	this function detect the outlier by using the SVC with linear kernel
+	for this classifer, the y need to be integer array, not float array
+	"""
+	target = (np.array(target)).flatten()
+	#residual_threshold = (np.max(target) -np.min(target))*residual_threshold
+	regr = LinearSVC(random_state=1, dual=False, C=residual_threshold,tol=np.mean(target)*0.0001)
+	regr.fit(feature, target)
+	res_label = regr.predict(feature)
+	num_of_outlier = 0
+	for label in res_label:
+		if label == 0:
+			num_of_outlier = num_of_outlier + 1	
+	slope = regr.coef_[0]
+	print "slope:",slope
+	return (num_of_outlier, slope)
+
+def outlier_linearSVR_detector(feature,target,residual_threshold):
+	"""
+	this function detect the outlier by using the LinearSVR with linear kernel
+	with the fitted coefficient
+	"""
+	target = (np.array(target)).flatten()
+	residual_threshold = (np.max(target) -np.min(target))*residual_threshold
+	regr = LinearSVR(random_state=1, dual=True, epsilon=0.0)
+	regr.fit(feature, target)
+	
+	predict_data = regr.predict(feature)
+	i=0
+	num_of_outlier = 0
+	for x in predict_data:
+		delta = x-target[i]
+		if abs(delta) > residual_threshold:
+			num_of_outlier = num_of_outlier + 1	
+		i=i+1
+	#regr.coef_
+	slope = regr.coef_[0]
+	print "slope:",slope
+	return (num_of_outlier, slope)
 
 def feature_to_X(feature):
 	"""
