@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import multiprocessing as mp
 from sklearn import linear_model
 from sklearn.svm import LinearSVC, LinearSVR
+from sklearn.ensemble import IsolationForest
 from visualizer.strain_visualizer import plot_histogram_3
 from util import operation_on_events, Configuration, state_energy_barrier
 
@@ -111,25 +112,29 @@ def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
 	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atoms(x, path_to_data_dir, model, feature, target, residual_threshold),num_of_proc)
 	init_sad_num,sad_fin_num,init_fin_num = [],[],[]
 	init_sad_k,sad_fin_k,init_fin_k = [],[],[]
-	for event_res in result_list:
+	for event_res in result_list:	
 		init_sad_num.append(event_res[0][0])
 		sad_fin_num.append(event_res[1][0])
 		init_fin_num.append(event_res[2][0])
 		init_sad_k.append(event_res[0][1])
 		sad_fin_k.append(event_res[1][1])
 		init_fin_k.append(event_res[2][1])
+
 	path_to_image_1 = path_to_data_dir + "/num_local_atoms.png"
 	plot_histogram_3(path_to_image_1,[init_sad_num,sad_fin_num,init_fin_num])
+	ave_num_local_atoms = np.mean(init_sad_num)
+	print "the average number of local atoms:", ave_num_local_atoms
 	
 	path_to_image_2 = path_to_data_dir + "/slope.png"
 	plot_histogram_3(path_to_image_2,[init_sad_k,sad_fin_k,init_fin_k])
 	#ave_num_local_atoms = sum(init_fin)*1.0/len(init_fin)
-	ave_num_local_atoms = np.mean(init_sad_num)
 	ave_slope = np.mean(init_sad_k)
-	print "the average number of local atoms:", ave_num_local_atoms
 	print "the average number of slope:", ave_slope
+	
 	print "done plotting for number of local atoms for all final selected events in interested tests"
 	return ave_num_local_atoms, ave_slope
+	
+	
 
 def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residual_threshold =0.5):
 	"""
@@ -190,9 +195,6 @@ def get_strain_disp(path_to_test_dir):
 def outlier_detector(feature,target,model=None,residual_threshold = 0.5):
 	if model == "linear_model" or model == None:
 		return outlier_linear_detector(feature,target,residual_threshold)
-	#if model == "LinearSVC":
-		# use SVM classification to find inliers, then count outliers
-	#	return outlier_linearSVC_detector(feature,target,residual_threshold)
 	if model == "LinearSVR":
 		# use SVM classification to find inliers, then count outliers
 		return outlier_linearSVR_detector(feature,target,residual_threshold)
@@ -270,6 +272,23 @@ def outlier_linearSVR_detector(feature,target,residual_threshold):
 	slope = regr.coef_[0]
 	print "slope:",slope
 	return (num_of_outlier, slope)
+
+def fixed_outlier_detector_by_iso_for(feature, outlier_fraction):
+	"""
+	this function takes a training data X, output the outlier index in X
+	with the outlier fraction is outlier_fraction
+	"""
+	model = IsolationForest(max_samples=100, random_state=1, contamination= outlier_fraction)
+	model.fit(feature)
+	y_predict = model.predict(feature)
+	outliers = []
+	i=0
+	for y in y_predict:
+		if y == -1:
+			outliers.append(i)
+		i=i+1
+	return outliers
+	
 
 def feature_to_X(feature):
 	"""
