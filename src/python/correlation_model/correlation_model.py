@@ -9,6 +9,7 @@ import multiprocessing as mp
 from sklearn import linear_model
 from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import IsolationForest
+from sklearn.neighbors import NearestNeighbors
 from visualizer.strain_visualizer import plot_histogram_3
 from util import operation_on_events, Configuration, state_energy_barrier
 
@@ -288,7 +289,22 @@ def fixed_outlier_detector_by_iso_for(feature, outlier_fraction):
 			outliers.append(i)
 		i=i+1
 	return outliers
-	
+
+def fixed_outlier_detector_by_LOF(feature, outlier_fraction):
+	"""
+	this function takes a training data X, output the outlier index in X
+	with the outlier fraction is outlier_fraction
+	"""
+	model = NearestNeighbors(contamination= outlier_fraction)
+	model.fit(feature)
+	y_predict = model.predict(feature)
+	outliers = []
+	i=0
+	for y in y_predict:
+		if y == -1:
+			outliers.append(i)
+		i=i+1
+	return outliers
 
 def feature_to_X(feature):
 	"""
