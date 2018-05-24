@@ -32,15 +32,25 @@ def ave_local_atoms_w_criteria(path_to_data_dir, input_param):
 	ave_k = []
 	print "all residual_threshold:",residual_threshold
 	i=0
+	doubt = None
 	for x in residual_threshold:
 		curr_result = events_local_atoms(path_to_data_dir, input_param, x)
 		ave_local_atoms.append(curr_result[0])
 		ave_k.append(curr_result[1])
 		if i>=1:
-			check_criteria = float(ave_local_atoms[i] - ave_local_atoms[i-1])/(residual_threshold[i] - residual_threshold[i-1])
-			if check_criteria >= -10:
-				print "stopping at relative threshold:", x
-				break
+			if doubt == True:
+				check_criteria = float(ave_local_atoms[i] - ave_local_atoms[i-1])/(residual_threshold[i] - residual_threshold[i-1])
+				if check_criteria >= -15:
+					print "stopping at relative threshold:", x
+					break
+				else:
+					doubt = False	
+			else:
+				check_criteria = float(ave_local_atoms[i] - ave_local_atoms[i-1])/(residual_threshold[i] - residual_threshold[i-1])
+				if check_criteria >= -15:
+					doubt = True
+				else:
+					doubt = False
 		i=i+1
 	
 	fig, ax1 = plt.subplots()
@@ -248,7 +258,6 @@ def outlier_linearSVC_detector(feature,target,residual_threshold):
 		if label == 0:
 			num_of_outlier = num_of_outlier + 1	
 	slope = regr.coef_[0]
-	print "slope:",slope
 	return (num_of_outlier, slope)
 
 def outlier_linearSVR_detector(feature,target,residual_threshold):
@@ -269,9 +278,7 @@ def outlier_linearSVR_detector(feature,target,residual_threshold):
 		if abs(delta) > residual_threshold:
 			num_of_outlier = num_of_outlier + 1	
 		i=i+1
-	#regr.coef_
 	slope = regr.coef_[0]
-	print "slope:",slope
 	return (num_of_outlier, slope)
 
 def fixed_outlier_detector_by_iso_for(feature, outlier_fraction):
