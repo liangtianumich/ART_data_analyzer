@@ -7,6 +7,7 @@ import pickle
 import os
 import json
 import re
+import operator
 #import pathos.helpers as multiprocessing
 from pathos.multiprocessing import ProcessingPool as Pool
 #import multiprocessing as mp
@@ -350,7 +351,7 @@ def triggered_atom_is_max_disp(path_to_data_dir, event):
 	the triggered atom stored inside the bart.sh
 	"""
 	print "event:", event[0],event[1][0],event[1][1],event[1][2]
-	path_to_test_dir = path_to_data_dir + '/' + event[0]
+	path_to_test_dir = path_to_data_dir + event[0]
 	
 	triggered_atom_index = read_from_art_input_file(path_to_test_dir)
 	
@@ -366,6 +367,7 @@ def triggered_atom_is_max_disp(path_to_data_dir, event):
 		print "path to displacement:", path_to_displacement
 		event_disp = pickle.load(open(path_to_displacement,'r'))
 		index_max_disp = max(event_disp.iteritems(), key=operator.itemgetter(1))[0]
+		print "max displacement atom index:", index_max_disp
 		if len(triggered_atom_index) == 1:
 			if triggered_atom_index[0] == index_max_disp:
 				print "True"

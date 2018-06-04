@@ -6,6 +6,7 @@ import pickle
 import pandas as pd
 import json
 from collections import Counter
+from data_reader import *
 from util import operation_on_events, event_local_atom_index, read_from_art_input_file
 
 def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
@@ -14,7 +15,7 @@ def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
 	num_of_proc = input_param["num_of_proc"]
 	
 	box_range = input_param["box_range"]
-	cut_off = input_param["cuf_off"]
+	cut_off = input_param["cut_off"]
 	atom_list = input_param["atom_list"]
 	periodic = input_param["periodic"]
 	re_calc = input_param["re_calc"]
@@ -87,6 +88,9 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	
 	voronoi_index = {"init":init_voronoi_index, "sad":sad_voronoi_index, "fin":fin_voronoi_index}
 	
+	# classify voronoi index
+	
+	# do visualization
 	
 	if save_results is True:
 		print "begin saving voronoi results into json file"
