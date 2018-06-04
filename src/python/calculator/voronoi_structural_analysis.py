@@ -6,9 +6,9 @@ import pickle
 import pandas as pd
 import json
 from collections import Counter
-from util import operation_on_events
+from util import operation_on_events, event_local_atom_index, read_from_art_input_file
 
-def run_all_tests_voronoi_calculator(path_to_data_dir,input_param):
+def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
 	
 	list_of_test_id = input_param["list_of_test_id"]
 	num_of_proc = input_param["num_of_proc"]
@@ -21,44 +21,71 @@ def run_all_tests_voronoi_calculator(path_to_data_dir,input_param):
 	
 	operation = lambda x: single_event_voronoi_calculator(x, path_to_data_dir, box_range, cut_off, atom_list = atom_list, periodic = periodic, re_calc = re_calc)
 	
-	result_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc=num_of_proc)
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc = num_of_proc)
 	print "done voronoi index calculation for all interested tests!"
 
-def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cut_off, atom_list = None, periodic=[True,True,True], save_results = True, re_calc=False):
+def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cut_off, atom_list = None,max_edge_count=8, periodic = [True,True,True], save_results = True, re_calc = False):
 	"""
-	this function calculates the voronoi index for all configurations in the test,
-	on user specified atoms stored in atom_list
+	this function calculates the voronoi index of user specified atoms stored in atom_list
+	for all configurations (init,sad,fin) in a single event that are specified in the event state
+	Input:
+		event_state: a list
+			a list with the 1st element being the test_id, e.g. test1
+			the 2nd element being a list containing the string of init, sad, fin
+			configuration file str, e.g. [min1000,sad1001,min1001]
 	"""
-	# for local mode of voronoi calculation
-	if type(atom_list) == dict:
 	
-	
+			
+	path_to_test_dir = path_to_data_dir + event_state[0]
 	path_to_curr_result = path_to_test_dir + "/results"
-	path_to_event_list = path_to_curr_result + "/selected_events.json"
 	if not os.path.exists(path_to_curr_result):
 		os.makedirs(path_to_curr_result)
 	
+	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	if not os.path.exists(path_to_curr_event):
+		os.makedirs(path_to_curr_event)
+	
+	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
+	if re_calc is False:
+		if os.path.exists(path_to_voro_results):
+			return json.load(open(path_to_voro_results,"r"))
+	
+	path_to_file_ini = path_to_test_dir + '/' + init + ".dump"
+	path_to_file_sad = path_to_test_dir + '/' + sad + ".dump"
+	path_to_file_fin = path_to_test_dir + '/' + fin + ".dump"
+		
+	initial_config_data = read_data_from_file(path_to_file_ini)
+	saddle_config_data = read_data_from_file(path_to_file_sad)
+	final_config_data = read_data_from_file(path_to_file_fin)
+		
+	#path_to_init = path_to_curr_event + "/init"
+	#path_to_sad = path_to_curr_event + "/sad"
+	#path_to_fin = path_to_curr_event + "/fin"
+	
+	#if not os.path.exists(path_to_init):
+	#	os.makedirs(path_to_init)
+	#if not os.path.exists(path_to_sad):
+	#	os.makedirs(path_to_sad)
+	#if not os.path.exists(path_to_fin):
+	#	os.makedirs(path_to_fin)
+	
 	box_dim = [box_range[0][1] - box_range[0][0], box_range[1][1] - box_range[1][0], box_range[2][1] - box_range[2][0]]
 	
+	if atom_list is None:
+		atom_list = (initial_config_data["item"]).tolist()
+	# for local mode of voronoi calculation
+	if type(atom_list) == dict:
+		print "\n starting local mode voronoi calculations"
+		triggered_atom_index = read_from_art_input_file(path_to_test_dir)
+		num_of_involved_atom = atom_list["local"]
+		atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
 	
+	init_voronoi_index = single_config_voronoi_calculator(initial_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
+	sad_voronoi_index = single_config_voronoi_calculator(saddle_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
+	fin_voronoi_index = single_config_voronoi_calculator(final_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
 	
-	
-	#escape when this test do not have log.file.1 file or configuration file
-	try:
-		event_list = event_selection(path_to_test_dir,box_dim,re_calc = re_calc)
-	except IOError:
-		return None
-	# if no events has been selected in this test
-	if event_list is None:
-		return None
-	
-	# if final_selected_events.json exists, this means that event redudancy check
-	# happens before calculating all strains
-	# check if each event is in the final_selected_events.json file
-	path_to_data_dir,test_id = os.path.split(path_to_test_dir)
-	path_to_final_events = path_to_data_dir + "/final_selected_events.json"
-	event_list = event_list.values()
-	
+	voronoi_index = {"init":init_voronoi_index, "sad":sad_voronoi_index, "fin":fin_voronoi_index}
 	
 	
 	if save_results is True:
@@ -66,6 +93,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 		with open(path_to_voro_results, 'w') as f:
 			json.dump(voronoi_index,f)
 			f.close()
+	return voronoi_index
 
 
 def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None, max_edge_count=8, periodic=[True,True,True]):

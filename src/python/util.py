@@ -337,11 +337,19 @@ def event_strain_disp(event_strain_dict,event_disp_dict):
 		disp.append(event_disp_dict[i])
 	return (vol_strain, shear_strain, disp)
 
+def run_tests_triggered_atom_is_max_disp(path_to_data_dir, input_param):
+	list_of_test_id = input_param["list_of_test_id"]
+	num_of_proc = input_param["num_of_proc"]
+	operation = lambda x: triggered_atom_is_max_disp(path_to_data_dir, x)
+	results_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc=num_of_proc)
+	print "done checking triggered atom is max displacement atom for interested tests!"
+	
 def triggered_atom_is_max_disp(path_to_data_dir, event):
 	"""
 	this function check if a single event the maximum displacement aton is
 	the triggered atom stored inside the bart.sh
 	"""
+	print "event:", event[0],event[1][0],event[1][1],event[1][2]
 	path_to_test_dir = path_to_data_dir + '/' + event[0]
 	
 	triggered_atom_index = read_from_art_input_file(path_to_test_dir)
@@ -360,13 +368,15 @@ def triggered_atom_is_max_disp(path_to_data_dir, event):
 		index_max_disp = max(event_disp.iteritems(), key=operator.itemgetter(1))[0]
 		if len(triggered_atom_index) == 1:
 			if triggered_atom_index[0] == index_max_disp:
+				print "True"
 				return True
 			else:
+				print "False"
 				return False
 		else:
 			print "multiple triggering atoms exists!"	
 	else:
-		raise Exception("no displacement data has been calculated in current event")
+		print("no displacement data has been calculated in current event")
 	
 	
 def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc=1):
