@@ -8,6 +8,16 @@ import json
 from collections import Counter
 from data_reader import *
 from util import operation_on_events, event_local_atom_index, read_from_art_input_file
+from visualizer.voronoi_visualizer import plot_voronoi_histogram_3
+
+global ICO
+ICO = [[0,4,4,0],[0,3,6,0],[0,2,8,0],[0,2,8,1],[0,0,12,0],[0,1,10,2],[0,0,12,2],[0,0,12,3],[0,0,12,4],[0,0,12,5]]
+global ICO_LIKE
+ICO_LIKE = [[0,5,2,1],[0,4,4,1],[0,3,6,1],[0,3,6,2],[0,2,8,2],[0,2,8,3],[0,1,10,3],[0,1,10,4],[0,1,10,5],[0,1,10,6],\
+[0,6,0,2],[0,5,2,2],[0,4,4,2],[0,4,4,3],[0,3,6,3],[0,3,6,4],[0,2,8,4],[0,2,8,5],[0,2,8,6],[0,2,8,7], \
+[0,6,0,3], [0,5,2,3], [0,5,2,4], [0,4,4,4], [0,4,4,5], [0,3,6,5], [0,3,6,6], [0,3,6,7], [0,3,6,8], \
+[0,6,0,4], [0,6,0,5], [0,5,2,5], [0,5,2,6], [0,4,4,6], [0,4,4,7], [0,4,4,8], [0,4,4,9]]
+
 
 def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
 	
@@ -59,17 +69,6 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	initial_config_data = read_data_from_file(path_to_file_ini)
 	saddle_config_data = read_data_from_file(path_to_file_sad)
 	final_config_data = read_data_from_file(path_to_file_fin)
-		
-	#path_to_init = path_to_curr_event + "/init"
-	#path_to_sad = path_to_curr_event + "/sad"
-	#path_to_fin = path_to_curr_event + "/fin"
-	
-	#if not os.path.exists(path_to_init):
-	#	os.makedirs(path_to_init)
-	#if not os.path.exists(path_to_sad):
-	#	os.makedirs(path_to_sad)
-	#if not os.path.exists(path_to_fin):
-	#	os.makedirs(path_to_fin)
 	
 	box_dim = [box_range[0][1] - box_range[0][0], box_range[1][1] - box_range[1][0], box_range[2][1] - box_range[2][0]]
 	
@@ -89,8 +88,13 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	voronoi_index = {"init":init_voronoi_index, "sad":sad_voronoi_index, "fin":fin_voronoi_index}
 	
 	# classify voronoi index
+	init_voronoi_class = classify_voronoi_index(init_voronoi_index)
+	sad_voronoi_class = classify_voronoi_index(sad_voronoi_index)
+	fin_voronoi_class = classify_voronoi_index(fin_voronoi_index)
 	
 	# do visualization
+	path_to_image = path_to_curr_event + "/voronoi_hist.png"
+	plot_voronoi_histogram_3(path_to_image, [init_voronoi_class,sad_voronoi_class,fin_voronoi_class])
 	
 	if save_results is True:
 		print "begin saving voronoi results into json file"
@@ -144,6 +148,29 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 	
 	return voronoi_index
 
+def classify_voronoi_index(list_of_voronoi_index):
+	"""
+	this function classify a list of voronoi index into a list of
+	ico, ico-like, GUMs
+	"""
+	list_of_voronoi_class = []
+	for x in list_of_voronoi_index:
+		if len(x) < 6:
+			raise Exception("can not classify voronoi index vector whose length is less than 6")
+		else:
+			truncated_x = x[2:6]
+		
+		if truncated_x in ICO:
+			#list_of_voronoi_class.append('ico')
+			list_of_voronoi_class.append(0)
+		elif truncated_x in ICO_LIKE:
+			#list_of_voronoi_class.append('ico_like')
+			list_of_voronoi_class.append(1)
+		else:
+			#list_of_voronoi_class.append('GUM')
+			list_of_voronoi_class.append(2)
+	return list_of_voronoi_class			
+		
 def count_faces(results, max_edge_count=8):
 	"""
 	input:
