@@ -10,6 +10,7 @@ from data_reader import *
 from util import operation_on_events, event_local_atom_index, read_from_art_input_file
 from visualizer.voronoi_visualizer import plot_voronoi_histogram_3
 
+# voronoi index classification from Evan Ma paper "Tuning order in disorder"
 global ICO
 ICO = [[0,4,4,0],[0,3,6,0],[0,2,8,0],[0,2,8,1],[0,0,12,0],[0,1,10,2],[0,0,12,2],[0,0,12,3],[0,0,12,4],[0,0,12,5]]
 global ICO_LIKE
@@ -18,7 +19,6 @@ ICO_LIKE = [[0,5,2,1],[0,4,4,1],[0,3,6,1],[0,3,6,2],[0,2,8,2],[0,2,8,3],[0,1,10,
 #global GUM
 #GUM = [[0,6,0,3], [0,5,2,3], [0,5,2,4], [0,4,4,4], [0,4,4,5], [0,3,6,5], [0,3,6,6], [0,3,6,7], [0,3,6,8], \
 #[0,6,0,4], [0,6,0,5], [0,5,2,5], [0,5,2,6], [0,4,4,6], [0,4,4,7], [0,4,4,8], [0,4,4,9]]
-
 
 def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
 	
@@ -34,6 +34,12 @@ def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
 	operation = lambda x: single_event_voronoi_calculator(x, path_to_data_dir, box_range, cut_off, atom_list = atom_list, periodic = periodic, re_calc = re_calc)
 	
 	result_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc = num_of_proc)
+	for event_result in result_list:
+		[init_voronoi_class,sad_voronoi_class,fin_voronoi_class] = event_result
+		init_count = Counter(init_voronoi_class)
+		sad_count = Counter(sad_voronoi_class)
+		fin_count = Counter(fin_voronoi_class)
+		# work on more statistics
 	print "done voronoi index calculation for all interested tests!"
 
 def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cut_off, atom_list = None,max_edge_count=8, periodic = [True,True,True], save_results = True, re_calc = False):
@@ -92,7 +98,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	init_voronoi_class = classify_voronoi_index(init_voronoi_index)
 	sad_voronoi_class = classify_voronoi_index(sad_voronoi_index)
 	fin_voronoi_class = classify_voronoi_index(fin_voronoi_index)
-	
+
 	# do visualization
 	path_to_image = path_to_curr_event + "/voronoi_hist.png"
 	plot_voronoi_histogram_3(path_to_image, [init_voronoi_class,sad_voronoi_class,fin_voronoi_class])
