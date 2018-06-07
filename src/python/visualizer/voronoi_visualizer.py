@@ -47,7 +47,7 @@ def voronoi_scatter_3d(path_to_curr_event, path_to_config):
 	cs = classify_voronoi_index(init_voronoi_index)
 	scatter3d(path_to_image, x,y,z,cs, colorsMap='jet')
 
-def voronoi_contour_2d(path_to_curr_event, path_to_config,cut_plane='xy',cut_position=0.5,cut_tol = 0.05):
+def voronoi_contour_2d(path_to_curr_event, path_to_config,cut_plane='xy',cut_position=0.5,cut_tol = 0.1):
 	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
 	path_to_image = path_to_curr_event + "/voronoi_2D_contour.png"
 	initial_config = read_data_from_file(path_to_config)
@@ -96,19 +96,23 @@ def voronoi_contour_2d(path_to_curr_event, path_to_config,cut_plane='xy',cut_pos
 	voro_class = classify_voronoi_index(init_voronoi_index)
 	cs = [voro_class[i] for i in region_index]
 	
-	f_x,f_y = np.meshgrid(c_x,c_y)
+	c_x_t, c_y_t = np.linspace(min(c_x), max(c_x), 200), np.linspace(min(c_y), max(c_y), 200)
+	f_x,f_y = np.meshgrid(c_x_t,c_y_t)
 	rbf = scipy.interpolate.Rbf(c_x, c_y, cs, function='linear')
 	f_z = rbf(f_x, f_y)
 	
 	plt.figure()
-	plt.imshow(f_z, vmin=min(cs), vmax=max(cs), origin='lower',\
-	extent=[min(c_x), max(c_x), min(c_y), max(c_y)])
 	cm = plt.get_cmap('jet')
-	plt.scatter(c_x, c_y, c=cs,cmap=cm)
+	
+	plt.imshow(f_z, vmin=min(cs), vmax=max(cs), origin='lower',\
+	extent=[min(c_x), max(c_x), min(c_y), max(c_y)],cmap=cm)
+	
+	plt.contour(f_x,f_y,f_z)
+	
+	plt.scatter(c_x, c_y, c=cs, cmap=cm)
 	plt.colorbar()
-	#CS = plt.contour(c_x,c_y,cs,colorsMap='jet')
-	#plt.clabel(CS, inline=1, fontsize=10)
-	plt.title('solid-like, transition, liquid-like')
+	
+	plt.title('solid-like: blue, transition: green, liquid-like: red')
 	plt.savefig(path_to_image)
 	#scatter3d(path_to_image, x,y,z,cs, colorsMap='jet')
 # another voronoi index classification
