@@ -16,11 +16,14 @@ Util: utilities containing various classes and functions for other modules
 
 calculator package:
 	strain_calculator: calculate the atomic strains for all events or a user customized subset of events
+	voronoi analysis: calculate the voronoi index and voronoi class for all atoms for all events for a suer customized subset of events
 
-	stress_calculator, voronoi analysis coming soon
+	stress_calculator,  coming soon
 
 visualator package:
 	strain_visualator: visualize the atomic strain from stored atomic strain results 	in results.pkl file
+	
+	voronoi_visualizer: visualize the voronoi class by their statistics in a histogram in a single event or visualize a thin 2D plane slice of atoms
 
 
 /examples: contains examples of executable running scripts and demo data. The demo example system is CuZr metallic glass.
@@ -32,12 +35,37 @@ visualator package:
 
 
 Operating system:
-This python package depends on some python packages such as numpy, pandas, matplotlib, python-tk,scipy, mpl_toolkits, scikit-learn, pathos. install easy_install, pip by sudo apt-get install python-pip python-dev build-essential, install previous mentioned python package by python -m pip install --user numpy scipy matplotlib jupyter pandas sympy nose. Mac O.S mpl_toolkits under matplotlib library may not be a package and need user to manually make it a package to import. User need to verify the successful installation of these dependencies in their OS. The package has been tested on python 2.7. Python 3 user may need further tests
+This python package depends on some python packages such as numpy, pandas, matplotlib, python-tk,scipy, mpl_toolkits, scikit-learn, pathos, pyvoro. User need to set up the python development environment for your OS, such as install python setuptools to get easy_install, pip. Pip is the best way to handle additional python packages installation.
+
+For Mac or Linux Ubuntu OS,
+Install easy_install and pip by sudo apt-get install python-pip python-dev build-essential, install previous mentioned python package by python -m pip install --user numpy scipy matplotlib jupyter pandas sympy nose. Mac O.S mpl_toolkits under matplotlib library may not be a package and need user to manually make it a package to import. User need to verify the successful installation of these dependencies in their OS. The package has been tested on python 2.7. Python 3 user may need further tests
+
 A few notes:
 if pip install does not work, especially for pip version 9.0.1, user need to upgrade their pip pip-10.0.1 according to here: https://stackoverflow.com/questions/49768770/not-able-to-install-python-packages-ssl-tlsv1-alert-protocol-version.  Then it can install package such as scikit-learn by pip install —-user scikit-learn
 
 
-User also need to install pathos for a unified event level parallel computation by using the uitl.operation_on_events function by pip install --user pathos. Pathos can serialize any function that are not defined at the top level of the module that greatly favor the implementation. Check: https://stackoverflow.com/questions/8804830/python-multiprocessing-pickling-error. It seems that any file that call util.operations_on_events() will need to import os, pickle numpy as np.
+User also need to install pathos package for a unified event level parallel computation by using the util.operation_on_events function by pip install --user pathos. Pathos can serialize any function that are not defined at the top level of the module that greatly favor the implementation. Check: https://stackoverflow.com/questions/8804830/python-multiprocessing-pickling-error. It seems that any file that call util.operations_on_events() will need to import os, pickle numpy as np.
+
+For windows Cygwin user, set up python development environment to run python script in cygwin can be done by installing necessary python packages by downloading the official Cygwin setup_x86_64.exe (64 bit)or setup_x86.exe (32 bit) from the official Cygwin website and choosing the related packages. setup.exe performs like an official “package manager” for Cygwin, through there is no true package manager in Cygwin. For example, running the setup.exe to install the necessary packages needed for python development environment are 
+\All\Devel\make
+\All\Devel\gcc-core
+\All\Devel\gcc-fortran
+\All\Devel\gcc-g++
+\All\Python\python2
+\All\Python\python2-pip
+Additional python packages may be needed to install some packages, such as installing pandas library may need the following necessary packages:
+https://stackoverflow.com/questions/34341112/pandas-build-on-cygwin
+python2-devel
+numpy
+python2-six
+python2-wheel
+python2-setuptools
+python2-pip
+python2-cython
+wget
+
+There is a package called apt-cyg acting like the package manager apt-get in Ubuntu that might be useful: https://superuser.com/questions/304541/how-to-install-new-packages-on-cygwin
+
 
 For user who actively use other python and packages version and need to create an isolated python package environment just for using this ART_data analyzer package without interfering with your global python environment, please use virtualenv path/to/ART_data_analyzer to create a new virtual python environmental for the path/to/ART_data_analyzer (if need inheriting python from global environment python, use --system-site-packages flag like virtualenv --system-site-packages path/to/ART_data_analyzer), then it will install /bin /include /lib under path/to/ART_data_analyzer to include python packages for this virtual environment. The bin/activate is bash script used to activate this virtual python environment by source /ART_data_analyzer/bin/activate.  This will change the $PATH (add /path/to/ART_data_analyzer/bin) and $VIRTUAL_ENV = /path/to/ART_data_analyzer to let you use the virtual python environment. And type deactivate to end this virtual environment. Create a alias start_ART = “source /ART_data_analyzer/bin/activate” in .bash_profile or .profile to activate faster. More details check: https://virtualenv.pypa.io/en/stable/userguide/
 https://packaging.python.org/tutorials/installing-packages/
@@ -65,6 +93,8 @@ Then the user can repeat the data visualization and data analysis (to develop co
 Executable files:
 
 Currently, strain_calc.py is an exe python file, it performs displacement and atomic strain calculations and save all results and plots automatically in their corresponding locations. The calculation results have been rigorously verified with the results by Ovito.
+
+voronoi_index_calc.py calculates the voronoi index for user specified events. The geometric voronoi diagram calculation under periodic boundary condition is implemented by the pyvoro package: https://github.com/joe-jordan/pyvoro. It is available in PyPI and can be easily installed by pip and easy to use. 
 
 event_filter.py ran rigorous redundancy check for each possible pair events which has passed the two stage 1 criteria, this script can ran before strain calculation to calculate minimal number of meaningful events or after strain calculation to help select the filtered events for the correct statistical distribution, 
 whether to use this script depends on the percentage of events filtered by this criteria. Generally, the user is encouraged to use this script on a subset of tests such as 10 tests to check how many events are filtered. If negligible, It is possible to ignore this criteria.
