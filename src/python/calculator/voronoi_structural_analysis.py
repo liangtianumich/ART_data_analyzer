@@ -56,8 +56,14 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			
 	path_to_test_dir = path_to_data_dir + event_state[0]
 	path_to_curr_result = path_to_test_dir + "/results"
-	if not os.path.exists(path_to_curr_result):
-		os.makedirs(path_to_curr_result)
+	# redundant, if exists, may cause race condition when os.makedirs act on same dir (leaf)
+	# for parallel processing, in python3, it can be avoided by adding exist_ok=True
+	# in python2 here, rewrite code to ensure os.makedirs act on different dir (leaf)
+	# or using try except in 
+	# https://stackoverflow.com/questions/12468022/python-fileexists-error-when-making-directory
+	# https://stackoverflow.com/questions/273192/how-can-i-create-a-directory-if-it-does-not-exist
+	#if not os.path.exists(path_to_curr_result):
+	#	os.makedirs(path_to_curr_result)
 	
 	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
