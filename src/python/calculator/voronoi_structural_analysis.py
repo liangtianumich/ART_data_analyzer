@@ -8,7 +8,7 @@ import json
 from collections import Counter
 from data_reader import *
 from util import operation_on_events, event_local_atom_index, read_from_art_input_file
-from visualizer.voronoi_visualizer import plot_voronoi_histogram_3
+from visualizer.voronoi_visualizer import plot_voronoi_histogram_3, plot_dynamic_transition_matrix
 
 # voronoi index classification from Evan Ma paper "Tuning order in disorder"
 global ICO
@@ -34,14 +34,150 @@ def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
 	operation = lambda x: single_event_voronoi_calculator(x, path_to_data_dir, box_range, cut_off, atom_list = atom_list, periodic = periodic, re_calc = re_calc)
 	
 	result_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc = num_of_proc)
+	
+	print "done voronoi index calculation for all interested tests!"
+
+def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
+	
+	list_of_test_id = input_param["list_of_test_id"]
+	num_of_proc = input_param["num_of_proc"]
+	
+	operation = lambda x: single_event_voronoi_classifier(x, path_to_data_dir)
+	
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc = num_of_proc)
+	
+	total_init_ICO, total_init_ICO_LIKE, total_init_GUM = 0,0,0
+	total_sad_ICO, total_sad_ICO_LIKE, total_sad_GUM = 0,0,0
+	total_fin_ICO, total_fin_ICO_LIKE, total_fin_GUM = 0,0,0
+	ICO_to_ICO = 0
+	ICO_to_ICO_LIKE = 0
+	ICO_to_GUM = 0
+	ICO_LIKE_to_ICO = 0
+	ICO_LIKE_to_ICO_LIKE = 0
+	ICO_LIKE_to_GUM = 0
+	GUM_to_ICO = 0
+	GUM_to_ICO_LIKE = 0
+	GUM_to_GUM = 0
+	
 	for event_result in result_list:
-		[init_voronoi_class,sad_voronoi_class,fin_voronoi_class] = event_result
+		init_voronoi_class, sad_voronoi_class,fin_voronoi_class = event_result["init"], event_result["sad"], event_result["fin"]
+		atom_index = range(len(init_voronoi_class))
+		for atom_id in atom_index:
+			
+			if init_voronoi_class[atom_id] == 0:
+				if sad_voronoi_class[atom_id] == 0:
+					ICO_to_ICO = ICO_to_ICO + 1
+				elif sad_voronoi_class[atom_id] == 1:
+					ICO_to_ICO_LIKE = ICO_to_ICO_LIKE + 1
+				elif sad_voronoi_class[atom_id] == 2:
+					ICO_to_GUM = ICO_to_GUM + 1
+
+			if init_voronoi_class[atom_id] == 1:
+				if sad_voronoi_class[atom_id] == 0:
+					ICO_LIKE_to_ICO = ICO_LIKE_to_ICO + 1
+				elif sad_voronoi_class[atom_id] == 1:
+					ICO_LIKE_to_ICO_LIKE = ICO_LIKE_to_ICO_LIKE + 1
+				elif sad_voronoi_class[atom_id] == 2:
+					ICO_LIKE_to_GUM = ICO_LIKE_to_GUM + 1
+			
+			if init_voronoi_class[atom_id] == 2:
+				if sad_voronoi_class[atom_id] == 0:
+					GUM_to_ICO = GUM_to_ICO + 1
+				elif sad_voronoi_class[atom_id] == 1:
+					GUM_to_ICO_LIKE = GUM_to_ICO_LIKE + 1
+				elif sad_voronoi_class[atom_id] == 2:
+					GUM_to_GUM = GUM_to_GUM + 1
+			
 		init_count = Counter(init_voronoi_class)
 		sad_count = Counter(sad_voronoi_class)
 		fin_count = Counter(fin_voronoi_class)
-		# work on more statistics
-	print "done voronoi index calculation for all interested tests!"
-
+		
+		total_init_ICO = total_init_ICO + init_count[0]
+		total_init_ICO_LIKE = total_init_ICO_LIKE + init_count[1]
+		total_init_GUM = total_init_GUM + init_count[2]
+		
+		total_sad_ICO = total_sad_ICO + sad_count[0]
+		total_sad_ICO_LIKE = total_sad_ICO_LIKE + sad_count[1]
+		total_sad_GUM = total_sad_GUM + sad_count[2]
+		
+		total_fin_ICO = total_fin_ICO + fin_count[0]
+		total_fin_ICO_LIKE = total_fin_ICO_LIKE + fin_count[1]
+		total_fin_GUM = total_fin_GUM + fin_count[2]
+		# work on more statistics if necessary
+		
+	# begin calculate the probability for dynamic transition from init to sad
+	init_total = total_init_ICO + total_init_ICO_LIKE + total_init_GUM
+	sad_total = total_sad_ICO + total_sad_ICO_LIKE + total_sad_GUM
+	init_ICO_pt = float(total_init_ICO)/init_total
+	init_ICO_LIKE_pt = float(total_init_ICO_LIKE)/init_total
+	init_GUM_pt = float(total_init_GUM)/init_total
+	
+	p11_0 = 1.0/3 
+	p12_0 = p11_0
+	p13_0 = p11_0
+	p21_0 = 1.0/3
+	p22_0 = p21_0
+	p23_0 = p21_0
+	p31_0 = 1.0/3
+	p32_0 = p31_0
+	p33_0 = p31_0
+	
+	p11 = float(ICO_to_ICO)/total_init_ICO
+	p12 = float(ICO_to_ICO_LIKE)/total_init_ICO
+	p13 = float(ICO_to_GUM)/total_init_ICO
+	p21 = float(ICO_LIKE_to_ICO)/total_init_ICO_LIKE
+	p22 = float(ICO_LIKE_to_ICO_LIKE)/total_init_ICO_LIKE
+	p23 = float(ICO_LIKE_to_GUM)/total_init_ICO_LIKE
+	p31 = float(GUM_to_ICO)/total_init_GUM
+	p32 = float(GUM_to_ICO_LIKE)/total_init_GUM
+	p33 = float(GUM_to_GUM)/total_init_GUM
+	
+	p = np.array([[p11,p12,p13],[p21,p22,p23],[p31,p32,p33]])
+	p_0 = np.array([[p11_0,p12_0,p13_0],[p21_0,p22_0,p23_0],[p31_0,p32_0,p33_0]])
+	
+	c_matrix = p/p_0 - 1
+	print p
+	print c_matrix
+	
+	path_to_image = path_to_data_dir + "/dynamic_transition_matrix_all_events.png"
+	plot_dynamic_transition_matrix(path_to_image, c_matrix)
+	
+	print "done voronoi index classification for all interested tests!"
+	
+def single_event_voronoi_classifier(event_state, path_to_data_dir):
+	"""
+	this function load the calculated voronoi index results file voronoi_index_results.json
+	classify the vornoi index into ICO, ICO_LIKE, GUM according to the criterion
+	defined at the top level of the module
+	"""
+	path_to_test_dir = path_to_data_dir + event_state[0]
+	path_to_curr_result = path_to_test_dir + "/results"
+	
+	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	
+	event_str = event_state[0] + "/event_" + init + "_" + sad + "_" + fin
+	if not os.path.exists(path_to_curr_event):
+		raise Exception("the voronoi index has not been calculated for the event %s"%event_str)
+	
+	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
+	if not os.path.exists(path_to_voro_results):
+		raise Exception("the voronoi index has not been calculated for the event %s"%event_str)
+	
+	voronoi_index = json.load(open(path_to_voro_results,"r"))
+	# classify voronoi index
+	init_voronoi_class = classify_voronoi_index(voronoi_index["init"])
+	sad_voronoi_class = classify_voronoi_index(voronoi_index["sad"])
+	fin_voronoi_class = classify_voronoi_index(voronoi_index["fin"])
+	
+	voronoi_class = {"init": init_voronoi_class, "sad": sad_voronoi_class, "fin": fin_voronoi_class}
+	
+	# do visualization of the fraction of voronoi class
+	path_to_image = path_to_curr_event + "/voronoi_hist.png"
+	plot_voronoi_histogram_3(path_to_image, [init_voronoi_class,sad_voronoi_class,fin_voronoi_class])
+	
+	return voronoi_class
+	
 def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cut_off, atom_list = None,max_edge_count=8, periodic = [True,True,True], save_results = True, re_calc = False):
 	"""
 	this function calculates the voronoi index of user specified atoms stored in atom_list
@@ -99,15 +235,6 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	fin_voronoi_index = single_config_voronoi_calculator(final_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
 	
 	voronoi_index = {"init":init_voronoi_index, "sad":sad_voronoi_index, "fin":fin_voronoi_index}
-	
-	# classify voronoi index
-	init_voronoi_class = classify_voronoi_index(init_voronoi_index)
-	sad_voronoi_class = classify_voronoi_index(sad_voronoi_index)
-	fin_voronoi_class = classify_voronoi_index(fin_voronoi_index)
-
-	# do visualization
-	path_to_image = path_to_curr_event + "/voronoi_hist.png"
-	plot_voronoi_histogram_3(path_to_image, [init_voronoi_class,sad_voronoi_class,fin_voronoi_class])
 	
 	if save_results is True:
 		print "begin saving voronoi results into json file"

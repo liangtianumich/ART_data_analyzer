@@ -14,7 +14,20 @@ import matplotlib.cm as cmx
 from mpl_toolkits.mplot3d import Axes3D
 from data_reader import *
 import scipy.interpolate
-
+def plot_dynamic_transition_matrix(path_to_image, corr_matrix):
+	"""
+	this function plot the dynamic transition matrix as a image
+	"""
+	fig, ax = plt.subplots()
+	cm = plt.get_cmap('jet')
+	ax=plt.gca() 
+	cax = ax.matshow(corr_matrix, cmap=cm)
+	fig.colorbar(cax)
+	ax.set_xticklabels(['']+['ICO','ICO_LIKE','GUM'])
+	ax.set_yticklabels([""]+['ICO','ICO_LIKE','GUM'])
+	plt.savefig(path_to_image)
+	
+	
 def plot_voronoi_histogram_3(path_to_image, x):
 	"""
 	Input:
