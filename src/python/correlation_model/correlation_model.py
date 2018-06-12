@@ -3,6 +3,7 @@ this module implements correlation model
 """
 import os
 import pickle
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 import multiprocessing as mp
@@ -13,7 +14,7 @@ from sklearn.neighbors import NearestNeighbors
 from visualizer.strain_visualizer import plot_histogram_3
 from util import operation_on_events, Configuration, state_energy_barrier
 
-def ave_local_atoms_w_criteria(path_to_data_dir, input_param):
+def residual_threshold_finder(path_to_data_dir, input_param):
 	"""
 	this function did a parameter sweep on relative residual threshold
 	from 0.01 to 1, the iteration stops when the change of 
@@ -102,6 +103,35 @@ def events_local_atoms_threshold_sweep(path_to_data_dir, input_param):
 	#plt.close()
 	print "done residual threshold parameter sweep for average number of locally involved atoms!"
 
+def all_events_local_atoms_finder(path_to_data_dir, input_param, residual_threshold = 0.5):
+	"""
+	this function developed correlation model between feature and target using model 
+	for all events available in tests with list_of_test_id
+	find the outlier atom index and save these local atoms index in a file
+	in that event dir
+	
+	feature: str
+		Now only allow "displacement" option
+	target: str
+		Now allow "shear_strain" option
+	Model: str
+		Now alow "linear_model" and "LinearSVR" option, which is also adopted when model is None
+	"""
+	list_of_test_id = input_param["list_of_test_id"]
+	model = input_param["model"]
+	feature = input_param["feature"]
+	target = input_param["target"]
+	num_of_proc = input_param["num_of_proc"]
+	re_calc = input_param["re_calc"]
+	print "current residual_threshold:", residual_threshold
+	# perform a function on all events in all tests in list_of_test_id with num_of_proc
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atoms_index(x, path_to_data_dir, model, feature, target, residual_threshold, True, re_calc),num_of_proc)
+	
+	#init_sad_num = []
+	#for event_res in result_list:	
+	#	event_res
+	print "done finding all local atoms index for all final selected events in interested tests!"
+
 def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
 	"""
 	this function developed correlation model between feature and target using model 
@@ -145,7 +175,41 @@ def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
 	print "done plotting for number of local atoms for all final selected events in interested tests"
 	return ave_num_local_atoms, ave_slope
 	
+def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,residual_threshold =0.5, save_results=True, re_calc = False):
+	"""
+	this function developed correlation model between feature and target
+	for a single event whose state is saved into event
 	
+	return:
+		local_atom_index: a list
+			a list with elements contains a list of local atom index for init_sad
+			
+	"""
+	path_to_curr_result = path_to_data_dir + event[0] + "/results"
+	init,sad,fin = event[1][0], event[1][1], event[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	path_to_init_sad = path_to_curr_event + "/init_sad"
+	
+	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
+	
+	if re_calc is False:
+		if os.path.exists(path_to_local_atom_index):
+			return json.load(open(path_to_local_atom_index,'r'))
+	
+	if feature == "displacement" and target == "shear_strain":
+		init_sad_X,init_sad_y = get_strain_disp(path_to_init_sad)
+		#sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
+		#init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
+	
+	init_sad = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold, return_index = True)
+	print "init_sad:", init_sad
+	if save_results is True:
+		with open(path_to_local_atom_index, 'w') as f:
+			json.dump(init_sad,f)
+			f.close()
+	#sad_fin = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold)
+	#init_fin = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold)
+	return init_sad
 
 def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residual_threshold =0.5):
 	"""
@@ -181,8 +245,8 @@ def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residua
 	sad_fin = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold)
 	init_fin = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold)
 
-	return [init_sad,sad_fin,init_fin]
-	
+	return [init_sad, sad_fin, init_fin]
+
 def get_strain_disp(path_to_test_dir):
 	path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
 	path_to_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
@@ -203,14 +267,14 @@ def get_strain_disp(path_to_test_dir):
 			
 	
 	
-def outlier_detector(feature,target,model=None,residual_threshold = 0.5):
+def outlier_detector(feature,target,model=None,residual_threshold = 0.5,return_index = False):
 	if model == "linear_model" or model == None:
-		return outlier_linear_detector(feature,target,residual_threshold)
+		return outlier_linear_detector(feature,target,residual_threshold,return_index)
 	if model == "LinearSVR":
 		# use SVM classification to find inliers, then count outliers
-		return outlier_linearSVR_detector(feature,target,residual_threshold)
+		return outlier_linearSVR_detector(feature,target,residual_threshold,return_index)
 
-def outlier_linear_detector(feature, target, residual_threshold = 0.5):
+def outlier_linear_detector(feature, target, residual_threshold = 0.5, return_index = False):
 	"""
 	Input argument:
 		model: str
@@ -239,11 +303,15 @@ def outlier_linear_detector(feature, target, residual_threshold = 0.5):
 	model.fit(feature,target)
 	inlier_mask = model.inlier_mask_
 	outlier_mask = np.logical_not(inlier_mask)
+	outlier_index = np.where(outlier_mask)[0]
 	num_of_outlier = sum(outlier_mask)
 	slope = model.estimator_.coef_[0][0]
-	return (num_of_outlier,slope)
+	if return_index is False:
+		return (num_of_outlier,slope)
+	else:
+		return outlier_index.tolist()
 
-def outlier_linearSVC_detector(feature,target,residual_threshold):
+def outlier_linearSVC_detector(feature,target,residual_threshold, return_index = False):
 	"""
 	this function detect the outlier by using the SVC with linear kernel
 	for this classifer, the y need to be integer array, not float array
@@ -260,7 +328,7 @@ def outlier_linearSVC_detector(feature,target,residual_threshold):
 	slope = regr.coef_[0]
 	return (num_of_outlier, slope)
 
-def outlier_linearSVR_detector(feature,target,residual_threshold):
+def outlier_linearSVR_detector(feature, target, residual_threshold, return_index = False):
 	"""
 	this function detect the outlier by using the LinearSVR with linear kernel
 	with the fitted coefficient
@@ -273,13 +341,19 @@ def outlier_linearSVR_detector(feature,target,residual_threshold):
 	predict_data = regr.predict(feature)
 	i=0
 	num_of_outlier = 0
+	outlier_index = []
 	for x in predict_data:
 		delta = x-target[i]
 		if abs(delta) > residual_threshold:
 			num_of_outlier = num_of_outlier + 1	
+			outlier_index.append(i)
 		i=i+1
 	slope = regr.coef_[0]
-	return (num_of_outlier, slope)
+	
+	if return_index is False:
+		return (num_of_outlier, slope)
+	else:
+		return outlier_index
 
 def fixed_outlier_detector_by_iso_for(feature, outlier_fraction):
 	"""
