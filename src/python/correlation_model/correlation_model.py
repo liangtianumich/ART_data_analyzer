@@ -202,7 +202,6 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 		#init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
 	
 	init_sad = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold, return_index = True)
-	print "init_sad:", init_sad
 	if save_results is True:
 		with open(path_to_local_atom_index, 'w') as f:
 			json.dump(init_sad,f)

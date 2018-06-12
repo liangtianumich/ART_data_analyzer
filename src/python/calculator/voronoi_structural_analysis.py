@@ -35,7 +35,7 @@ def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
 	
 	result_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc = num_of_proc)
 	
-	print "done voronoi index calculation for all interested tests!"
+	print ("done voronoi index calculation for all interested tests!")
 
 def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 	
@@ -142,7 +142,7 @@ def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 	path_to_image = path_to_data_dir + "/dynamic_transition_matrix_all_events.png"
 	plot_dynamic_transition_matrix(path_to_image, c_matrix)
 	
-	print "done voronoi index classification for all interested tests!"
+	print ("done voronoi index classification for all interested tests!")
 	
 def single_event_voronoi_classifier(event_state, path_to_data_dir):
 	"""
@@ -221,15 +221,17 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	
 	box_dim = [box_range[0][1] - box_range[0][0], box_range[1][1] - box_range[1][0], box_range[2][1] - box_range[2][0]]
 	
-	if atom_list is None:
-		atom_list = (initial_config_data["item"]).tolist()
-	# for local mode of voronoi calculation
-	if type(atom_list) == dict:
-		print "\n starting local mode voronoi calculations"
-		triggered_atom_index = read_from_art_input_file(path_to_test_dir)
-		num_of_involved_atom = atom_list["local"]
-		atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
+	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	
+	if atom_list is None:
+		if os.path.exists(path_to_local_atom_index):
+			# for local mode of voronoi calculation
+			print ("\n starting local mode voronoi calculations")
+			local_atom_list = json.load(open(path_to_local_atom_index,"r"))
+			atom_list = [atom + 1 for atom in local_atom_list]
+		else:
+			atom_list = (initial_config_data["item"]).tolist()
+
 	init_voronoi_index = single_config_voronoi_calculator(initial_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
 	sad_voronoi_index = single_config_voronoi_calculator(saddle_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
 	fin_voronoi_index = single_config_voronoi_calculator(final_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
@@ -237,7 +239,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	voronoi_index = {"init":init_voronoi_index, "sad":sad_voronoi_index, "fin":fin_voronoi_index}
 	
 	if save_results is True:
-		print "begin saving voronoi results into json file"
+		print ("begin saving voronoi results into json file")
 		with open(path_to_voro_results, 'w') as f:
 			json.dump(voronoi_index,f)
 			f.close()
