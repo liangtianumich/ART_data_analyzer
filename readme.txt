@@ -46,6 +46,14 @@ if pip install does not work, especially for pip version 9.0.1, user need to upg
 
 User also need to install pathos package for a unified event level parallel computation by using the util.operation_on_events function by pip install --user pathos. Pathos can serialize any function that are not defined at the top level of the module that greatly favor the implementation. Check: https://stackoverflow.com/questions/8804830/python-multiprocessing-pickling-error. It seems that any file that call util.operations_on_events() will need to import os, pickle numpy as np.
 
+For windows 10 user, you can search Ubuntu app in Microsoft App Store to use Ubuntu app like regular linux Ubuntu. Make sure you are running Windows Powershell as admistrator by right click and copy commands https://docs.microsoft.com/en-us/windows/wsl/install-win10
+If you encounter error like wslregisterdisribution failed with error ox800700b7
+First, try search windows feature, turn off windows subsystem for linux (WSL), reboot, then turn on windows subsystem for linux, reboot. This should work. If not work, try reinstall ubuntu app from app store, see https://github.com/Microsoft/WSL/issues/2982
+Now your home directory will be /home/unix_user_name, where your windows C drive can be accessed by /mnt/c/.
+
+
+For windows 7, Cygwin should be installed to use bash.
+
 For windows Cygwin user, set up python development environment to run python script in cygwin can be done by installing necessary python packages by downloading the official Cygwin setup_x86_64.exe (64 bit)or setup_x86.exe (32 bit) from the official Cygwin website and choosing the related packages. setup.exe performs like an official “package manager” for Cygwin, through there is no true package manager in Cygwin. For example, running the setup.exe to install the necessary packages needed for python development environment are 
 \All\Devel\make
 \All\Devel\gcc-core
@@ -141,6 +149,7 @@ User need to input the number of tests in their data directory
 This input for running the data calculation will be saved into os.environ['TEST_DIR']
 as a pickle file for future reference if needed
 
+“Art is never finished, only abandoned.”
 
 In the future,
 art_data: exe script

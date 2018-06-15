@@ -8,8 +8,11 @@ import os
 import numpy as np
 import multiprocessing as mp
 from functools import partial
-from util import event_energy, Configuration, event_distance
+from util import event_energy, Configuration, event_distance, fn_timer
 
+
+
+@fn_timer
 def event_redudancy_check(path_to_data_dir, input_param, save_results=True, re_calc = False):
 	"""
 	this function implement stage 2 criteria 3 to remove the redundancy of event pairs
@@ -54,6 +57,8 @@ def event_redudancy_check(path_to_data_dir, input_param, save_results=True, re_c
 	removed_index = []
 	pool = mp.Pool(processes = num_of_proc)
 	for i in xrange(num_of_selected_events):
+		if i in removed_index:
+			continue
 		tests_list = [all_selected_events[j] for j in xrange(i+1,num_of_selected_events)]
 		result = pool.map(partial(identical_events,path_to_data_dir=path_to_data_dir,event_1 = all_selected_events[i], box_dim=box_dim,identical_event_criteria=identical_event_criteria), tests_list)
 		#for j in xrange(i+1,num_of_selected_events):
@@ -96,7 +101,7 @@ def get_list_of_selected_events_str(path_to_data_dir, list_of_test_id):
 				event_str = ("test%s"%i, [event[0],event[1],event[2]])
 				all_selected_events.append(event_str)
 	return all_selected_events
-
+@fn_timer
 def identical_events(event_2, path_to_data_dir,event_1, box_dim, identical_event_criteria={"D_init_fin": 0.1, "E_init_fin":0.005, "E_init_sad":0.01}):
 	"""
 	this function return True if two events are identical
@@ -128,16 +133,24 @@ def identical_events(event_2, path_to_data_dir,event_1, box_dim, identical_event
 	
 	cond_2 = abs(event_1_sad_eng - event_1_init_eng - (event_2_sad_eng - event_2_init_eng)) < E_init_sad
 	
+	if not (cond_1 and cond_2):
+		return False
+	
 	distance_1 = event_distance(path_to_event_1_test, [event_1_init,event_1_sad, event_1_fin],box_dim)
 	
 	distance_2 = event_distance(path_to_event_2_test, [event_2_init,event_2_sad, event_2_fin],box_dim)
 	
 	cond_3 = abs(distance_1 -distance_2) < D_init_fin
 	
-	if cond_1 and cond_2 and cond_3:
+	if cond_3:
 		return True
 	else:
 		return False
+	
+	#if cond_1 and cond_2 and cond_3:
+		#return True
+	#else:
+		#return False
 
 def df_to_dict(df):
 	"""

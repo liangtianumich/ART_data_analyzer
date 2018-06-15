@@ -13,6 +13,20 @@ from pathos.multiprocessing import ProcessingPool as Pool
 #import multiprocessing as mp
 from data_reader import *
 from periodic_kdtree import PeriodicCKDTree
+from functools import wraps
+import time
+
+def fn_timer(function):
+    @wraps(function)
+    def function_timer(*args, **kwargs):
+        t0 = time.time()
+        result = function(*args, **kwargs)
+        t1 = time.time()
+        print ("Total time running %s: %s seconds" %
+               (function.func_name, str(t1-t0))
+               )
+        return result
+    return function_timer
 
 class Atom(object):
 	"""
