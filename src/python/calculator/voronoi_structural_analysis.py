@@ -12,9 +12,9 @@ from visualizer.voronoi_visualizer import plot_voronoi_histogram_3, plot_dynamic
 
 # voronoi index classification from Evan Ma paper "Tuning order in disorder"
 global ICO
-ICO = [[0,4,4,0],[0,3,6,0],[0,2,8,0],[0,2,8,1],[0,0,12,0],[0,1,10,2],[0,0,12,2],[0,0,12,3],[0,0,12,4],[0,0,12,5]]
+ICO = [[0,6,0,0],[0,5,2,0],[0,4,4,0],[0,3,6,0],[0,2,8,0],[0,2,8,1],[0,0,12,0],[0,1,10,2],[0,0,12,2],[0,0,12,3],[0,0,12,4],[0,0,12,5]]
 global ICO_LIKE
-ICO_LIKE = [[0,5,2,1],[0,4,4,1],[0,3,6,1],[0,3,6,2],[0,2,8,2],[0,2,8,3],[0,1,10,3],[0,1,10,4],[0,1,10,5],[0,1,10,6],\
+ICO_LIKE = [[0,6,0,1],[0,5,2,1],[0,4,4,1],[0,3,6,1],[0,3,6,2],[0,2,8,2],[0,2,8,3],[0,1,10,3],[0,1,10,4],[0,1,10,5],[0,1,10,6],\
 [0,6,0,2],[0,5,2,2],[0,4,4,2],[0,4,4,3],[0,3,6,3],[0,3,6,4],[0,2,8,4],[0,2,8,5],[0,2,8,6],[0,2,8,7]]
 #global GUM
 #GUM = [[0,6,0,3], [0,5,2,3], [0,5,2,4], [0,4,4,4], [0,4,4,5], [0,3,6,5], [0,3,6,6], [0,3,6,7], [0,3,6,8], \
@@ -60,6 +60,8 @@ def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 	GUM_to_GUM = 0
 	
 	for event_result in result_list:
+		if event_result is None:
+			continue
 		init_voronoi_class, sad_voronoi_class,fin_voronoi_class = event_result["init"], event_result["sad"], event_result["fin"]
 		atom_index = range(len(init_voronoi_class))
 		for atom_id in atom_index:
@@ -157,14 +159,15 @@ def single_event_voronoi_classifier(event_state, path_to_data_dir):
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	
 	event_str = event_state[0] + "/event_" + init + "_" + sad + "_" + fin
-	if not os.path.exists(path_to_curr_event):
-		raise Exception("the voronoi index has not been calculated for the event %s"%event_str)
 	
 	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
 	if not os.path.exists(path_to_voro_results):
-		raise Exception("the voronoi index has not been calculated for the event %s"%event_str)
+		print("the voronoi index has not been calculated for the event %s"%event_str)
+		return None
 	
 	voronoi_index = json.load(open(path_to_voro_results,"r"))
+	if voronoi_index["init"] == []:
+		return None
 	# classify voronoi index
 	init_voronoi_class = classify_voronoi_index(voronoi_index["init"])
 	sad_voronoi_class = classify_voronoi_index(voronoi_index["sad"])
@@ -228,6 +231,8 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			# for local mode of voronoi calculation
 			print ("\n starting local mode voronoi calculations")
 			local_atom_list = json.load(open(path_to_local_atom_index,"r"))
+			if local_atom_list == []:
+				return None
 			atom_list = [atom + 1 for atom in local_atom_list]
 		else:
 			atom_list = (initial_config_data["item"]).tolist()

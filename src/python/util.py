@@ -438,7 +438,7 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 	
 	# if function operation has no return value, it will return a list of Nones
 	result_list = pool.map(operation,final_interested_events)
-	print "done operating for the interested tests whose test_id is in the list",list_of_test_id
+	#print "done operating for the interested tests whose test_id is in the list",list_of_test_id
 	return result_list
 	#else:
 	#	pool.map(operation,final_interested_events)

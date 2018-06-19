@@ -5,6 +5,8 @@ import os
 import pickle
 import json
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import multiprocessing as mp
 from sklearn import linear_model

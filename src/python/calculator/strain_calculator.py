@@ -273,20 +273,30 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 			os.makedirs(path_to_init_fin)		
 		
 		if test_atom_list is None:
-			atom_list = (initial_config_data["item"]).tolist()
+			test_atom_list = (initial_config_data["item"]).tolist()
 		
 		# if atom_list is a dict,e.g. {"local":4}
 		# find the atom list of item_id of 4 local atoms around triggered atom
-		if type(test_atom_list) == dict:
+		if type(test_atom_list) == dict or test_atom_list == "local":
 			print "\n starting local mode strain calculations"
-			triggered_atom_index = read_from_art_input_file(test)
-			num_of_involved_atom = test_atom_list["local"]
-			# triggered atom is only related to initial config, for sad_fin, 
-			# also use the initial config to find the local NN index
-			atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
-			print "NN item_id list (distance in increasing order including triggering atoms) of the triggering atoms"
-			print "in initial configuration that will be used for all local strain calculations:", atom_list
+			if type(test_atom_list) == dict:
+				triggered_atom_index = read_from_art_input_file(test)
+				num_of_involved_atom = test_atom_list["local"]
+				# triggered atom is only related to initial config, for sad_fin, 
+				# also use the initial config to find the local NN index
+				atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
+				print "NN item_id list (distance in increasing order including triggering atoms) of the triggering atoms"
+			elif test_atom_list == "local":
+				path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
+				if os.path.exists(path_to_local_atom_index):
+					local_atom_list = json.load(open(path_to_local_atom_index,"r"))
+					atom_list = [atom + 1 for atom in local_atom_list]
+				else:
+					raise Exception("local_atoms_index.json file not exists, run local_atoms_index_finder.py first")
 			
+			print "in initial configuration that will be used for all local strain calculations:", atom_list
+			if atom_list == []:
+				continue
 			print "\n initial to saddle: \n"
 			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list,local=True,re_calc = re_calc)
 			print "\n saddle to final: \n"
