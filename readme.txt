@@ -15,6 +15,15 @@ redundancy check of all possible pairs of events that has already passed stage 1
 Util: utilities containing various classes and functions for other modules
 
 calculator package:
+	/local_atom_env_calculator: calculate the local environment quantities for each atom, such as the fundamental quantities bond distance, bond orientation, coordination number to replace a complete set of structural functions represented by the radial basis functions and spherical harmonics, that will reduce the risk of overfitting due to the limited number of training data, simplify the physics by machine learning models for computational costs during later correlation analysis
+	bond_distance_calculator: calculate all bond distance for each atom
+		an extra function will read the results file and extract statistics for 		correlation analysis
+	bond_orientation_calculator: calculate the bond orientation for all three atom 			pair for each center local atom
+		an extra function will read the results file and extract statistics
+	coordination_number_calculator: calculate and summarize the number of different 		atomic species around the center atom
+		an extra function will read the results file and extract statistics	
+	
+
 	calculate local atomic physical quantities that are derived from local atomic structure/environment
 	strain_calculator: calculate the atomic strains for all events or a user customized subset of events
 
