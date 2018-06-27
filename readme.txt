@@ -15,11 +15,24 @@ redundancy check of all possible pairs of events that has already passed stage 1
 Util: utilities containing various classes and functions for other modules
 
 calculator package:
+	calculate local atomic physical quantities that are derived from local atomic structure/environment
 	strain_calculator: calculate the atomic strains for all events or a user customized subset of events
+
 	voronoi analysis: calculate the voronoi index and voronoi class for all atoms for all events for a suer customized subset of events
 
 	stress_calculator,  coming soon
-
+		implemented as in “How thermally activated deformation starts in metallic glass”
+	
+	shear_modulus calculator, coming soon 
+		implemented as in “Configurational dependence of elastic modulus of metallic glass”
+	
+	D2min calculator:
+		non-affine displacement modified in terms of “dynamic” in state rather than dynamic in time
+	
+	/correlation_model:
+		contains modules to perform correlation analysis between these local atomic physical quantities derived from local atomic structures, 
+		and local atomic properties such as activation energy of local potential energy barrier basin
+		
 visualator package:
 	strain_visualator: visualize the atomic strain from stored atomic strain results 	in results.pkl file
 	
@@ -150,6 +163,8 @@ This input for running the data calculation will be saved into os.environ['TEST_
 as a pickle file for future reference if needed
 
 “Art is never finished, only abandoned.”
+
+The long term goal of this ART_data_analyzer package would be integrated into a bigger package that establish a true multiscale and multiphysics framework (with the option of being multi-stage machine learning to simplify complex physics details at each length scale for the purpose of minimizing computational cost for accelerating rational material design without losing the multi-scale physics picture) for at least the material design of metallic glass community, by integrating LAMMPS (already has a nice python wrapper), ART (which need a python wrapper), ART_data_analyzer(data processing by machine learning, maybe incorporating some features of data processing and visualization software Ovito by its python wrapper), Materials project python API pymatgen to query some materials properties data, 3D STZ dynamics.
 
 In the future,
 art_data: exe script
