@@ -1,0 +1,113 @@
+# ubuntu_lammps = ubuntu, gnu compiler, openmpi, lammps KISS FFT, openblas, jpeg, png
+
+SHELL = /bin/sh
+
+# ---------------------------------------------------------------------
+# compiler/linker settings
+# generally no need to edit this section
+# unless additional compiler/linker flags or libraries needed for your machine
+
+  CC =  mpicc
+  C++ = mpic++
+  F90 = mpif90 -cpp
+  F77 = mpif77 -cpp
+
+  LINK = ${F90}
+
+  # PATH for the directory containing the library
+  LAMMPS_USER_PATH = $HOME/lammps-16Mar18/src
+  # Name of the lammps library
+  LAMMPS_LIBNAME = liblammps.a
+
+  # Caution: adding underflow option to ffpe-trap leads to errors
+  FFLAGS = -x f95-cpp-input -ffree-form -ffree-line-length-200 -ffpe-trap=invalid,zero,overflow -fbacktrace
+
+# ---------------------------------------------------------------------
+# KMC-specific settings
+# specify settings for KMC features you will use
+# if you change any -D setting, do full re-compile after "make clean"
+
+# KMC ifdef settings, OPTIONAL
+# see possible settings in doc/Section_start.html#2_2 (step 4)
+  OPTIONS  = -O3
+  KMC_INC  = -DMPI_VERSION_ART -DLAMMPS_VERSION -DLAMMPS_JPEG -DLAMMPS_PNG
+
+# LAMMPS library, REQUIRED if -DLAMMPS_VERSION
+# INC = path for mpi.h, MPI compiler settings
+# PATH = path for MPI library
+# LIB = name of MPI library
+  LAMMPS_INC  =  -I${LAMMPS_USER_PATH}
+  LAMMPS_PATH =  -L${LAMMPS_USER_PATH}
+  LAMMPS_LIB  =  ${LAMMPS_USER_PATH}/${LAMMPS_LIBNAME}
+
+# MPI library, REQUIRED if -DMPI_VERSION_ART
+# INC = path for mpi.h, MPI compiler settings
+# PATH = path for MPI library
+# LIB = name of MPI library
+# If briaree cluster load modules intel-compiler, OPENMPI and FFTW
+  MPI_INC =  -I$HOME/installed_openmpi/include/
+  MPI_PATH = -L$HOME/installed_openmpi/lib/
+  MPI_LIB =  -lmpi
+
+# FFT library, REQUIRED if -DLAMMPS_VERSION
+# INC = -DFFT setting, e.g. -DFFT_FFTW, FFT compiler settings
+# PATH = path for FFT library
+# LIB = name of FFT library
+#  FFT_INC =  -I$HOME/installed_fftw/include
+#  FFT_PATH = -L$HOME/installed_fftw/lib
+#  FFT_LIB =  $HOME/installed_fftw/lib/libfftw3.a
+
+# MKL library, REQUIRED
+# INC = path(s) for *.h required by MKL library
+# PATH = path for MKL library
+# LIB = name of MKL library
+
+  MKL_INC  = -I$HOME/installed_openblas/include
+  MKL_PATH = -L$HOME/installed_openblas/lib
+  MKL_LIB  = -lopenblas
+
+# JPEG and PNG library required
+  JPG_INC =  -I/usr/include     
+  JPG_PATH = -L/usr/lib/x86_64-linux-gnu
+  JPG_LIB = -ljpeg -lpng
+
+# ---------------------------------------------------------------------
+# build rules and dependencies
+# no need to edit this section
+
+  EXTRA_INC   = ${MKL_INC}    $(MPI_INC)   ${FFTW_INC}   ${LAMMPS_INC}   ${JPG_INC}  ${KMC_INC} ${OPTIONS}
+  EXTRA_PATH  = ${MKL_PATH}   ${MPI_PATH}  ${FFTW_PATH}  ${LAMMPS_PATH}  ${JPG_PATH}
+  EXTRA_LIB   = ${MKL_LIB}    ${MPI_LIB}   ${FFTW_LIB}   ${LAMMPS_LIB}   ${JPG_LIB}
+
+  LIBS = ${EXTRA_PATH} ${EXTRA_LIB}  -lstdc++ -lpthread
+  CLIBS =
+
+
+# Path to src files
+
+vpath %.f90 ../lib/:..
+vpath %.f ../lib/:..
+vpath %.c ../lib/:..
+vpath %.cpp ../lib/:..
+vpath %.h ../lib/:..
+
+
+# Compilation rules
+%.o: %.c
+	$(CC)   -c ${EXTRA_INC} $(CFLAGS)           $< -o $@
+%.o: %.f
+	$(F77)  -c ${EXTRA_INC} $(FFLAGS)           $< -o $@
+%.o: %.f90
+	$(F90) -DGIT_COMMIT=${GIT_COMMIT} -DGIT_DATE=${GIT_DATE} \
+	-DGIT_CLEAN=${GIT_CLEAN} -c ${EXTRA_INC} $(F95PP) $(FFLAGS)  $< -o $@
+%.o: %.cpp
+	$(C++)  -c ${EXTRA_INC} $(C++FLAGS)         $< -o $@
+
+# Link target
+
+$(EXE):	$(OBJ) $(OBJLIB)
+	$(LINK) $(OBJ) $(OBJLIB) $(LIBS) -o $(EXE)
+
+otool:
+	@echo "otool not necessary in this makefile "
+	@echo "nothing will be done "
