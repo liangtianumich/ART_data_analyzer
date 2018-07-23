@@ -123,6 +123,11 @@ Then the user can repeat the data visualization and data analysis (to develop co
 
 
 Executable files:
+After the user source the environment.sh, the user can use the art_data exe to argparse module to parse the command line arguments of terminal user input to run all functions of this package. 
+To see a list of options, type in terminal art_data -h,
+It will prompt all available optional arguments that can use for various functions of the python package to analyze the art_data.
+
+The following exe scripts are the individual scripts to run individual functions at the early development stage. The user only need to use art_data to run various functions.
 
 Currently, strain_calc.py is an exe python file, it performs displacement and atomic strain calculations and save all results and plots automatically in their corresponding locations. The calculation results have been rigorously verified with the results by Ovito.
 
@@ -176,16 +181,6 @@ as a pickle file for future reference if needed
 “Art is never finished, only abandoned.”
 
 The long term goal of this ART_data_analyzer package would be integrated into a bigger package that establish a true multiscale and multiphysics framework (with the option of being multi-stage machine learning to simplify complex physics details at each length scale for the purpose of minimizing computational cost for accelerating rational material design without losing the multi-scale physics picture) for at least the material design of metallic glass community, by integrating LAMMPS (already has a nice python wrapper), ART (which need a python wrapper), ART_data_analyzer(data processing by machine learning, maybe incorporating some features of data processing and visualization software Ovito by its python wrapper), Materials project python API pymatgen to query some materials properties data, 3D STZ dynamics.
-
-In the future,
-art_data: exe script
-prompt the options that can use for various analyzing feature of the python package
-Use sys.argparser to parse the user input from terminal
--calc/-c invoke the art_data_calculator exe 
--v invoke the art_data_visualization exe
--m invoke the correlation model exe by adopting the various data models implemented in scikit-learn machine learning package
-
-
  
 
 

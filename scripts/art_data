@@ -1,1 +1,267 @@
 #!/usr/bin/env python
+import os, json, pickle
+import numpy as np
+import time
+import multiprocessing as mp
+import argparse
+from event_selector import event_redudancy_check
+from calculator.strain_calculator import strain_calculator_run_all_tests_mp
+from calculator.voronoi_structural_analysis import run_all_tests_voronoi_calculator, run_all_tests_voronoi_classifier
+from visualizer.strain_visualizer import events_strain_visualization,strain_events_stats_visualization
+from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms
+from util import run_tests_triggered_atom_is_max_disp
+  
+def print_input_help():
+	"""
+	this function print the help to set up input file in a json format
+	"""
+	print \
+	"""
+	art_data --settings need an input file in json format specifies the
+	following keys:
+	
+	  path_to_data_dir: str
+		path to the art data directory
+	  
+	  list_of_test_id: list
+		list of the tests to be filtered
+	  
+	  box_dim: list,
+		the orthogonal box dimension along x, y, z
+		
+	  identical_event_criteria: dict
+	   {"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
+	  
+	  re_calc: boolean
+		True or False
+	"""
+def print_desc_help():
+	"""
+	this function print the description about how to use art_data command line
+	workflow
+	"""
+	print \
+	"""
+	This art_data command line tool can perform the following post-processing 
+	tasks in a user workflow in parallel. 
+	It needs an input file to set up the settings to run the following tasks.
+	The number of processors that will be used will be specified preferaly
+	in the input file, if this information does not exists, it will use
+	the setting by the command line argument -np
+	
+	1) filter events:
+	  
+	  'art_data -s --filter' will perform the task:
+	  it will invoke the ~/ART_data_analyzer/scripts/event_filter.py
+	  and filter events based on the three criteria implemented
+	 
+	  Example 'art_data' JSON input files can be output by the
+	  'art_data --example' options:
+		
+		art_data --example > input.json
+	  
+	 Edit the file as needed and see 'art_data --settings-format' for help.
+	 
+	 2) run calculations:
+	 
+	 "art_data -s --strain -calc" will invoke the strain and displacement calculations for
+	 all filtered events and automatically plots results for individual event and statistics
+	 for all events
+	 
+	 3) determine the local atoms in a STZs for each event by a relative
+	 residual threshold
+	 
+	 art_data -s --find_residual will invoke the residual_threshold_finder.py
+	 
+	 current implemented criteria is to plot the relation between
+	 the average number of local atoms of all filtered events vs the user
+	 chosen relative residual threshold. when it reach convergence as defined by
+	 the double slope criteria, it stops.
+	 
+	 This will determine a reasonable relative residual threshold, e.g. 
+	 0.54 for all events
+	 
+	 4) obtain the local atom index for all individual events
+	 
+	 art_data -s --find_local_index will invoke local_atom_index_finder.py
+	 
+	 Use the found relative residual threshold to get all local atoms indexes 
+	 for all filtered events by local_atom_index_finder.py
+
+	 5) run local calculations:
+	 art_data -s --local --strain_calc will invoke the strain and displacement
+	 calculations for local atoms
+	 
+	 It will rerun strain_calc.py with atom_list = 'local',
+	 which will read all local atom indexs saved in local_atoms_index.json
+	 
+	 art_data -s --local --voro_calc will invoke voronoi_index_calc.py 
+	 It will preferrably read local_atoms_index.json and calculate local atoms voronoi index 
+	 If local_atoms_index.json not exists, it will calculate all atoms voronoi index
+	 
+	 art_data -s --local --voro_classify will
+	 Run voronoi_index_classify.py to classify and plot each event, 
+	 and calculate and plot the dynamic transition correlation matrix
+
+	 
+	 6) correlation analysis between local structure and local properties
+	 input file
+	  
+	"""
+def example_input():
+	"""
+	this function returns an example input file json/dict
+	"""
+	input = dict()
+	input["path_to_data_dir"] = os.environ['DATA_DIR']
+	input["list_of_test_id"] = [x+1 for x in xrange(2000)]
+	size = 32.130125 - 0.299875
+	input['box_dim'] = [size, size, size]
+	input['cut_off'] = {(1,1):3.7,(1,2):3.7,(2,2):3.7}
+	input['identical_event_criteria'] = {"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
+	input['num_of_proc'] = mp.cpu_count()
+	input['re_calc'] = False
+	input['atom_list'] = None
+	
+	# for the outlier detection
+	input['model'] = "LinearSVR"
+	input['feature'] = "displacement"
+	input['target'] =  "shear_strain"
+	input['residual_threshold'] = np.arange(0.01, 1.0, 0.01)
+	#input['final_residual_threshold'] = 0.54
+	
+	# for voronoi analysis
+	input['voro_cut_off'] = 3.7
+	l_range = [0.299875, 32.130125]
+	input['box_range'] = [l_range, l_range, l_range]
+	input['periodic'] = [True, True, True]
+	
+	return input
+	
+	
+if __name__ == "__main__":
+
+  parser = argparse.ArgumentParser(description = 'begin art data post-processing')
+  
+  # add command line arguments, order does not matter
+  parser.add_argument('--desc', help='Print extended usage description', action="store_true")
+  parser.add_argument('--settings-format', help='Print input file description', action="store_true")
+  # when --example argument is missing in command line, the default created by store_true is False
+  parser.add_argument('--example', help='Print example input file', action="store_true")
+  
+  parser.add_argument('-s', '--settings', nargs=1, help='Settings input filename, where SETTINGS is the input file name', type=str)
+  
+  parser.add_argument('-np', nargs=1, help='set up number of processors to run the jobs', type=int, default=1)
+  
+  
+  
+  parser.add_argument('-c','--calc', help='perform calculations', action="store_true")
+  parser.add_argument('-v', help='plot results', action="store_true")
+  parser.add_argument('--stats', help='plot results statistics', action="store_true")
+  parser.add_argument('--classify', help='classify the results', action="store_true")
+  
+  
+  
+  parser.add_argument('--filter', help='filter events to remove unsuccessful and redudant event', action="store_true")
+  parser.add_argument('--strain', help='perform operations on atomic strain and displacement', action="store_true")
+  
+  parser.add_argument('--voro', help='perform operations on voronoi cell analysis', action="store_true")
+  
+  parser.add_argument('--find_residual', help='find the relative residual threshold for outlier detection in atomic displacement vs strain for all events in specified tests', action = "store_true")
+  parser.add_argument('--find_local_index', nargs=1, type=float, default=0.54, help='find the local atom index in all events in specified tests, where FIND_LOCAL_INDEX is the user specified relative threshold residual')
+  parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all events in specified tests', action = "store_true")
+  parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for each event in specified tests', action = "store_true")
+  
+  #parser.add_argument('--strain_calc', help='perform atomic strain and displacement calculations', action="store_true")
+  #parser.add_argument('--strain_v', help='perform atomic strain and displacement calculations', action="store_true")
+  
+  
+  
+  # check the default attribute name of dest
+  parser.add_argument('-q','--quiet', help='Quiet output', action="store_true", default=False)
+  
+  #parser.add_argument('-v','--verbose', help='verbose output', action="store_true", default=False)
+  
+  
+  args = parser.parse_args()
+  
+  args.verbose = not args.quiet
+  
+  if args.settings_format:
+	print_input_help()
+	exit()
+  
+  if args.example:
+	print json.dumps(example_input(), indent=2)
+	exit()
+  
+  if args.settings:
+	if args.verbose:
+		print "Loading", args.settings[0]
+	
+	input_param = json.load(open(args.settings[0],'r'))
+	if 'num_of_proc' not in input_param:
+		if args.np <= mp.cpu_count():
+			input_param['num_of_proc'] = args.np
+		else:
+			raise Exception("number of cores specified by -np must be no greater than %s"%mp.cpu_count())
+	path_to_data_dir = input_param["path_to_data_dir"]
+	
+	if args.filter:
+		print "begining running event redundancy test"
+		start_time = time.time()
+		event_redudancy_check(path_to_data_dir, input_param)
+		print "total run time:", time.time() - start_time, "seconds"
+		exit()	
+	
+	if args.strain:
+		if (args.calc and args.v) or (args.calc and args.stats) or (args.stats and args.v):
+			raise Exception("operations on strain can not be more than 1 at one time")
+		if args.calc:
+			# strain calculation is invoked
+			start_time = time.time()
+			strain_calculator_run_all_tests_mp(path_to_data_dir, input_param)
+			print "total run time:", time.time() - start_time, "seconds"
+			exit()
+		elif args.v:
+			events_strain_visualization(path_to_data_dir, input_param)
+			exit()
+		elif args.stats:
+			strain_events_stats_visualization(path_to_data_dir, input_param)
+			exit()
+	
+	if args.find_residual:
+		print "start finding relative residual threshold for outlier detection"
+		residual_threshold_finder(path_to_data_dir, input_param)
+		exit()
+	
+	if args.find_local_index:
+		residual_threshold = args.find_local_index[0]
+		all_events_local_atoms_finder(path_to_data_dir, input_param, residual_threshold)
+		exit()
+	
+	if args.events_local_atoms:		
+		events_local_atoms(path_to_data_dir, input_param)
+		exit()
+		
+	if args.central_atom_max_disp:
+		run_tests_triggered_atom_is_max_disp(path_to_data_dir, input_param)
+		exit()
+	
+	if args.voro:
+		if args.calc:
+			input_param['cut_off'] = input_param['voro_cut_off']
+			start_time = time.time()
+			run_all_tests_voronoi_calculator(path_to_data_dir,input_param)
+			print "total run time:", time.time() - start_time, "seconds"
+			exit()
+		elif args.classify:
+			start_time = time.time()
+			run_all_tests_voronoi_classifier(path_to_data_dir,input_param)
+			print "total run time:", time.time() - start_time, "seconds"
+			exit()
+				
+  elif args.desc:
+	print_desc_help()
+  else:
+	parser.print_help()
