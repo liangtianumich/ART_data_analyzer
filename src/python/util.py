@@ -8,9 +8,7 @@ import os
 import json
 import re
 import operator
-#import pathos.helpers as multiprocessing
 from pathos.multiprocessing import ProcessingPool as Pool
-#import multiprocessing as mp
 from data_reader import *
 from periodic_kdtree import PeriodicCKDTree
 from functools import wraps
@@ -186,8 +184,6 @@ class Configuration(object):
 		"""
 		
 		"""
-		#if not path_to_config_dump_data.endswith('.dump'):
-		#	raise Exception("configuration date file must be a dump file")
 		
 		self.data = read_data_from_file(path_to_config_dump_data, quiet)
 		self.box_dim = box_dim
@@ -412,10 +408,6 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 		for event in final_selected_events:
 			if event[0] in test_id:
 				final_interested_events.append(event)
-		#for event in final_interested_events:
-			#operation(path_to_data_dir, event)
-			#operation(event)
-		#result_list = pool.map(operation,final_interested_events)
 	else:
 		final_interested_events = []
 		for test in list_of_test_id:
@@ -426,24 +418,12 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 				for value in event_list.values():
 					event = ["test%s"%test,[value[0],value[1],value[2]]]
 					final_interested_events.append(event)
-					#operation(path_to_data_dir, event)
-					#operation(event)
-		#result_list = pool.map(operation,final_interested_events)
 			else:
 				print "skip current test:", "test%s"%test, "there is no selected events"
 	
-	# check if the function operation contains explicit return statement
-	#contains_explicit_return = any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(operation))))
-	#if contains_explicit_return is True:
-	
 	# if function operation has no return value, it will return a list of Nones
 	result_list = pool.map(operation,final_interested_events)
-	#print "done operating for the interested tests whose test_id is in the list",list_of_test_id
 	return result_list
-	#else:
-	#	pool.map(operation,final_interested_events)
-	#	print "done operating for the interested tests whose test_id is in the list",list_of_test_id
-
 
 
 def event_local_atom_index(initial_config_data, triggered_atom_list, num_of_involved_atom, path_to_init_sad, box_dim, save_results = True, re_calc = False):

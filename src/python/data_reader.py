@@ -28,14 +28,10 @@ def read_data_from_dump(path_to_file=None, quiet = False):
 		the correct path to the data file")
 	else:
 		data = pd.read_csv(path_to_file,sep='\s+',skiprows = 8)
-		#print "data.head", data.head()
-		#print "data.iloc[:,0:5]", data.iloc[:,0:5]
 		result = data.iloc[:,0:5]
 		if quiet is False:
 			print "read dump data file:", path_to_file
 		result.columns = ['item', 'atom_id', 'x','y','z']
-		#.rename(columns=['item', 'atom id', 'x','y','z'])
-		#result = pd.DataFrame(data.iloc[:,0:5], columns=['item', 'atom id', 'x','y','z'])
 		return result
 
 def read_data_from_non_dump(path_to_file=None, quiet = False):
@@ -53,8 +49,6 @@ def read_data_from_non_dump(path_to_file=None, quiet = False):
 		the correct path to the data file")
 	else:
 		data = pd.read_csv(path_to_file,sep='\s+',skiprows = 2)
-		#print "data.head", data.head()
-		#print "data.iloc[:,0:5]", data.iloc[:,0:5]
 		result = data.iloc[:,0:4]
 		if quiet is False:
 			print "read non-dump data file:", path_to_file

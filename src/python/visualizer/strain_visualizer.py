@@ -58,11 +58,7 @@ def events_strain_visualization_old(path_to_data_dir, list_of_test_id):
 			else:
 				print "skip current test:", "test%s"%test, "there is no selected events"	
 	print "done plotting for the interested tests whose test_id is in the list",list_of_test_id
-	
-#def single_event_strain_visualization_wrapper(**args):
-#	path_to_data_dir = args[0]
-#	event = args[1]
-#	single_event_strain_visualization(path_to_data_dir, event)
+
 	
 def single_event_strain_visualization(path_to_data_dir, event):
 	"""

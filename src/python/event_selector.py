@@ -101,6 +101,7 @@ def get_list_of_selected_events_str(path_to_data_dir, list_of_test_id):
 				event_str = ("test%s"%i, [event[0],event[1],event[2]])
 				all_selected_events.append(event_str)
 	return all_selected_events
+
 @fn_timer
 def identical_events(event_2, path_to_data_dir,event_1, box_dim, identical_event_criteria={"D_init_fin": 0.1, "E_init_fin":0.005, "E_init_sad":0.01}):
 	"""
@@ -147,11 +148,6 @@ def identical_events(event_2, path_to_data_dir,event_1, box_dim, identical_event
 	else:
 		return False
 	
-	#if cond_1 and cond_2 and cond_3:
-		#return True
-	#else:
-		#return False
-
 def df_to_dict(df):
 	"""
 	this function converts the pandas.Dataframe into a dictionary
@@ -163,7 +159,10 @@ def df_to_dict(df):
 		_final_dict[index] = row.tolist()
 	
 	return _final_dict
+
+def filter_events_all_tests(path_to_data_dir, input_param):
 	
+		
 def event_selection(path_to_test_dir = None, box_dim = None, save_results=True, re_calc = False):
 	"""
 	this function filter all events in a single test, each event has an initial configuration, saddle

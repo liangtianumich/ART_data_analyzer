@@ -96,13 +96,6 @@ def events_local_atoms_threshold_sweep(path_to_data_dir, input_param):
 	ax2.set_ylabel('ave_slope')
 	path_to_image = path_to_data_dir + "/ave_num_k_local_atoms_residual_threshold.png"
 	plt.savefig(path_to_image)
-	#plt.figure()
-	#path_to_image = path_to_data_dir + "/ave_num_local_atoms_residual_threshold.png"
-	#plt.plot(residual_threshold,ave_local_atoms,'rx',markersize=5)
-	#plt.xlabel('residual_threshold',fontsize=20)
-	#plt.ylabel('ave_num_local_atoms',fontsize=20)
-	#plt.savefig(path_to_image)
-	#plt.close()
 	print "done residual threshold parameter sweep for average number of locally involved atoms!"
 
 def all_events_local_atoms_finder(path_to_data_dir, input_param, residual_threshold = 0.5):
@@ -129,9 +122,6 @@ def all_events_local_atoms_finder(path_to_data_dir, input_param, residual_thresh
 	# perform a function on all events in all tests in list_of_test_id with num_of_proc
 	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atoms_index(x, path_to_data_dir, model, feature, target, residual_threshold, True, re_calc),num_of_proc)
 	
-	#init_sad_num = []
-	#for event_res in result_list:	
-	#	event_res
 	print "done finding all local atoms index for all final selected events in interested tests!"
 
 def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
@@ -200,16 +190,12 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 	
 	if feature == "displacement" and target == "shear_strain":
 		init_sad_X,init_sad_y = get_strain_disp(path_to_init_sad)
-		#sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
-		#init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
 	
 	init_sad = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold, return_index = True)
 	if save_results is True:
 		with open(path_to_local_atom_index, 'w') as f:
 			json.dump(init_sad,f)
 			f.close()
-	#sad_fin = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold)
-	#init_fin = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold)
 	return init_sad
 
 def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residual_threshold =0.5):
@@ -234,14 +220,6 @@ def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residua
 		sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
 		init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
 	
-	#path_to_init_sad_strain_results = path_to_init_sad + "/strain_results_dict.pkl"
-	#path_to_init_sad_displacement = path_to_init_sad + "/displacement_results_dict.pkl"
-	
-	#path_to_sad_fin_strain_results = path_to_sad_fin + "/strain_results_dict.pkl"
-	#path_to_sad_fin_displacement = path_to_sad_fin + "/displacement_results_dict.pkl"
-	
-	#path_to_init_fin_strain_results = path_to_init_fin + "/strain_results_dict.pkl"
-	#path_to_init_fin_displacement = path_to_init_fin + "/displacement_results_dict.pkl"
 	init_sad = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold)
 	sad_fin = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold)
 	init_fin = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold)

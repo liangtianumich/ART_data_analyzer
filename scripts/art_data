@@ -30,7 +30,8 @@ def print_input_help():
 		list of the tests to be filtered
 	  
 	  box_dim: list,
-		the orthogonal box dimension along x, y, z
+		the orthogonal box dimension along x, y, z, can be found in
+		each ART data directory 1st configuration in the test, e.g.min1000
 		
 	  identical_event_criteria: dict
 	   {"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
@@ -75,6 +76,7 @@ def print_input_help():
 	  
 	  box_range: the simulation box range in x,y ,z direction
 	    e.g. [l_range, l_range, l_range], where l_range = [0.299875, 32.130125]
+	    can be found from each ART data directory, e.g. 1st configuration in the test, e.g.min1000
 	  
 	  periodic: list of perioidic condition in x,y,z
 	    for 3D periodic boundary condition, using [True, True, True]
