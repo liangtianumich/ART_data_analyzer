@@ -14,6 +14,7 @@ import matplotlib.cm as cmx
 from mpl_toolkits.mplot3d import Axes3D
 from data_reader import *
 import scipy.interpolate
+from visualizer.general_visualizer import scatter3d_path
 def plot_dynamic_transition_matrix(path_to_image, corr_matrix):
 	"""
 	this function plot the dynamic transition matrix as a image
@@ -58,7 +59,7 @@ def voronoi_scatter_3d(path_to_curr_event, path_to_config):
 	voro_results = json.load(open(path_to_voro_results,'r'))
 	init_voronoi_index = voro_results["init"]
 	cs = classify_voronoi_index(init_voronoi_index)
-	scatter3d(path_to_image, x,y,z,cs, colorsMap='jet')
+	scatter3d_path(path_to_image, x,y,z,cs, colorsMap='jet')
 
 def voronoi_contour_2d(path_to_curr_event, path_to_config,cut_plane='xy',cut_position=0.5,cut_tol = 0.1):
 	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
@@ -158,17 +159,3 @@ def classify_voronoi_index(list_of_voronoi_index):
 			list_of_voronoi_class.append(2)
 	return list_of_voronoi_class
 	
-def scatter3d(path_to_image, x,y,z,cs, colorsMap='jet'):
-    cm = plt.get_cmap(colorsMap)
-    cNorm = matplotlib.colors.Normalize(vmin=min(cs), vmax=max(cs))
-    scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=cm)
-    fig = plt.figure()
-    ax = Axes3D(fig)
-    # view the 3D plot in x-y plane
-    ax.view_init(azim=0, elev=90)
-    # 2D projection whose z =0 with zdir is z
-    ax.scatter(x, y, c=scalarMap.to_rgba(cs))
-    scalarMap.set_array(cs)
-    fig.colorbar(scalarMap)
-    plt.savefig(path_to_image,dpi=600)
-    plt.close()

@@ -13,7 +13,7 @@ from sklearn import linear_model
 from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import NearestNeighbors
-from visualizer.strain_visualizer import plot_histogram_3
+from visualizer.general_visualizer import plot_histogram_3
 from util import operation_on_events, Configuration, state_energy_barrier
 
 def residual_threshold_finder(path_to_data_dir, input_param):

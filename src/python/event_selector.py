@@ -8,7 +8,7 @@ import os
 import numpy as np
 import multiprocessing as mp
 from functools import partial
-from util import event_energy, Configuration, event_distance, fn_timer
+from util import event_energy, Configuration, event_distance, fn_timer, get_list_of_selected_events_str
 
 
 
@@ -81,26 +81,6 @@ def filter_events_all_tests_stage_2(path_to_data_dir, input_param, save_results=
 		json.dump(final_selected_events, open(path_to_final_selected_events,'w'))
 	
 	print "done redudancy check for all interested tests!"
-	
-def get_list_of_selected_events_str(path_to_data_dir, list_of_test_id):
-	"""
-	this function returns a list containing the strings of the selected events
-	after stage I two criteria for all tests in list_of_test_id
-	"""
-	all_selected_events = []
-	for i in list_of_test_id:
-		path_to_curr_test = path_to_data_dir + "test%s"%i
-		path_to_selected_events = path_to_curr_test + "/results/selected_events.json"
-		# skip the test who do not have selected_events.json in all tests specified in
-		# list_of_test_id
-		if os.path.exists(path_to_selected_events):
-			selected_events = json.load(open(path_to_selected_events,'r'))
-			# value = [init_state, sad_state, fin_state]
-			selected_list = selected_events.values()
-			for event in selected_list:
-				event_str = ("test%s"%i, [event[0],event[1],event[2]])
-				all_selected_events.append(event_str)
-	return all_selected_events
 
 @fn_timer
 def identical_events(event_2, path_to_data_dir,event_1, box_dim, identical_event_criteria={"D_init_fin": 0.1, "E_init_fin":0.005, "E_init_sad":0.01}):

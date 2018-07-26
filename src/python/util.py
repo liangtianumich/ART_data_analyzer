@@ -260,8 +260,45 @@ def event_distance(path_to_test_dir, event_state, box_dim):
 	fin_config = Configuration(fin_path,box_dim)
 	
 	return Configuration.distance_pbc(init_config,fin_config)
+
+def get_list_of_selected_events_str(path_to_data_dir, list_of_test_id):
+	"""
+	this function returns a list containing the strings of the selected events
+	after stage I two criteria for all tests in list_of_test_id
+	"""
+	all_selected_events = []
+	for i in list_of_test_id:
+		path_to_curr_test = path_to_data_dir + "test%s"%i
+		path_to_selected_events = path_to_curr_test + "/results/selected_events.json"
+		# skip the test who do not have selected_events.json in all tests specified in
+		# list_of_test_id
+		if os.path.exists(path_to_selected_events):
+			selected_events = json.load(open(path_to_selected_events,'r'))
+			# value = [init_state, sad_state, fin_state]
+			selected_list = selected_events.values()
+			for event in selected_list:
+				event_str = ("test%s"%i, [event[0],event[1],event[2]])
+				all_selected_events.append(event_str)
+	return all_selected_events
+
+def get_list_of_final_filtered_events_str(path_to_data_dir):
+	"""
+	this function returns a list containing the strings of the selected events
+	after both stage I and stage II three criteria for all tests in list_of_test_id
+	"""
+	all_selected_events = []
+	path_to_final_selected_events = path_to_data_dir + "final_selected_events.json"
+	if os.path.exists(path_to_final_selected_events):
+		final_selected_events = json.load(open(path_to_final_selected_events,'r'))
+		# value = [init_state, sad_state, fin_state]
+		for event in final_selected_events:
+			event_str = (event[0], event[1])
+			all_selected_events.append(event_str)
+	else:
+		raise Exception("events in current list_of_test_id has not been filtered yet! run art_data -s SETTINGS --filter first")
+	return all_selected_events
 	
-def event_activation_energy(path_to_data_dir,event):
+def event_act_relax_energy(path_to_data_dir,event):
 	"""
 	this function calculates the activiation energy for a single event
 	from the test/log.file.1
@@ -282,7 +319,8 @@ def event_activation_energy(path_to_data_dir,event):
 	sad_eng = test_energy_list[event[1][1]]
 	fin_eng = test_energy_list[event[1][2]]
 	act_eng = sad_eng - init_eng
-	return (event, act_eng)
+	relax_eng = sad_eng - fin_eng
+	return (event, act_eng, relax_eng)
 
 def state_energy_barrier(path_to_test_dir, init, state):
 	"""
