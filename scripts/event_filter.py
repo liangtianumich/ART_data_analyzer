@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-from event_selector import event_redudancy_check
+from event_selector import filter_events_all_tests_stage_2
 import multiprocessing as mp
 
 #input
@@ -21,6 +21,6 @@ re_calc = True
 # identical_event_criteria
 input_param = {"list_of_test_id": list_of_test_id, "box_dim": box_dim, "identical_event_criteria": identical_event_criteria,"num_of_proc": num_of_proc, "re_calc": re_calc}
 
-event_redudancy_check(path_to_data_dir, input_param)
+filter_events_all_tests_stage_2(path_to_data_dir, input_param)
 	
 	

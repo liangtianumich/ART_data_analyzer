@@ -13,7 +13,7 @@ from util import event_energy, Configuration, event_distance, fn_timer
 
 
 @fn_timer
-def event_redudancy_check(path_to_data_dir, input_param, save_results=True, re_calc = False):
+def filter_events_all_tests_stage_2(path_to_data_dir, input_param, save_results=True, re_calc = False):
 	"""
 	this function implement stage 2 criteria 3 to remove the redundancy of event pairs
 	it will sort all event pair and finally save the unique events into
@@ -160,8 +160,37 @@ def df_to_dict(df):
 	
 	return _final_dict
 
-def filter_events_all_tests(path_to_data_dir, input_param):
+@fn_timer
+def filter_events_all_tests_stage_1(path_to_data_dir, input_param, save_results=True, re_calc = False):
+	"""
+	this function implement stage 1 two criteria to remove a single event
+	which does not satisfy stage 1 two criteria and finally save the filtered events into
+	a selected_event.json
+	"""
+	list_of_test_id = input_param["list_of_test_id"]
 	
+	existed_tests = []
+	for i in list_of_test_id:
+		path_to_curr_test = path_to_data_dir + "test%s"%i
+		if os.path.exists(path_to_curr_test):
+			existed_tests.append(i)
+	list_of_test_id = existed_tests
+	
+	box_dim = input_param["box_dim"]
+
+	# preferably use the re_calc and num_of_proc in input_param
+	if "num_of_proc" in input_param and "re_calc" in input_param:
+		num_of_proc = input_param["num_of_proc"]
+		re_calc = input_param["re_calc"]
+	
+	pool = mp.Pool(processes = num_of_proc)
+	num_of_events = len(list_of_test_id)
+	test_lists = []
+	for i in xrange(num_of_events):
+		path_to_curr_test = path_to_data_dir + "test%s"%list_of_test_id[i]
+		test_lists.append(path_to_curr_test)
+	result = pool.map(partial(event_selection, box_dim = box_dim, save_results=True, re_calc = re_calc), test_lists)
+	print "done filtering events for all tests in list_of_test_id for stage 1"	
 		
 def event_selection(path_to_test_dir = None, box_dim = None, save_results=True, re_calc = False):
 	"""
