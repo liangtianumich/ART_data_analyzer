@@ -88,9 +88,17 @@ def print_desc_help():
 	"""
 	print \
 	"""
-	This art_data command line tool can perform the following post-processing 
-	tasks in a user workflow in parallel. 
-	It needs an input file to set up the settings to run the following tasks.
+	This art_data command line tool are expected to perform the following tasks:
+	running lammps and ART simulations to generate data,
+	post-processing of ART data in a user workflow in parallel.
+	
+	It is suggested to run a few set of ART data with different paramters to 
+	ensure post-filtering activation energy distribution indeed converge by a
+	statistical test, such as the t test implemented by --ttest, which need
+	two path arguments that point to two data directories to ensure that
+	the average of activation energy and relaxation energy indeed converges.
+	
+	The post-processing of ART_data needs an input file to set up the settings to run the following tasks.
 	The number of processors that will be used will be specified preferaly
 	in the input file, if this information does not exists, it will use
 	the setting by the command line argument -np

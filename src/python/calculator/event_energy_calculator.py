@@ -7,6 +7,7 @@ import multiprocessing as mp
 import pandas as pd
 import numpy as np
 import os, json
+from scipy.stats import ttest_ind, ttest_rel
 from visualizer.event_energy_visualizer import plot_act_relax_histogram
 
 def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_results = True, re_calc = False):
@@ -57,10 +58,75 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 		json.dump(saved_data, open(path_to_all_act_relax_eng,'w'))
 
 	return [all_act_eng, all_relax_eng]
-	
 
+
+def eng_convergence_ttest_ind(path_to_data_dir_1, path_to_data_dir_2, equal_var = True):
 	
+	"""
+	this function takes the act_eng and relax_eng data from two independent samples in 
+	two data directories, perform the two independent sample t tests to check if the mean of samples 
+	are identical to confirm if the act and relax energy distributions converge
+	return True if two data has identical average
+	return False if two data does not have identical average
+	"""
+	path_to_eng_1 = path_to_data_dir_1 + "act_relax_eng_filtered_events.json"
+	path_to_eng_2 = path_to_data_dir_2 + "act_relax_eng_filtered_events.json"
+	if os.path.exists(path_to_eng_1) and os.path.exists(path_to_eng_2):
+		eng_data_1 = json.load(open(path_to_eng_1, 'r'))
+		eng_data_2 = json.load(open(path_to_eng_2, 'r'))
+	else:
+		raise Exception("at least one of the data directories do not have the energy data file")
+	act_eng_1, relax_eng_1 = [], []
+	for event in eng_data_1:
+		act_eng_1.append(event[1])
+		relax_eng_1.append(event[2])
 	
-		
-		
-		
+	act_eng_2, relax_eng_2 = [], []
+	for event in eng_data_2:
+		act_eng_2.append(event[1])
+		relax_eng_2.append(event[2])
+	
+	t_1, prob_1 = ttest_ind(np.array(act_eng_1), np.array(act_eng_2), equal_var = equal_var)
+	
+	t_2, prob_2 = ttest_ind(np.array(relax_eng_1), np.array(relax_eng_2), equal_var = equal_var)
+	
+	if prob_1 > 0.1 and prob_2 > 0.1:
+		return True
+	else:
+		return False
+
+def eng_convergence_ttest_rel(path_to_data_dir_1, path_to_data_dir_2):
+	
+	"""
+	this function takes the act_eng and relax_eng data from two independent samples in 
+	two data directories, perform the two independent sample t tests to check if the mean of samples 
+	are identical to confirm if the act and relax energy distributions converge
+	
+	return True if two data has identical average
+	return False if two data does not have identical average
+	"""
+	path_to_eng_1 = path_to_data_dir_1 + "act_relax_eng_filtered_events.json"
+	path_to_eng_2 = path_to_data_dir_2 + "act_relax_eng_filtered_events.json"
+	if os.path.exists(path_to_eng_1) and os.path.exists(path_to_eng_2):
+		eng_data_1 = json.load(open(path_to_eng_1, 'r'))
+		eng_data_2 = json.load(open(path_to_eng_2, 'r'))
+	else:
+		raise Exception("at least one of the data directories do not have the energy data file")
+	act_eng_1, relax_eng_1 = [], []
+	for event in eng_data_1:
+		act_eng_1.append(event[1])
+		relax_eng_1.append(event[2])
+	
+	act_eng_2, relax_eng_2 = [], []
+	for event in eng_data_2:
+		act_eng_2.append(event[1])
+		relax_eng_2.append(event[2])
+	
+	t_1, prob_1 = ttest_rel(np.array(act_eng_1), np.array(act_eng_2))
+	
+	t_2, prob_2 = ttest_rel(np.array(relax_eng_1), np.array(relax_eng_2))
+	
+	if prob_1 > 0.1 and prob_2 > 0.1:
+		return True
+	else:
+		return False
