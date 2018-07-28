@@ -298,7 +298,7 @@ def get_list_of_final_filtered_events_str(path_to_data_dir):
 		raise Exception("events in current list_of_test_id has not been filtered yet! run art_data -s SETTINGS --filter first")
 	return all_selected_events
 	
-def event_act_relax_energy(path_to_data_dir,event):
+def event_act_relax_energy(event, path_to_data_dir):
 	"""
 	this function calculates the activiation energy for a single event
 	from the test/log.file.1

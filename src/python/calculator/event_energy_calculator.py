@@ -2,11 +2,12 @@
 this event energy calculator module extract various energy related quantities from
 each event
 """
-from util import event_act_relax_energy, get_list_of_selected_events_str
+from util import event_act_relax_energy, get_list_of_final_filtered_events_str
 import multiprocessing as mp
 import pandas as pd
 import numpy as np
 import os, json
+from functools import partial
 from scipy.stats import ttest_ind, ttest_rel
 from visualizer.event_energy_visualizer import plot_act_relax_histogram
 
@@ -17,8 +18,11 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	, for the purpose of checking the convergence of their distribution
 	"""
 	list_of_test_id = input_param['list_of_test_id']
-	num_of_proc = input_param['num_of_proc']
-	re_calc = input_param["re_calc"]
+	
+	if 'num_of_proc' in input_param and 're_calc' in input_param:
+		num_of_proc = input_param['num_of_proc']
+		re_calc = input_param["re_calc"]
+	
 	path_to_all_act_relax_eng = path_to_data_dir + "act_relax_eng_filtered_events.json"
 	
 	if re_calc is False:
@@ -29,8 +33,6 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 				all_act_energy.append(result[1])
 				all_relax_eng.append(result[2])
 			return [all_act_eng, all_relax_eng]
-			
-		
 	
 	list_event_str = get_list_of_final_filtered_events_str(path_to_data_dir)
 	pool = mp.Pool(processes = num_of_proc)
