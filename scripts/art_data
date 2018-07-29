@@ -251,7 +251,7 @@ if __name__ == "__main__":
   #parser.add_argument('--strain_calc', help='perform atomic strain and displacement calculations', action="store_true")
   #parser.add_argument('--strain_v', help='perform atomic strain and displacement calculations', action="store_true")
   
-  parser.add_argument('-p', '--path', nargs=1, help='Set up path to data directory, will be overrided by the path in user specified input file', type=str)
+  parser.add_argument('-p', '--path', nargs=1, help='Set up path to data directory, overrides the path in user specified input file', type=str)
   parser.add_argument('-np', nargs=1, help='set up number of processors to run the jobs, default 1 without specifying, will be overided by user specified input file', type=int, default=1)
   parser.add_argument('--re_calc', help='redo the calculations by setting the re_calc argument, will be override by re_calc argument in user specified input file', action="store_true")
   
@@ -307,7 +307,7 @@ if __name__ == "__main__":
 	input_param = json.load(open(args.settings[0], 'r'))
 	
 	new_cut_off_dict = dict()
-	for k,v in input_param['cut_off'].items(): 
+	for k,v in input_param['cut_off'].items():
 		new_cut_off_dict[eval(k)]= v
 	input_param['cut_off'] = new_cut_off_dict
 	
@@ -316,14 +316,14 @@ if __name__ == "__main__":
 			input_param['num_of_proc'] = args.np
 		else:
 			raise Exception("number of cores specified by -np must be no greater than %s"%mp.cpu_count())
-	if "path_to_data_dir" in input_param:
+	if (not args.path) and ("path_to_data_dir" in input_param):
 		path_to_data_dir = input_param["path_to_data_dir"]
 	if "re_calc" not in input_param:
 		input_param["re_calc"] = args.re_calc
 	
 	if args.filter:
-		if args.path:
-			path_to_data_dir = args.path[0]
+		#if args.path:
+		#	path_to_data_dir = args.path[0]
 		print "begining filter events in stage I two criteria"
 		filter_events_all_tests_stage_1(path_to_data_dir, input_param)
 		print "begining filter events in stage II 1 criteria"
@@ -332,8 +332,8 @@ if __name__ == "__main__":
 	
 	if args.eng:
 		print "begin operation on activation and relaxation energy,--path argument overides path_to_data_dir in input file"
-		if args.path:
-			path_to_data_dir = args.path[0]
+		#if args.path:
+		#	path_to_data_dir = args.path[0]
 		if args.calc:
 			print "beging calculating activation and relaxation energy distribution for all filtered events in input file list_of_test_id of %s"%path_to_data_dir
 			energy_calculator_run_all_tests_mp(path_to_data_dir, input_param)
@@ -342,7 +342,7 @@ if __name__ == "__main__":
 			print "being performing t test"
 			print "t test mode is", args.ttest[0]
 			print "path to ART data dir 1:", args.ttest[1]
-			print "path to ART data dir 1:", args.ttest[2]
+			print "path to ART data dir 2:", args.ttest[2]
 			if args.ttest[0] == 'ind':
 				# ttest_ind has equal_var = False option, default True
 				is_converged = eng_convergence_ttest_ind(args.ttest[1], args.ttest[2])

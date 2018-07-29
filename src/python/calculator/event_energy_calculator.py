@@ -66,8 +66,9 @@ def eng_convergence_ttest_ind(path_to_data_dir_1, path_to_data_dir_2, equal_var 
 	
 	"""
 	this function takes the act_eng and relax_eng data from two independent samples in 
-	two data directories, perform the two independent sample t tests to check if the mean of samples 
-	are identical to confirm if the act and relax energy distributions converge
+	two ART data directories with different input parameters, perform the two independent sample t tests
+	to check if the mean of samples are identical to confirm if the act and relax energy distributions converge
+	
 	return True if two data has identical average
 	return False if two data does not have identical average
 	"""
@@ -100,12 +101,14 @@ def eng_convergence_ttest_ind(path_to_data_dir_1, path_to_data_dir_2, equal_var 
 def eng_convergence_ttest_rel(path_to_data_dir_1, path_to_data_dir_2):
 	
 	"""
-	this function takes the act_eng and relax_eng data from two independent samples in 
-	two data directories, perform the two independent sample t tests to check if the mean of samples 
-	are identical to confirm if the act and relax energy distributions converge
+	this function takes the act_eng and relax_eng data from two related samples 
+	(two different sampled data subsets with the same length) from the same LAMMPS sample with 
+	the same ART input parameters, perform the related t tests 
+	to check if the mean of samples are identical to confirm if the act 
+	and relax energy distributions converge
 	
-	return True if two data has identical average
-	return False if two data does not have identical average
+	return True if two subset data has identical average
+	return False if two subset data does not have identical average
 	"""
 	path_to_eng_1 = path_to_data_dir_1 + "act_relax_eng_filtered_events.json"
 	path_to_eng_2 = path_to_data_dir_2 + "act_relax_eng_filtered_events.json"
