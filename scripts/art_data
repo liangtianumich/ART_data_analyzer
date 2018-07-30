@@ -158,9 +158,9 @@ def print_desc_help():
 	 
 	 4) obtain the local atom index for all individual events
 	 
-	 art_data -s SETTINGS --find_local_index FIND_LOCAL_INDEX, where
-	 FIND_LOCAL_INDEX is the relative residual threshold to find the local atoms
-	 will invoke local_atom_index_finder.py
+	 art_data -s SETTINGS --find_local_index rel_residual_threshold, where
+	 rel_residual_threshold is the relative residual threshold to find 
+	 the local atoms will invoke local_atom_index_finder.py
 	 
 	 Use the found relative residual threshold to get all local atoms indexes 
 	 for all filtered events by local_atom_index_finder.py
@@ -173,14 +173,14 @@ def print_desc_help():
 	 which will read all local atom indexs saved in local_atoms_index.json
 	 
 	 art_data -s SETTINGS --local --voro --calc will invoke voronoi_index_calc.py 
-	 It will preferrably read local_atoms_index.json and calculate local atoms voronoi index 
+	 with --local, it will read local_atoms_index.json and calculate local atoms voronoi index 
 	 If local_atoms_index.json not exists, it will calculate all atoms voronoi index
 	 
-	 art_data -s SETTINGS --local --voro --classify will
-	 Run voronoi_index_classify.py to classify and plot each event, 
+	 art_data -s SETTINGS --voro --classify will
+	 Run voronoi_structural_analysis.run_all_tests_voronoi_classifier 
+	 to classify and plot the results in voronoi_index_results.json of each event, 
 	 and calculate and plot the dynamic transition correlation matrix
-
-	 
+	 	 
 	 6) correlation analysis between local structure and local properties
 	 input file
 	  
@@ -243,7 +243,7 @@ if __name__ == "__main__":
   
   
   parser.add_argument('--find_residual', help='find the relative residual threshold for outlier detection in atomic displacement vs strain for all events in specified tests', action = "store_true")
-  parser.add_argument('--find_local_index', nargs=1, type=float, help='find the local atom index in all events in specified tests, where FIND_LOCAL_INDEX is the user specified relative threshold residual')
+  parser.add_argument('--find_local_index', nargs=1,metavar=('rel_residual_threshold'), type=float, help='find the local atom index in all events in specified tests, where rel_residual_threshold is the user specified relative threshold residual')
   parser.add_argument('--local', help='invoke calculations on local atoms that are determined by --find_local_index', action="store_true")
   parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all events in specified tests', action = "store_true")
   parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for each event in specified tests', action = "store_true")
@@ -308,7 +308,7 @@ if __name__ == "__main__":
 	
 	new_cut_off_dict = dict()
 	for k,v in input_param['cut_off'].items():
-		new_cut_off_dict[eval(k)]= v
+		new_cut_off_dict[eval(k)] = v
 	input_param['cut_off'] = new_cut_off_dict
 	
 	if 'num_of_proc' not in input_param:
@@ -355,6 +355,8 @@ if __name__ == "__main__":
 			exit()	
 	
 	if args.strain:
+		if args.local:
+			input_param["atom_list"] = "local"
 		if (args.calc and args.v) or (args.calc and args.stats) or (args.stats and args.v):
 			raise Exception("operations on strain can not be more than 1 at one time")
 		if args.calc:
@@ -390,6 +392,8 @@ if __name__ == "__main__":
 		exit()
 	
 	if args.voro:
+		if args.local:
+			input_param["atom_list"] = "local"
 		if args.calc:
 			input_param['cut_off'] = input_param['voro_cut_off']
 			start_time = time.time()

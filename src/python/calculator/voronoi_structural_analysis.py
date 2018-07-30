@@ -227,6 +227,9 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	
 	if atom_list is None:
+		atom_list = (initial_config_data["item"]).tolist()
+	
+	if atom_list == "local":
 		if os.path.exists(path_to_local_atom_index):
 			# for local mode of voronoi calculation
 			print ("\n starting local mode voronoi calculations")
@@ -235,7 +238,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 				return None
 			atom_list = [atom + 1 for atom in local_atom_list]
 		else:
-			atom_list = (initial_config_data["item"]).tolist()
+			raise Exception("local_atoms_index.json does not exist in %s"%path_to_curr_event)
 
 	init_voronoi_index = single_config_voronoi_calculator(initial_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
 	sad_voronoi_index = single_config_voronoi_calculator(saddle_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
