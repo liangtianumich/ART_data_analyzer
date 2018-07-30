@@ -5,7 +5,7 @@ import multiprocessing as mp
 import pickle
 import json
 from functools import partial
-from util import Atom, NN_finder_all, event_strain_disp,event_local_atom_index,read_from_art_input_file
+from util import Atom, NN_finder_all, event_strain_disp,event_local_atom_index,read_from_art_input_file, data_dir_to_test_dir
 from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
@@ -29,9 +29,11 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 	tests_list = []
 	#for i in xrange(num_of_tests+1):
 	for i in list_of_test_id:
-		path_to_curr_test = path_to_data_dir + "test%s"%i
-		if os.path.exists(path_to_curr_test):
+		try:
+			path_to_curr_test = data_dir_to_test_dir(path_to_data_dir, i)
 			tests_list.append(path_to_curr_test)
+		except Exception:
+			pass
 	disp_ave, disp_std, disp_max , disp_ave_2, disp_std_2, disp_max_2,disp_ave_3, disp_std_3, disp_max_3 = [], [], [], [], [], [], [], [], []
 	
 	shear_ave, shear_std, shear_max, shear_ave_2, shear_std_2, shear_max_2,shear_ave_3, shear_std_3, shear_max_3 = [], [], [], [], [], [], [], [], []
@@ -146,6 +148,9 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 	# happens before calculating all strains
 	# check if each event is in the final_selected_events.json file
 	path_to_data_dir,test_id = os.path.split(test)
+	if 'test' not in test_id:
+		test_id = 'test%s'%test_id
+	
 	path_to_final_events = path_to_data_dir + "/final_selected_events.json"
 	event_list = event_list.values()
 	

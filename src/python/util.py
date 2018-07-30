@@ -26,6 +26,19 @@ def fn_timer(function):
         return result
     return function_timer
 
+def data_dir_to_test_dir(path_to_data_dir, test_id):
+	"""
+	this function return the path to test dir for test with test_id
+	"""
+	path_to_curr_test = [path_to_data_dir + "test%s"%test_id, path_to_data_dir + "%s"%test_id]
+	if os.path.exists(path_to_curr_test[0]):
+		return path_to_curr_test[0]
+	elif os.path.exists(path_to_curr_test[1]):
+		return path_to_curr_test[1]
+	else:
+		raise Exception("each test dir in %s should be named either test_1 or 1 for test_id = 1"%path_to_data_dir)
+	
+	
 class Atom(object):
 	"""
 	this class initialize the atomic coordinates of single atom for later operation
@@ -268,7 +281,7 @@ def get_list_of_selected_events_str(path_to_data_dir, list_of_test_id):
 	"""
 	all_selected_events = []
 	for i in list_of_test_id:
-		path_to_curr_test = path_to_data_dir + "test%s"%i
+		path_to_curr_test = data_dir_to_test_dir(path_to_data_dir,i)
 		path_to_selected_events = path_to_curr_test + "/results/selected_events.json"
 		# skip the test who do not have selected_events.json in all tests specified in
 		# list_of_test_id
@@ -449,7 +462,8 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 	else:
 		final_interested_events = []
 		for test in list_of_test_id:
-			path_to_test_result = path_to_data_dir + "test%s"%test +"/results"
+			path_to_curr_test = data_dir_to_test_dir(path_to_data_dir, test)
+			path_to_test_result = path_to_curr_test +"/results"
 			path_to_event_list = path_to_test_result + "/selected_events.json"
 			if os.path.exists(path_to_event_list):
 				event_list = json.load(open(path_to_event_list,"r"))

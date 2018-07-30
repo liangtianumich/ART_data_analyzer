@@ -14,7 +14,7 @@ from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import NearestNeighbors
 from visualizer.general_visualizer import plot_histogram_3
-from util import operation_on_events, Configuration, state_energy_barrier
+from util import operation_on_events, Configuration, state_energy_barrier, data_dir_to_test_dir
 
 def residual_threshold_finder(path_to_data_dir, input_param):
 	"""
@@ -177,7 +177,13 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 			a list with elements contains a list of local atom index for init_sad
 			
 	"""
-	path_to_curr_result = path_to_data_dir + event[0] + "/results"
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	path_to_curr_result = path_to_test_dir + "/results"
 	init,sad,fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_init_sad = path_to_curr_event + "/init_sad"
@@ -208,7 +214,13 @@ def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residua
 			num_of_local_atom for init_sad, sad_fin, init_fin
 			
 	"""
-	path_to_curr_result = path_to_data_dir + event[0] + "/results"
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	path_to_curr_result = path_to_test_dir + "/results"
 	init,sad,fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	

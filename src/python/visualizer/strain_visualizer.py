@@ -6,7 +6,7 @@ import os
 import json
 import pickle
 import pandas as pd
-from util import Atom
+from util import Atom, data_dir_to_test_dir
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -49,7 +49,8 @@ def events_strain_visualization_old(path_to_data_dir, list_of_test_id):
 			single_event_strain_visualization(path_to_data_dir, event)
 	else:
 		for test in list_of_test_id:
-			path_to_test_result = path_to_data_dir + "test%s"%test +"/results"
+			path_to_test_dir = data_dir_to_test_dir(path_to_data_dir,test)
+			path_to_test_result =  path_to_test_dir + "/results"
 			path_to_event_list = path_to_test_result + "/selected_events.json"
 			if os.path.exists(path_to_event_list):
 				event_list = json.load(open(path_to_event_list,"r"))
@@ -65,7 +66,12 @@ def single_event_strain_visualization(path_to_data_dir, event):
 	"""
 	this function plot the shear strain volumetric strain and displacement for a single event 
 	"""	
-	path_to_test_result = path_to_data_dir + event[0] + "/results"
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	path_to_test_result = path_to_test_dir + "/results"
 	init, sad, fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_test_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_init_sad = path_to_curr_event + "/init_sad"
@@ -191,8 +197,13 @@ def strain_events_stats_visualization(path_to_data_dir, input_param):
 	print "done plotting strain statistics for all interested tests!"
 		
 def single_event_strain_stats(path_to_data_dir,event):
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_curr_test = data_dir_to_test_dir(path_to_data_dir, test_id)
 	
-	path_to_curr_test = path_to_data_dir + event[0]
+	#path_to_curr_test = path_to_data_dir + event[0]
 	path_to_curr_event = path_to_curr_test + "/results/events_stats.pkl"
 	if os.path.exists(path_to_curr_event):
 		result = pickle.load(open(path_to_curr_event,'r'))
@@ -226,7 +237,7 @@ def strain_events_stats_visualization_old(path_to_data_dir, list_of_test_id):
 	vol_ave, vol_std, vol_max, vol_ave_2, vol_std_2, vol_max_2, vol_ave_3, vol_std_3, vol_max_3 = [], [], [], [], [], [], [], [], []
 	
 	for i in list_of_test_id:
-		path_to_curr_test = path_to_data_dir + "test%s"%i
+		path_to_curr_test = data_dir_to_test_dir(path_to_data_dir, i)
 		path_to_curr_event = path_to_curr_test + "/results/events_stats.pkl"
 		# skip the test who do not have events_stats.pkl in all tests specified in
 		# list_of_test_id

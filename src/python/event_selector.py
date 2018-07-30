@@ -8,7 +8,7 @@ import os
 import numpy as np
 import multiprocessing as mp
 from functools import partial
-from util import event_energy, Configuration, event_distance, fn_timer, get_list_of_selected_events_str
+from util import event_energy, Configuration, event_distance, fn_timer, get_list_of_selected_events_str, data_dir_to_test_dir
 
 
 
@@ -29,9 +29,11 @@ def filter_events_all_tests_stage_2(path_to_data_dir, input_param, save_results=
 	
 	existed_tests = []
 	for i in list_of_test_id:
-		path_to_curr_test = path_to_data_dir + "test%s"%i
-		if os.path.exists(path_to_curr_test):
+		try:
+			path_to_curr_test = data_dir_to_test_dir(path_to_data_dir,i)
 			existed_tests.append(i)
+		except Exception:
+			pass
 	list_of_test_id = existed_tests
 	
 	box_dim = input_param["box_dim"]
@@ -97,8 +99,20 @@ def identical_events(event_2, path_to_data_dir,event_1, box_dim, identical_event
 	E_init_fin = identical_event_criteria["E_init_fin"]
 	E_init_sad = identical_event_criteria["E_init_sad"]
 	
-	path_to_event_1_test = path_to_data_dir + event_1[0]
-	path_to_event_2_test = path_to_data_dir + event_2[0]
+	if 'test' in event_1[0]:
+		test_id_1 = int(event_1[0][4:])
+	else:
+		test_id_1 = int(event_1[0])
+	path_to_event_1_test = data_dir_to_test_dir(path_to_data_dir, test_id_1)
+	
+	if 'test' in event_2[0]:
+		test_id_2 = int(event_2[0][4:])
+	else:
+		test_id_2 = int(event_2[0])
+	path_to_event_2_test = data_dir_to_test_dir(path_to_data_dir, test_id_2)
+	
+	#path_to_event_1_test = path_to_data_dir + event_1[0]
+	#path_to_event_2_test = path_to_data_dir + event_2[0]
 	event_1_init,event_1_sad, event_1_fin = event_1[1][0],event_1[1][1],event_1[1][2]
 	event_2_init,event_2_sad, event_2_fin = event_2[1][0],event_2[1][1],event_2[1][2]
 	
@@ -151,9 +165,11 @@ def filter_events_all_tests_stage_1(path_to_data_dir, input_param, save_results=
 	
 	existed_tests = []
 	for i in list_of_test_id:
-		path_to_curr_test = path_to_data_dir + "test%s"%i
-		if os.path.exists(path_to_curr_test):
+		try:
+			path_to_curr_test = data_dir_to_test_dir(path_to_data_dir,i)
 			existed_tests.append(i)
+		except Exception:
+			pass
 	list_of_test_id = existed_tests
 	
 	box_dim = input_param["box_dim"]
@@ -167,7 +183,7 @@ def filter_events_all_tests_stage_1(path_to_data_dir, input_param, save_results=
 	num_of_events = len(list_of_test_id)
 	test_lists = []
 	for i in xrange(num_of_events):
-		path_to_curr_test = path_to_data_dir + "test%s"%list_of_test_id[i]
+		path_to_curr_test = data_dir_to_test_dir(path_to_data_dir, list_of_test_id[i])
 		test_lists.append(path_to_curr_test)
 	result = pool.map(partial(event_selection, box_dim = box_dim, save_results=True, re_calc = re_calc), test_lists)
 	print "done filtering events for all tests in list_of_test_id for stage 1"	
