@@ -124,8 +124,8 @@ def print_desc_help():
 	  
 	  'art_data -s SETTINGS --filter' 
 	  will perform the task:
-	  it will invoke filter_events_all_tests_stage_1 and filter_events_all_tests_stage_2
-	  and filter events based on the three criteria implemented
+	  it will invoke event_selector.filter_events_all_tests_stage_1 and filter_events_all_tests_stage_2
+	  in and filter events based on the three criteria implemented
 	  
 	  'art_data -s SETTINGS --eng --calc' will invoke
 	  event_energy_calculator.energy_calculator_run_all_tests_mp to calculate
@@ -141,12 +141,13 @@ def print_desc_help():
 	 
 	 "art_data -s SETTINGS --strain -calc" will invoke the strain and displacement calculations for
 	 all filtered events and automatically plots results for individual event and statistics
-	 for all events
+	 for all events, implemented in calculator.strain_calculator.strain_calculator_run_all_tests_mp
 	 
 	 3) determine the local atoms in a STZs for each event by a relative
 	 residual threshold
 	 
-	 art_data -s SETTINGS --find_residual will invoke the residual_threshold_finder.py
+	 art_data -s SETTINGS --find_residual will invoke the 
+	 correlation_model.correlation_model.residual_threshold_finder
 	 
 	 current implemented criteria is to plot the relation between
 	 the average number of local atoms of all filtered events vs the user
@@ -163,17 +164,20 @@ def print_desc_help():
 	 the local atoms will invoke local_atom_index_finder.py
 	 
 	 Use the found relative residual threshold to get all local atoms indexes 
-	 for all filtered events by local_atom_index_finder.py
+	 for all filtered events by correlation_model.correlation_model.all_events_local_atoms_finder
 
 	 5) run local calculations:
 	 art_data -s SETTINGS --local --strain --calc will invoke the strain and displacement
 	 calculations for local atoms
 	 
-	 It will rerun strain_calc.py with atom_list = 'local',
+	 It will rerun calculator.strain_calculator.strain_calculator_run_all_tests_mp 
+	 with atom_list = 'local',
 	 which will read all local atom indexs saved in local_atoms_index.json
 	 
-	 art_data -s SETTINGS --local --voro --calc will invoke voronoi_index_calc.py 
-	 with --local, it will read local_atoms_index.json and calculate local atoms voronoi index 
+	 art_data -s SETTINGS --local --voro --calc will invoke
+	 calculator.voronoi_structural_analysis.run_all_tests_voronoi_calculator
+	 with atom_list ='local' when --local is invoked, 
+	 it will read local_atoms_index.json and calculate local atoms voronoi index 
 	 If local_atoms_index.json not exists, it will calculate all atoms voronoi index
 	 
 	 art_data -s SETTINGS --voro --classify will
