@@ -1,8 +1,8 @@
-This ART data analyzer package is a python package that automates the data analysis of various physical quantities change between two atomic configurations of each possible event search of using Activation and Relaxation Techniques (ART). The installation guide of ART is included in /ART_installation_guide along with environmental files when installing ART and various Makefiles for compiling lammps and ART.
+This ART data analyzer package is a python package that automates the data analysis of various physical quantities change between two atomic configurations of each possible event search of using Activation and Relaxation Techniques (ART). The installation guide of ART is included in /ART_installation_guide along with environmental files when installing ART and various Makefiles for compiling lammps and ART. Currently, version 1.0 supports the post-processing of ART calculated data.  The implementation of running ART and LAMMPS simulations, integrating with LAMMPS, Ovito,pymatgen will come in future versions.
 
 The overall goal is to correlate the local change in atomic structures with the change of activation energy by sampling sufficient number of local potential energy basins to reproduce the correct statistical distributions as training data for the machine learning model to train correlation models, by triggering various local events. By forcing to trigger a atom initially away from their minimum (1st step of ART perform minimization, after minimization, the configuration should be very close to the lammps input configuration to guarantee we are getting the activation energy barrier of initial lammps input sample), the ART algorithm will climb the potential energy landscape to its nearest saddle state and check how many atoms are rearranged during this trigger to estimate the number of involved atoms/size of STZ during the activation of a potential hypothetical STZ (since we only call it STZ when it actually rearrange, a potential STZ with too high activation energy should not be called STZ). Each triggering event corresponds to a potential individual STZ being activated to rearrange their atoms. Each activation of individual STZ is corresponding to a local beta relaxation. With these information probed by ART, thinking reversely, the physics is that the thermal energy kT relative to STZ activation energy distribution will determine the percentage of STZs will be activated. The percolation of activated STZs will transfer from local atomic rearrangement events, i.e. activation of individual STZs, into a global atomic rearrangement event associated with/characterized by a large global potential energy decrease, alpha relaxation, finish the glass transition into their equilibrium liquid-like phase as we increase the thermal energy kT to activate more STZs. The critical temperature is the glass transition temperature. The deformation of glass is affected by this process since the external stress can not only directly change the rate of STZ activation in STZ dynamics, but also stress should be able to change the activation energy distribution probed by ART by changing the atomic structures, which is usually not incorporated. It is possible that stress may not change the average activation energy barrier though it can distort the potential energy landscape. It is also interesting to see softness (average rearrangement displacement magnitude of local involved atoms in STZs or nonaffine displacement D2min) correlated with local shear modulus, and activation energy 
 
-Currently, it can calculate and visualize the information such as atomic displacement, atomic strain (e.g. the volumetric and shear strain) as a statistical distribution for all final selected events. It will also implement the physically meaningful atomic structure descriptor SOAP matrix for a complete representation of atomic structure within a local environment.
+Currently, it can calculate and visualize the information such as atomic displacement, atomic strain (e.g. the volumetric and shear strain), voronoi index as a statistical distribution for all filtered events. It will also implement the physically meaningful atomic structure descriptor for representing the atomic structure within local environment to be correlated with the local properties.
 
 This package has the following modules and sub-packages:
 
@@ -11,31 +11,22 @@ This package has the following modules and sub-packages:
 data_reader: extracting data from various data file formats (default format lammps dump file), read data into a pandas.Dataframe
 
 event_selector: load the accepted events and select events passed stage 1 two criteria first to save these events into selected_events.json 
-Selected events will be further filtered by the redundant event search function event_redudant_check, which implement 
+Selected events will be further filtered by the redundant event search function, which implement 
 redundancy check of all possible pairs of events that has already passed stage 1 two criterias
 
 Util: utilities containing various classes and functions for other modules
 
 calculator package:
-	/local_atom_env_calculator: calculate the local environment quantities for each atom, such as the fundamental quantities bond distance, bond orientation, coordination number to replace a complete set of structural functions represented by the radial basis functions and spherical harmonics, that will reduce the risk of overfitting due to the limited number of training data, simplify the physics by machine learning models for computational costs during later correlation analysis
-	bond_distance_calculator: calculate all bond distance for each atom
-		an extra function will read the results file and extract statistics for 		correlation analysis
-	bond_orientation_calculator: calculate the bond orientation for all three atom 			pair for each center local atom
-		an extra function will read the results file and extract statistics
-	coordination_number_calculator: calculate and summarize the number of different 		atomic species around the center atom
-		an extra function will read the results file and extract statistics	
 	
-
-	calculate local atomic physical quantities that are derived from local atomic structure/environment
 	strain_calculator: calculate the atomic strains for all events or a user customized subset of events
 
 	voronoi analysis: calculate the voronoi index and voronoi class for all atoms for all events for a suer customized subset of events
 
 	stress_calculator,  coming soon
-		implemented as in “How thermally activated deformation starts in metallic glass”
+		implemented by LAMMPS based on “How thermally activated deformation starts in metallic glass”
 	
 	shear_modulus calculator, coming soon 
-		implemented as in “Configurational dependence of elastic modulus of metallic glass”
+		implemented by LAMMPS based on “Configurational dependence of elastic modulus of metallic glass”
 	
 	D2min calculator:
 		non-affine displacement modified in terms of “dynamic” in state rather than dynamic in time
@@ -43,11 +34,24 @@ calculator package:
 	/correlation_model:
 		contains modules to perform correlation analysis between these local atomic physical quantities derived from local atomic structures, 
 		and local atomic properties such as activation energy of local potential energy barrier basin
-		
-visualator package:
-	strain_visualator: visualize the atomic strain from stored atomic strain results 	in results.pkl file
 	
-	voronoi_visualizer: visualize the voronoi class by their statistics in a histogram in a single event or visualize a thin 2D plane slice of atoms
+	/local_atom_env_calculator: calculate the local environment quantities for each atom, such as the fundamental quantities bond distance, bond orientation, coordination number to replace a complete set of structural functions represented by the radial basis functions and spherical harmonics, that will reduce the risk of overfitting due to the limited number of training data, simplify the physics by machine learning models for computational costs during later correlation analysis
+	
+	bond_distance_calculator: calculate all bond distance for each atom
+		an extra function will read the results file and extract statistics for correlation analysis
+	bond_orientation_calculator: calculate the bond orientation for all three atom pair for each center local atom
+		an extra function will read the results file and extract statistics
+	coordination_number_calculator: calculate and summarize the number of different atomic species around the center atom
+		an extra function will read the results file and extract statistics	
+	
+	calculate local atomic physical quantities that are derived from local atomic structure/environment
+		
+visualizer package:
+	general_visualizer: functions for other visualizer modules to use 
+
+	strain_visualizer: visualize the atomic strain related quantities
+	
+	voronoi_visualizer: visualize the voronoi cell classification
 
 
 /examples: contains examples of executable running scripts and demo data. The demo example system is CuZr metallic glass.
@@ -106,6 +110,20 @@ https://packaging.python.org/tutorials/installing-packages/
 How to install/use this python package:
 This package is written in python scripting language to analyze the atomic configuration data generated by ART atomistic simulation software. There is no need to compile and build python code. This package can be put in any directory. Ensure to source the environment.sh before using this package. The purpose is to create the necessary environmental variables PYTHONPATH/PATH/TEST_PROJ for current bash sessions to find the python packages/exe scripts/test directory. The user need to change these environmental variables to point to their correct ART_data_analyzer package and the dir to ART data on their machine
 
+After the user source environment.sh, the user can use the art_data exe to parse the command line arguments of user input to run all functions of this package. 
+To see a list of options, type in terminal art_data -h,
+It will prompt all available optional arguments that can use for various functions of the python package to analyze the art_data.
+The user can use art_data —-desc to see how to run various optional arguments.
+
+More options will be implemented in art_data, in order to achieve the following goal.
+
+“Art is never finished, only abandoned.”
+
+The long term goal of this ART_data_analyzer package would be integrated into a bigger package that establish a true multiscale and multiphysics framework (with the option of being multi-stage machine learning to simplify complex physics details at each length scale for the purpose of minimizing computational cost for accelerating rational material design without losing the multi-scale physics picture) for at least the material design of metallic glass community, by integrating LAMMPS (already has a nice python wrapper), ART (which need a python wrapper), ART_data_analyzer(data processing by machine learning, maybe incorporating some features of data processing and visualization software Ovito by its python wrapper), Materials project python API pymatgen to query some materials properties data, 3D STZ dynamics.
+
+
+The following sections is written in early development stage to record some nice design principles and can be skipped if necessary
+
 How to use the package as a user work flow?
 Though we say this is a data analysis package, the data here simply means ART raw data. To  obtain useful information from these atomistic simulation raw data, we need to perform the following steps:
 
@@ -123,9 +141,7 @@ Then the user can repeat the data visualization and data analysis (to develop co
 
 
 Executable files:
-After the user source the environment.sh, the user can use the art_data exe to argparse module to parse the command line arguments of terminal user input to run all functions of this package. 
-To see a list of options, type in terminal art_data -h,
-It will prompt all available optional arguments that can use for various functions of the python package to analyze the art_data.
+
 
 The following exe scripts are the individual scripts to run individual functions at the early development stage. The user only need to use art_data to run various functions.
 
@@ -178,9 +194,7 @@ User need to input the number of tests in their data directory
 This input for running the data calculation will be saved into os.environ['TEST_DIR']
 as a pickle file for future reference if needed
 
-“Art is never finished, only abandoned.”
 
-The long term goal of this ART_data_analyzer package would be integrated into a bigger package that establish a true multiscale and multiphysics framework (with the option of being multi-stage machine learning to simplify complex physics details at each length scale for the purpose of minimizing computational cost for accelerating rational material design without losing the multi-scale physics picture) for at least the material design of metallic glass community, by integrating LAMMPS (already has a nice python wrapper), ART (which need a python wrapper), ART_data_analyzer(data processing by machine learning, maybe incorporating some features of data processing and visualization software Ovito by its python wrapper), Materials project python API pymatgen to query some materials properties data, 3D STZ dynamics.
  
 
 

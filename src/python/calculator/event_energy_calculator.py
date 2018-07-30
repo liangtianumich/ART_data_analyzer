@@ -93,7 +93,7 @@ def eng_convergence_ttest_ind(path_to_data_dir_1, path_to_data_dir_2, equal_var 
 	
 	t_2, prob_2 = ttest_ind(np.array(relax_eng_1), np.array(relax_eng_2), equal_var = equal_var)
 	
-	if prob_1 > 0.1 and prob_2 > 0.1:
+	if prob_1 < 0.05 and prob_2 < 0.05:
 		return True
 	else:
 		return False
@@ -131,7 +131,7 @@ def eng_convergence_ttest_rel(path_to_data_dir_1, path_to_data_dir_2):
 	
 	t_2, prob_2 = ttest_rel(np.array(relax_eng_1), np.array(relax_eng_2))
 	
-	if prob_1 > 0.1 and prob_2 > 0.1:
+	if prob_1 < 0.05 and prob_2 < 0.05:
 		return True
 	else:
 		return False
