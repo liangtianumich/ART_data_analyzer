@@ -326,7 +326,13 @@ def event_act_relax_energy(event, path_to_data_dir):
 	return:
 		a tuple of event_state, and its activation energy
 	"""
-	path_to_test_dir = path_to_data_dir + '/'+ event[0]
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	#path_to_test_dir = path_to_data_dir + event[0]
 	test_energy_list = event_energy(path_to_test_dir)
 	init_eng = test_energy_list[event[1][0]]
 	sad_eng = test_energy_list[event[1][1]]
@@ -412,7 +418,15 @@ def triggered_atom_is_max_disp(path_to_data_dir, event):
 	the triggered atom stored inside the bart.sh
 	"""
 	print "event:", event[0],event[1][0],event[1][1],event[1][2]
-	path_to_test_dir = path_to_data_dir + event[0]
+	
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	#path_to_test_dir = path_to_data_dir + event[0]
 	
 	triggered_atom_index = read_from_art_input_file(path_to_test_dir)
 	

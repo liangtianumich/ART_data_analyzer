@@ -28,9 +28,9 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	if re_calc is False:
 		if os.path.exists(path_to_all_act_relax_eng):
 			saved_results = json.load(open(path_to_all_act_relax_eng, 'r'))
-			all_act_energy, all_relax_eng = [], []
+			all_act_eng, all_relax_eng = [], []
 			for result in saved_results:
-				all_act_energy.append(result[1])
+				all_act_eng.append(result[1])
 				all_relax_eng.append(result[2])
 			return [all_act_eng, all_relax_eng]
 	

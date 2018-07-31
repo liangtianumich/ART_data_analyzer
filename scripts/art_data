@@ -104,6 +104,9 @@ def print_desc_help():
 	in the input file, if this information does not exists, it will use
 	the setting by the command line argument -np
 	
+	For test whose test_id = 1, the test directory naming test1 or 1 in each ART data 
+	directory will be searched.
+	
 	To run the following tasks, an input file to set up SETTINGS are needed
 	
 	'art_data -s SETTINGS' (where SETTINGS is the input file name or full path to input file name)
@@ -142,7 +145,7 @@ def print_desc_help():
 	  
 	 2) run calculations:
 	 
-	 "art_data -s SETTINGS --strain -calc" will invoke the strain and displacement calculations for
+	 "art_data -s SETTINGS --strain --calc" will invoke the strain and displacement calculations for
 	 all filtered events and automatically plots results for individual event and statistics
 	 for all events, implemented in calculator.strain_calculator.strain_calculator_run_all_tests_mp
 	 With -p or --path option, it will calculate strain in the data dir specified
@@ -191,7 +194,15 @@ def print_desc_help():
 	 Run voronoi_structural_analysis.run_all_tests_voronoi_classifier 
 	 to classify and plot the results in voronoi_index_results.json of each event, 
 	 and calculate and plot the dynamic transition correlation matrix
-	 	 
+	 
+	 art_data -s SETTINGS --events_local_atoms will
+	 calculate and plot the statistics of number of local atoms and slope for all filtered events 
+	 in interested tests list_of_test_id
+	 
+	 art_data -s SETTINGS --central_atom_max_disp will
+	 check if the triggered atom is the max displacement atom in all 
+	 filtered events in list_of_test_id
+	 
 	 6) further correlation analysis between local structure and local properties
 	 input file
 	  
@@ -256,8 +267,8 @@ if __name__ == "__main__":
   parser.add_argument('--find_residual', help='find the relative residual threshold for outlier detection in atomic displacement vs strain for all events in specified tests', action = "store_true")
   parser.add_argument('--find_local_index', nargs=1,metavar=('rel_residual_threshold'), type=float, help='find the local atom index in all events in specified tests, where rel_residual_threshold is the user specified relative threshold residual')
   parser.add_argument('--local', help='invoke calculations on local atoms that are determined by --find_local_index', action="store_true")
-  parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all events in specified tests', action = "store_true")
-  parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for each event in specified tests', action = "store_true")
+  parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all filtered events in specified tests', action = "store_true")
+  parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for all filtered events in specified tests', action = "store_true")
   
   #parser.add_argument('--strain_calc', help='perform atomic strain and displacement calculations', action="store_true")
   #parser.add_argument('--strain_v', help='perform atomic strain and displacement calculations', action="store_true")
@@ -329,8 +340,11 @@ if __name__ == "__main__":
 			raise Exception("number of cores specified by -np must be no greater than %s"%mp.cpu_count())
 	if (not args.path) and ("path_to_data_dir" in input_param):
 		path_to_data_dir = input_param["path_to_data_dir"]
+	
 	if "re_calc" not in input_param:
-		input_param["re_calc"] = args.re_calc
+		input_param["re_calc"] = False
+	if args.re_calc:
+		input_param["re_calc"] = True
 	
 	if args.filter:
 		#if args.path:

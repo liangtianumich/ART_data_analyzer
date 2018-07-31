@@ -7,7 +7,7 @@ import pandas as pd
 import json
 from collections import Counter
 from data_reader import *
-from util import operation_on_events, event_local_atom_index, read_from_art_input_file
+from util import operation_on_events, event_local_atom_index, read_from_art_input_file, data_dir_to_test_dir
 from visualizer.voronoi_visualizer import plot_voronoi_histogram_3, plot_dynamic_transition_matrix
 
 # voronoi index classification from Evan Ma paper "Tuning order in disorder"
@@ -152,7 +152,13 @@ def single_event_voronoi_classifier(event_state, path_to_data_dir):
 	classify the vornoi index into ICO, ICO_LIKE, GUM according to the criterion
 	defined at the top level of the module
 	"""
-	path_to_test_dir = path_to_data_dir + event_state[0]
+	if 'test' in event_state[0]:
+		test_id = int(event_state[0][4:])
+	else:
+		test_id = int(event_state[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	#path_to_test_dir = path_to_data_dir + event_state[0]
 	path_to_curr_result = path_to_test_dir + "/results"
 	
 	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
@@ -191,9 +197,13 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			the 2nd element being a list containing the string of init, sad, fin
 			configuration file str, e.g. [min1000,sad1001,min1001]
 	"""
-	
+	if 'test' in event_state[0]:
+		test_id = int(event_state[0][4:])
+	else:
+		test_id = int(event_state[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
 			
-	path_to_test_dir = path_to_data_dir + event_state[0]
+	#path_to_test_dir = path_to_data_dir + event_state[0]
 	path_to_curr_result = path_to_test_dir + "/results"
 	# redundant, if exists, may cause race condition when os.makedirs act on same dir (leaf)
 	# for parallel processing, in python3, it can be avoided by adding exist_ok=True

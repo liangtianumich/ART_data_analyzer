@@ -120,7 +120,7 @@ def all_events_local_atoms_finder(path_to_data_dir, input_param, residual_thresh
 	re_calc = input_param["re_calc"]
 	print "current residual_threshold:", residual_threshold
 	# perform a function on all events in all tests in list_of_test_id with num_of_proc
-	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atoms_index(x, path_to_data_dir, model, feature, target, residual_threshold, True, re_calc),num_of_proc)
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atoms_index(x, path_to_data_dir, model, feature, target, residual_threshold, True, re_calc=re_calc),num_of_proc)
 	
 	print "done finding all local atoms index for all final selected events in interested tests!"
 
@@ -189,11 +189,11 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 	path_to_init_sad = path_to_curr_event + "/init_sad"
 	
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
-	
+	print "path_to_current_event:", path_to_curr_event
 	if re_calc is False:
 		if os.path.exists(path_to_local_atom_index):
 			return json.load(open(path_to_local_atom_index,'r'))
-	
+	print "re_calculating"
 	if feature == "displacement" and target == "shear_strain":
 		init_sad_X,init_sad_y = get_strain_disp(path_to_init_sad)
 	
