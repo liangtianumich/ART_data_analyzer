@@ -52,6 +52,7 @@ def print_input_help():
 	  atom_list: None or local
 		if None, calculate all atoms in the configuration
 		if local, calculate the local atoms
+		e.g. [1,2,3,4,5]
 	
 	  # for the outlier detection
 	  model: sklearn machine learning model used to do outlier detection
