@@ -15,7 +15,7 @@ SHELL = /bin/sh
   LINK = ${F90}
 
   # PATH for the directory containing the library
-  LAMMPS_USER_PATH = $HOME/lammps-16Mar18/src
+  LAMMPS_USER_PATH = ${HOME}/lammps-16Mar18/src
   # Name of the lammps library
   LAMMPS_LIBNAME = liblammps.a
 
@@ -45,8 +45,8 @@ SHELL = /bin/sh
 # PATH = path for MPI library
 # LIB = name of MPI library
 # If briaree cluster load modules intel-compiler, OPENMPI and FFTW
-  MPI_INC =  -I$HOME/installed_openmpi/include/
-  MPI_PATH = -L$HOME/installed_openmpi/lib/
+  MPI_INC =  -I${HOME}/installed_openmpi/include/
+  MPI_PATH = -L${HOME}/installed_openmpi/lib/
   MPI_LIB =  -lmpi
 
 # FFT library, REQUIRED if -DLAMMPS_VERSION
@@ -62,8 +62,8 @@ SHELL = /bin/sh
 # PATH = path for MKL library
 # LIB = name of MKL library
 
-  MKL_INC  = -I$HOME/installed_openblas/include
-  MKL_PATH = -L$HOME/installed_openblas/lib
+  MKL_INC  = -I${HOME}/installed_openblas/include
+  MKL_PATH = -L${HOME}/installed_openblas/lib
   MKL_LIB  = -lopenblas
 
 # JPEG and PNG library required
