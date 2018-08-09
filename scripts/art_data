@@ -260,6 +260,7 @@ if __name__ == "__main__":
   
   parser.add_argument('-c','--calc', help='perform calculations', action="store_true")
   parser.add_argument('-v', help='plot results', action="store_true")
+  parser.add_argument('--ttest_kfold', nargs=3, metavar=('OPTION', 'k', 'n'), help='perform t test on random k folds by n times on a single data')
   parser.add_argument('--stats', help='plot results statistics', action="store_true")
   parser.add_argument('--ttest', nargs=3, metavar=('OPTION', 'PATH_1', 'PATH_2'), help='perform t test to check convergence, need three arguments OPTION, PATH_1, PATH_2, OPTION is either ind or rel, PATH_1 is the path string to data dir 1, PATH_2 is the path string to data dir 2')
   parser.add_argument('--classify', help='classify the results', action="store_true")
@@ -365,6 +366,18 @@ if __name__ == "__main__":
 			print "beging calculating activation and relaxation energy distribution for all filtered events in input file list_of_test_id of %s"%path_to_data_dir
 			energy_calculator_run_all_tests_mp(path_to_data_dir, input_param)
 			exit()
+		if args.ttest_kfold:
+			print "being performing t test"
+			print "t test mode is", args.ttest_kfold[0]
+			print "random %s fold number"%args.ttest_kfold[1]
+			print "split data into k fold into %s times"%args.ttest_kfold[2]
+			is_converged = eng_k_fold_ttest(path_to_data_dir, int(args.ttest_kfold[1]), args.ttest_kfold[0], int(args.ttest_kfold[2]))
+			if is_converged == True:
+				print "activation and relaxation energy converged"
+			else:
+				print "activation and relaxation energy did NOT converged!"
+			exit()
+			
 		if args.ttest:
 			print "being performing t test"
 			print "t test mode is", args.ttest[0]

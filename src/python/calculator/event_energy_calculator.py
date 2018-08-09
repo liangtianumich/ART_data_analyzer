@@ -10,6 +10,7 @@ import os, json
 from functools import partial
 from scipy.stats import ttest_ind, ttest_rel
 from visualizer.event_energy_visualizer import plot_act_relax_histogram
+from sklearn.model_selection import KFold
 
 def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_results = True, re_calc = False):
 	"""
@@ -135,3 +136,103 @@ def eng_convergence_ttest_rel(path_to_data_dir_1, path_to_data_dir_2):
 		return True
 	else:
 		return False
+
+def eng_k_fold_ttest(path_to_data_dir, k=2, option='ind', n=1):
+	"""
+	A more rigorous way to check convergence
+	this function randomly divides the data in path_to_data_dir into k_folds in n times,
+	for each time, do t test on each fold-pair of the k folder,
+	if all t tests satisfied the criteria, then we can confidently say that
+	the amount of eng data is convergent
+	"""
+	print "current t test mode is %s"%option
+	path_to_eng = path_to_data_dir + "act_relax_eng_filtered_events.json"
+	
+	if os.path.exists(path_to_eng):
+		eng_data = json.load(open(path_to_eng, 'r'))
+	else:
+		raise Exception("the data directories %s do not have the energy data file"%path_to_data_dir)
+	
+	act_eng, relax_eng = [], []
+	for event in eng_data:
+		act_eng.append(event[1])
+		relax_eng.append(event[2])
+	
+	# or we can kfold act_eng and relax_eng independently by KFold_n_times(X,k,n)
+	kfolds_n_act,kfolds_n_relax = KFold_xy_n_times(act_eng,relax_eng,k,n)
+	
+	for i in range(n):
+		kfolds_act, kfolds_relax = kfolds_n_act[i],kfolds_n_relax[i]
+		print "k fold %s times"%(i+1)
+		is_act, is_relax = ttest_kfold(kfolds_act, option=option),ttest_kfold(kfolds_relax, option=option)
+		if is_act == False or is_relax == False:
+			return False
+	return True
+			
+
+def ttest_kfold(kfolds, option='ind'):
+	if option == 'ind':
+		return ttest_ind_kfold(kfolds)
+	elif option == 'rel':
+		return ttest_rel_kfold(kfolds)
+			
+def ttest_ind_kfold(kfolds):
+	"""
+	this function perform t test on all possible fold pairs, return True
+	if all fold pairs are convergent, return False otherwise
+	kfolds: list or numpy array
+	"""
+	k = len(kfolds)
+	for i in range(k):
+		for j in range(i+1,k):
+			t_1, prob_1 = ttest_ind(np.array(kfolds[i]), np.array(kfolds[j]))
+			if prob_1 > 0.05:
+				return False
+	return True
+
+def ttest_rel_kfold(kfolds):
+	"""
+	this function perform t test on all possible fold pairs, return True
+	if all fold pairs are convergent, return False otherwise
+	kfolds: list or numpy array
+	"""
+	k = len(kfolds)
+	for i in range(k):
+		for j in range(i+1,k):
+			t_1, prob_1 = ttest_rel(np.array(kfolds[i]), np.array(kfolds[j]))
+			if prob_1 > 0.05:
+				return False
+	return True
+	
+def KFold_n_times(X,k,n):
+	"""
+	this function returns a list, in which each element is a list that 
+	contains the numpy array of each fold when splitting X data into k folds
+	"""
+	X = np.array(X)
+	kfolds_n = []
+	for i in range(n):
+		kf = KFold(n_splits=k, shuffle=True)
+		kfolds = []
+		for train_index, test_index in kf.split(X):
+			kfolds.append(X[test_index])
+		kfolds_n.append(kfolds)
+	return kfolds_n
+
+def KFold_xy_n_times(X,y,k,n):
+	"""
+	this function returns a tuple, for each element of the tuple, is a list that 
+	contains the numpy array of each fold when splitting X or y data into k folds
+	"""
+	X = np.array(X)
+	y = np.array(y)
+	kfolds_n_X, kfolds_n_y = [], []
+	for i in range(n):
+		kf = KFold(n_splits=k, shuffle=True)
+		kfolds_x, kfolds_y = [],[]
+		for train_index, test_index in kf.split(X):
+			kfolds_x.append(X[test_index])
+			kfolds_y.append(y[test_index])
+		kfolds_n_X.append(kfolds_x)
+		kfolds_n_y.append(kfolds_y)
+	return (kfolds_n_X,kfolds_n_y)

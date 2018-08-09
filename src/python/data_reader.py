@@ -36,7 +36,7 @@ def read_data_from_dump(path_to_file=None, quiet = False):
 
 def read_data_from_non_dump(path_to_file=None, quiet = False):
 	"""
-	this function takes the full path to the dump data file and read the data file into
+	this function takes the full path to the non-dump refconfig-type data file and read the data file into
 	a pandas.Dataframe object for futher data analysis
 	
 	output: an instance of pandas.Dataframe

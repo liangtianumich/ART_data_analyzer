@@ -144,6 +144,12 @@ For ART to run, we need to have tcsh rather than sh, check if it exists by which
 If it does not exists, install both csh and tcsh by sudo apt-get install tcsh
 
 
+Note for running ART:
+The user need to source art_install.sh every time to set up the library path to openmpi and openblas whenever they want to USE the ART and/or lammps. 
+
+It is suggested that the user can copy the content in art_install.sh into .profile in linux ubuntu or .bash_profile in Mac to make the environment set-up for ART and lammps permanent. 
+
+
 
  
 
