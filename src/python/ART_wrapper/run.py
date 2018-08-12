@@ -10,13 +10,41 @@ import re
 import json
 from data_reader import *
 import shutil
+import multiprocessing as mp
 
 
-def run_art(path_to_root_dir, sample_name, path_to_input_files, pbs=False):
+def run_art_mp(path_to_data_dir, input_param=None, path_to_central_atom_list=None, pbs=False):
 	"""
+	this function will run art by bart.sh inside the path_to_data_dir for each path_to_run_dir
+	in a parallel fashion
+	"""
+	if input_param is None:
+		num_of_proc = mp.cpu_count()
+	elif "num_of_proc" in input_param:
+		num_of_proc = input_param["num_of_proc"]
+	else:
+		raise Exception("need to specify the number of processors!")
 	
-	"""
+	pool = mp.Pool(processes=num_of_proc)
+    
+	if os.path.isfile(path_to_central_atom_list):
+		list_of_test_id = json.load(open(path_to_central_atom_list, 'r'))
+	else:
+		raise Exception("central_atom_list.json or list_of_test_id file does not exists in %s , run set_up_input_files first"%path_to_data_dir)
+	list_of_run_dir = []
+	for central_atom in list_of_test_id:
+		path_to_run_dir = os.path.join(path_to_data_dir, str(central_atom))
+		list_of_run_dir.append(path_to_run_dir)
+	
+	pool.map(run_bart,list_of_run_dir)
+	print "done running ART!"
+
+def run_bart(path_to_run_dir):
 	# run bart.sh inside each dir
+	os.chdir(path_to_run_dir)
+	subprocess.check_call("./mod_bart.sh", shell=True)
+	print "done runing art for %s"%path_to_run_dir
+	
 
 def set_up_input_files(path_to_root_dir, path_to_input_files, total_energy, box_dim, sample_name, sample_type='dump', path_to_central_atom_list=None):
 	"""
