@@ -375,13 +375,12 @@ def event_energy(path_to_test_dir):
 		key being the state str, such as min1000,sad1001 etc
 		value being the float value of the energy
 	"""
-	f=open(os.path.join(path_to_test_dir,"/log.file.1"))
+	f=open(os.path.join(path_to_test_dir,"log.file.1"))
 	string=f.read()
 	energy_of_events = dict()
 	pattern = "Configuration[\s]+stored[\s]+in[\s]+file[\s]+:[\s]+([minsad\d]+)\s+.+\s+.+\s+.+\s+.+Starting\s+from\s+minconf.+\n.+Reference\s+Energy\s+.eV.+:\s+([-+.eE\d]+)"
 	match = re.search(pattern, string)
 	energy_of_events[match.group(1)] = float(match.group(2))
-	
 	pattern_other = "Configuration[\s]+stored[\s]+in[\s]+file[\s]+:[\s]+([minsad\d]+)\s+.+Total\s+energy\s+[a-zA-Z]+\s+.eV.+:\s+([-+.eE\d]+)"
 	match_other = re.findall(pattern_other, string)
 	for state,energy in match_other:

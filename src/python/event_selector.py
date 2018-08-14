@@ -246,7 +246,6 @@ def event_selection(path_to_test_dir = None, box_dim = None, save_results=True, 
 		return None
 	# event_energy is a function in util.py that extract energy from log.file.1 using regex module
 	events_energy = event_energy(path_to_test_dir)
-	
 	selected_events = dict()
 	for x in accepted_events:
 		init_state = accepted_events[x][0]
@@ -267,7 +266,6 @@ def event_selection(path_to_test_dir = None, box_dim = None, save_results=True, 
 		
 		if single_event_2_criteria(list_of_path, list_of_energy, box_dim):
 			selected_events[x] = list_of_state
-	
 	if selected_events == dict():
 		return None
 	if save_results is True:

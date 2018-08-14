@@ -13,7 +13,7 @@ import shutil
 import multiprocessing as mp
 
 
-def run_art_mp(path_to_data_dir, input_param=None, path_to_central_atom_list=None, pbs=False):
+def run_art_mp(path_to_data_dir, input_param=None, pbs=False):
 	"""
 	this function will run art by bart.sh inside the path_to_data_dir for each path_to_run_dir
 	in a parallel fashion
@@ -27,10 +27,12 @@ def run_art_mp(path_to_data_dir, input_param=None, path_to_central_atom_list=Non
 	
 	pool = mp.Pool(processes=num_of_proc)
     
+	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
 	if os.path.isfile(path_to_central_atom_list):
 		list_of_test_id = json.load(open(path_to_central_atom_list, 'r'))
 	else:
 		raise Exception("central_atom_list.json or list_of_test_id file does not exists in %s , run set_up_input_files first"%path_to_data_dir)
+	
 	list_of_run_dir = []
 	for central_atom in list_of_test_id:
 		path_to_run_dir = os.path.join(path_to_data_dir, str(central_atom))
@@ -46,7 +48,7 @@ def run_bart(path_to_run_dir):
 	print "done runing art for %s"%path_to_run_dir
 	
 
-def set_up_input_files(path_to_root_dir, path_to_input_files, total_energy, box_dim, sample_name, sample_type='dump', path_to_central_atom_list=None):
+def set_up_input_files(path_to_data_dir, input_param):
 	"""
 	this function will set up the input files for each MD dump file sample,
 	, create a run_dir associated with the central_atom id,
@@ -66,14 +68,16 @@ def set_up_input_files(path_to_root_dir, path_to_input_files, total_energy, box_
 	sample_name = "dump_10E11"
 	set_up_input_files(path_to_root_dir, path_to_input_files, total_energy, box_dim, sample_name, sample_type='dump', path_to_central_atom_list=None)
 	"""
-	
+	path_to_input_files = input_param['path_to_input_files']
+	total_energy = input_param['total_energy']
+	box_dim = input_param['box_dim']
+	sample_name = input_param['sample_name']
+	sample_type = input_param['sample_type']
 	
 	# get the path string of dump or lammps data file
 	path_to_sample = os.path.join(path_to_input_files,sample_name)
-	path_to_data_dir = os.path.join(path_to_root_dir, sample_name)
 	if not os.path.isdir(path_to_data_dir):
 		os.makedirs(path_to_data_dir)
-		
 	
 	# obtain the refconfig file from the dump or lammps data file, need total energy, box_dim
 	if sample_type == 'dump':
@@ -86,12 +90,9 @@ def set_up_input_files(path_to_root_dir, path_to_input_files, total_energy, box_
 	# manual: modify the in.lammps file 1) modify the dump file name of read_dump
 	# 2) modify potential file string
 	
-	
+	path_to_central_atom_list = os.path.join(path_to_data_dir, "central_atom_list.json")
 	# modify the central_atom in bart.sh, with iteration from sample dump file atom item id
-	if path_to_central_atom_list is None:
-		
-		path_to_central_atom_list = os.path.join(path_to_data_dir, "central_atom_list.json")
-		
+	if not os.path.isfile(path_to_central_atom_list):
 		if sample_type == 'dump':
 			config_results = read_data_from_dump(path_to_sample)
 		elif sample_type == 'lammps_data':
@@ -100,10 +101,11 @@ def set_up_input_files(path_to_root_dir, path_to_input_files, total_energy, box_
 		
 		with open(path_to_central_atom_list, 'w+') as f:
 			json.dump(list_of_test_id, f)
-	elif os.path.isfile(path_to_central_atom_list):
-		list_of_test_id = json.load(open(path_to_central_atom_list, 'r'))
 	else:
-		raise Exception("%s is not a file"%path_to_central_atom_list)
+		try:
+			list_of_test_id = json.load(open(path_to_central_atom_list, 'r'))
+		except ValueError:
+			raise Exception("%s is an empty file or can not be read"%path_to_central_atom_list)
 	
 	for central_atom in list_of_test_id:
 		path_to_run_dir = os.path.join(path_to_data_dir, str(central_atom))

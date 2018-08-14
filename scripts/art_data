@@ -12,7 +12,7 @@ from visualizer.strain_visualizer import events_strain_visualization,strain_even
 from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms
 from util import run_tests_triggered_atom_is_max_disp
 #from lammps.run import run_lammps
-#from ART_wrapper.run import run_art
+from ART_wrapper.run import run_art_mp, set_up_input_files
 
 def print_input_help():
 	"""
@@ -28,6 +28,18 @@ def print_input_help():
 	  
 	  list_of_test_id: list
 		list of the tests to be filtered
+	  
+	  path_to_input_files: str
+		path to ART input files, get by os.environ['ART_INPUT']
+	
+	  total_energy: float
+		total potential energy of the ART sample (calculated by lammps)
+	  
+	  sample_name: str
+		file name of the sample configuration file containing atomic coordinates
+	  
+	  sample_type: str
+		sample_type can be either 'dump' or 'lammps_data'
 	  
 	  box_dim: list,
 		the orthogonal box dimension along x, y, z, can be found in
@@ -91,8 +103,8 @@ def print_desc_help():
 	print \
 	"""
 	This art_data command line tool are expected to perform the following tasks:
-	running lammps and ART simulations to generate data,
-	post-processing of ART data in a user workflow in parallel.
+	running lammps and ART simulations to generate sample for ART and ART data of the sample,
+	post-processing of ART data in a user workflow in parallel.	
 	
 	It is suggested to run a few set of ART data with different paramters to 
 	ensure post-filtering activation energy distribution indeed converge by a
@@ -118,6 +130,25 @@ def print_desc_help():
 		art_data --example > input.json
 	Then the user can edit the parameters in the file as needed and 
 	see 'art_data --settings-format' for help.
+	
+	running ART:
+	art_data -s SETTINGS --art --run will take the input parameters in SETTINGS
+	such as path_to_input_files, total_energy, box_dim, sample_name, sample_type
+	to automatically set up the input files for running art and running ./mod_bart.sh
+	inside each run_dir. 
+	
+	The name of each run_dir is determined by whether there is 
+	a file inside path_to_data_dir called central_atom_list.json. 
+	If this file exists, it will load the list inside the file and use each integer element (central_atom id)
+	as the name of each run_dir to create each run_dir. If this file does not exists,
+	it will load all atoms id in lammps dump or lammps data file and save them as a list
+	in a file called central_atom_list.json inside path_to_data_dir.
+	
+	Then ART input files will be modified corresponding to each central_atom id and copied into each run_dir.
+	
+	running ./mod_bart.sh will be then done in parallel with the number of processors specified
+	in the input settings file
+	
 	
 	1) filter events and perform activation and relaxation energy convergence tests:
 	
@@ -150,6 +181,9 @@ def print_desc_help():
 	 all filtered events and automatically plots results for individual event and statistics
 	 for all events, implemented in calculator.strain_calculator.strain_calculator_run_all_tests_mp
 	 With -p or --path option, it will calculate strain in the data dir specified
+	 
+	 "art_data -s SETTINGS --strain -v" will plot the event level quantities after strain calculation
+	 "art_data -s input.json --strain --stats" will plot the statists of all events after strain calculation
 	 
 	 3) determine the local atoms in a STZs for each event by a relative
 	 residual threshold
@@ -214,9 +248,13 @@ def example_input():
 	"""
 	input = dict()
 	input["path_to_data_dir"] = os.environ['DATA_DIR']
+	input["path_to_input_files"] = os.environ['ART_INPUT']
 	input["list_of_test_id"] = [x+1 for x in xrange(2000)]
 	size = 32.130125 - 0.299875
 	input['box_dim'] = [size, size, size]
+	input['total_energy'] = -46021.0583322591
+	input['sample_name'] = "dump_10E11"
+	input['sample_type'] = "dump"
 	input['cut_off'] = {str((1,1)):3.7,str((1,2)):3.7,str((2,2)):3.7}
 	input['identical_event_criteria'] = {"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
 	input['num_of_proc'] = mp.cpu_count()
@@ -277,7 +315,7 @@ if __name__ == "__main__":
   
   parser.add_argument('-p', '--path', nargs=1, help='Set up path to data directory, overrides the path in user specified input file', type=str)
   parser.add_argument('-np', nargs=1, help='set up number of processors to run the jobs, default 1 without specifying, will be overided by user specified input file', type=int, default=1)
-  parser.add_argument('--re_calc', help='redo the calculations by setting the re_calc argument, will be override by re_calc argument in user specified input file', action="store_true")
+  parser.add_argument('--re_calc', help='redo the calculations by setting the re_calc argument, will override the re_calc argument in user specified input file', action="store_true")
   
   
   # check the default attribute name of dest
@@ -285,12 +323,12 @@ if __name__ == "__main__":
   
   # to be implemented in the future
   # integration with running art
-  parser.add_argument('--art', help='begin running art, to be implemented',action="store_true")
+  parser.add_argument('--art', help='setting up ART input files, and running art in parallel with np specified in SETTINGS file', action='store_true')
   
   # integration with lammps
   parser.add_argument('--lammps',help='begin lammps mode for generating initial ART samples, to be implemented',action="store_true")
   
-  parser.add_argument('--run', nargs=1, type=str, help='begin running simulations lammps or art, to be implemented')
+  parser.add_argument('--run', help='begin running simulations after --lammps or --art mode', action="store_true")
   
   #parser.add_argument('-v','--verbose', help='verbose output', action="store_true", default=False)
   
@@ -318,10 +356,7 @@ if __name__ == "__main__":
 		  run_lammps(args.run[0])
 		  exit()
   
-  if args.art:
-	  if args.run:
-		  run_art(args.run[0])
-		  exit()
+  
 		  
   if args.settings:
 	if args.verbose:
@@ -348,6 +383,15 @@ if __name__ == "__main__":
 	if args.re_calc:
 		input_param["re_calc"] = True
 	
+	if args.art:
+		if args.run:
+		  print "being setting up the ART input files!"
+		  set_up_input_files(path_to_data_dir, input_param)
+		  print "starting running art in parallel"
+		  run_art_mp(path_to_data_dir, input_param)
+		  #run_art_mp(args.run[0])
+		  exit()
+
 	if args.filter:
 		#if args.path:
 		#	path_to_data_dir = args.path[0]

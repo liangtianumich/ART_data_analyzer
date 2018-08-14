@@ -104,7 +104,6 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 	pickle.dump({"ave":shear_ave_3,"std":shear_std_3,"max":shear_max_3}, open(path_to_data_dir+"/init_fin_shear_stats.pkl",'w'))
 	pickle.dump({"ave":vol_ave_3,"std":vol_std_3,"max":vol_max_3}, open(path_to_data_dir+"/init_fin_vol_stats.pkl",'w'))
 	
-	
 	plot_histogram_3(path_to_data_dir+"/disp_ave.png", [disp_ave,disp_ave_2,disp_ave_3])
 	plot_histogram_3(path_to_data_dir+"/disp_std.png", [disp_std,disp_std_2,disp_std_3])
 	plot_histogram_3(path_to_data_dir+"/disp_max.png", [disp_max,disp_max_2,disp_max_3])
