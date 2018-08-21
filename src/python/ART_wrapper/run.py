@@ -44,7 +44,7 @@ def run_art_mp(path_to_data_dir, input_param=None, pbs=False):
 def run_bart(path_to_run_dir):
 	# run bart.sh inside each dir
 	os.chdir(path_to_run_dir)
-	subprocess.check_call("./mod_bart.sh", shell=True)
+	subprocess.check_call("chmod +x mod_bart.sh; ./mod_bart.sh", shell=True)
 	print "done runing art for %s"%path_to_run_dir
 	
 
@@ -66,7 +66,7 @@ def set_up_input_files(path_to_data_dir, input_param):
 	total_energy = -46021.0583322591
 	box_dim = [54.2654] * 3
 	sample_name = "dump_10E11"
-	set_up_input_files(path_to_root_dir, path_to_input_files, total_energy, box_dim, sample_name, sample_type='dump', path_to_central_atom_list=None)
+	set_up_input_files(path_to_data_dir, input_param)
 	"""
 	path_to_input_files = input_param['path_to_input_files']
 	total_energy = input_param['total_energy']
@@ -117,6 +117,8 @@ def set_up_input_files(path_to_data_dir, input_param):
 		# copy all modified files into the path_to_run_dir, mod_bart.sh,
 		src_files = os.listdir(path_to_input_files)
 		for file_name in src_files:
+			if file_name == 'bart.sh':
+				continue
 			full_file_name = os.path.join(path_to_input_files, file_name)
 			if (os.path.isfile(full_file_name)):
 				shutil.copy(full_file_name, path_to_run_dir)
