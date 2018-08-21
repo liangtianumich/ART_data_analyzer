@@ -147,7 +147,7 @@ If it does not exists, install both csh and tcsh by sudo apt-get install tcsh
 Note for running ART:
 The user need to source art_install.sh every time to set up the library path to openmpi and openblas whenever they want to USE the ART and/or lammps. 
 
-It is suggested that the user can copy the content in art_install.sh into .profile in linux ubuntu or .bash_profile in Mac to make the environment set-up for ART and lammps permanent. 
+It is suggested that the user can copy the content in art_install.sh into .profile in linux ubuntu or .bash_profile in Mac to make the environment set-up for ART and lammps permanent, may need log out current user account and log in to make it effective for ubuntu since the default ubuntu bash is not a log-in shell by default while Mac bash is a log-in shell by default. Whether log-in or non log-in of current shell (saved in $SHELL) can be checked by echo $0. Log-in shell will return -bash, non-log in return bash. If $SHELL is not bash, it is suggested to change the default shell to bash by chsh -s /bin/bash . It is not suggested to put these non-bash specific commands into bash specific .bashrc which is executed for any non-login shell. Other types of shell besides bash such as sh, ksh can also read non-bash specific commands in .profile. .profile usually also source .bashrc. If .bash_profile exists, .profile will not be read.
 
 
 

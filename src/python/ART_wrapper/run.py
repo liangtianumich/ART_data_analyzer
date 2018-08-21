@@ -145,6 +145,8 @@ def data_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim):
 	"""
 	this function takes the data in the lammps data file and converts into 
 	a refconfig file with periodic boundary condition
+	refconfig file examples all used the absolute coordinates
+	This is preferred way
 	"""
 	path_to_data = os.path.join(path_to_input_files, sample_name)
 	
@@ -173,6 +175,9 @@ def dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim):
 	result = read_data_from_dump(path_to_dump)
 	df = result[['atom_id', 'x','y','z']]
 	df.insert(loc=0, column='1', value='')
+	# the atomic coordinates in dump file are fractional coordinates
+	# the actual coordinates are (x_s - 0.5) * box_dim[0],...
+	df.update((df[['x','y','z']]-0.5) * box_dim)
 	file_to_save = os.path.join(path_to_input_files,'refconfig')
 	with open(file_to_save, 'w') as f:
 		f.write(' run_id: 1000\n total_energy: %s \n P %s %s %s\n'%(total_energy, box_dim[0],box_dim[1],box_dim[2]))
