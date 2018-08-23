@@ -2,6 +2,7 @@
 import os, json, pickle
 import numpy as np
 import time
+import random
 import multiprocessing as mp
 import argparse
 from event_selector import filter_events_all_tests_stage_1,filter_events_all_tests_stage_2
@@ -106,6 +107,9 @@ def print_desc_help():
 	running lammps and ART simulations to generate sample for ART and ART data of the sample,
 	post-processing of ART data in a user workflow in parallel.	
 	
+	If only a subsection of the MD sample are interested (e.g. grain boundary atoms), it is suggested 
+	that only these subsection atoms are output as the configuration sample file.
+	
 	It is suggested to run a few set of ART data with different paramters to 
 	ensure post-filtering activation energy distribution indeed converge by a
 	statistical test, such as the t test implemented by --ttest. This ttest argument 
@@ -139,6 +143,8 @@ def print_desc_help():
 	
 	The name of each run_dir is determined by whether there is 
 	a file inside path_to_data_dir called central_atom_list.json. 
+	This file will be generated when running art_data --example ...
+	
 	If this file exists, it will load the list inside the file and use each integer element (central_atom id)
 	as the name of each run_dir to create each run_dir. If this file does not exists,
 	it will load all atoms id in lammps dump or lammps data file and save them as a list
@@ -242,14 +248,33 @@ def print_desc_help():
 	 input file
 	  
 	"""
-def example_input():
+def example_input(n_atoms, n_tests):
 	"""
 	this function returns an example input file json/dict
 	"""
 	input = dict()
 	input["path_to_data_dir"] = os.environ['DATA_DIR']
+	if not os.path.isdir(os.environ['DATA_DIR']):
+		print "creating directory: %s"%input["path_to_data_dir"]
+		os.makedirs(input["path_to_data_dir"])
+	
 	input["path_to_input_files"] = os.environ['ART_INPUT']
-	input["list_of_test_id"] = [x+1 for x in xrange(2000)]
+	if n_atoms >= n_tests:
+		random.seed(0)
+		central_atom_list = random.sample([x+1 for x in xrange(n_atoms)],n_tests)
+	else:
+		central_atom_list = [x+1 for x in xrange(n_atoms)]
+	path_to_central_atom_list = os.path.join(input["path_to_data_dir"],'central_atom_list.json')
+	
+	with open(path_to_central_atom_list, 'w+') as f:
+		json.dump(central_atom_list,f)
+	
+	# create all tests for each atom in central_atoms_list
+	# select part tests for further post-processing in list_of_test_id
+	# default using all tests, which are created by central_atom_list
+	# usually user are interested in a single test post-processing results
+	# then they can manually edit the input file
+	input["list_of_test_id"] = central_atom_list
 	size = 32.130125 - 0.299875
 	input['box_dim'] = [size, size, size]
 	input['total_energy'] = -46021.0583322591
@@ -285,7 +310,7 @@ if __name__ == "__main__":
   parser.add_argument('--desc', help='Print extended usage description', action="store_true")
   parser.add_argument('--settings-format', help='Print input file description', action="store_true")
   # when --example argument is missing in command line, the default created by store_true is False
-  parser.add_argument('--example', help='Print example input file', action="store_true")
+  parser.add_argument('--example', nargs=2, help='Print example input file, need two input integer arguments',type=int, metavar=('n_atoms in sample', 'num central_atom tests to be created'))
   
   
   parser.add_argument('-s', '--settings', nargs=1, help='Settings input filename, where SETTINGS is the input file name', type=str)
@@ -343,7 +368,7 @@ if __name__ == "__main__":
   
   if args.example:
 	#print jsonpickle.encode(example_input())
-	print json.dumps(example_input(), indent=2)
+	print json.dumps(example_input(args.example[0],args.example[1]), indent=2)
 	#print example_input()
 	exit()
   if args.path:

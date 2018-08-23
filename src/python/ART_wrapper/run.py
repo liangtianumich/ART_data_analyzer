@@ -29,12 +29,12 @@ def run_art_mp(path_to_data_dir, input_param=None, pbs=False):
     
 	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
 	if os.path.isfile(path_to_central_atom_list):
-		list_of_test_id = json.load(open(path_to_central_atom_list, 'r'))
+		central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
 	else:
-		raise Exception("central_atom_list.json or list_of_test_id file does not exists in %s , run set_up_input_files first"%path_to_data_dir)
+		raise Exception("central_atom_list.json file does not exists in %s , run set_up_input_files first"%path_to_data_dir)
 	
 	list_of_run_dir = []
-	for central_atom in list_of_test_id:
+	for central_atom in central_atom_list:
 		path_to_run_dir = os.path.join(path_to_data_dir, str(central_atom))
 		list_of_run_dir.append(path_to_run_dir)
 	
@@ -97,17 +97,17 @@ def set_up_input_files(path_to_data_dir, input_param):
 			config_results = read_data_from_dump(path_to_sample)
 		elif sample_type == 'lammps_data':
 			config_results = read_data_from_lammps_data(path_to_sample)
-		list_of_test_id = config_results['item'].tolist()
+		central_atom_list = config_results['item'].tolist()
 		
 		with open(path_to_central_atom_list, 'w+') as f:
-			json.dump(list_of_test_id, f)
+			json.dump(central_atom_list, f)
 	else:
 		try:
-			list_of_test_id = json.load(open(path_to_central_atom_list, 'r'))
+			central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
 		except ValueError:
 			raise Exception("%s is an empty file or can not be read"%path_to_central_atom_list)
 	
-	for central_atom in list_of_test_id:
+	for central_atom in central_atom_list:
 		path_to_run_dir = os.path.join(path_to_data_dir, str(central_atom))
 		# create a directory for each central_atom id under path_to_data_dir = path_to_root_dir + sample_name
 		if not os.path.isdir(path_to_run_dir):
@@ -117,7 +117,7 @@ def set_up_input_files(path_to_data_dir, input_param):
 		# copy all modified files into the path_to_run_dir, mod_bart.sh,
 		src_files = os.listdir(path_to_input_files)
 		for file_name in src_files:
-			if file_name == 'bart.sh':
+			if file_name == 'bart.sh' or file_name == "central_atom_list.json":
 				continue
 			full_file_name = os.path.join(path_to_input_files, file_name)
 			if (os.path.isfile(full_file_name)):

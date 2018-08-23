@@ -20,7 +20,7 @@ export PATH=$MY_ART/scripts:$PATH
 # set up the path to ART executable
 export ART_EXE=$HOME/artn/source/ARTn_exec
 
-export ART_INPUT=$MY_ART/ART_example_input_files
+export ART_INPUT=$DATA_DIR
 
 
 
