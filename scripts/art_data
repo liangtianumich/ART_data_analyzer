@@ -519,17 +519,16 @@ if __name__ == "__main__":
 		  #run_art_mp(args.run[0])
 		  exit()
 		if args.run_more:
-			print ">>>ART_data is not converged, running more ART data!"
-			new_central_atom_list = get_more_central_atoms(path_to_data_dir, args.run_more[0])
-			print ">>>get new central atom list"
-			input_param["central_atom_list"] = new_central_atom_list
-			
-			print ">>>setting up the ART input files for new central atom list!"
-		    set_up_input_files(path_to_data_dir, input_param)
-		    print ">>>starting running art for new central_atom_list in parallel!"
-		    run_art_mp(path_to_data_dir, input_param)
-		    #run_art_mp(args.run[0])
-		    exit()
+		  print ">>>ART_data is not converged, running more ART data!"
+		  new_central_atom_list = get_more_central_atoms(path_to_data_dir, args.run_more[0])
+		  print ">>>get new central atom list"
+		  input_param["central_atom_list"] = new_central_atom_list	
+		  print ">>>setting up the ART input files for new central atom list!"
+		  set_up_input_files(path_to_data_dir, input_param)
+		  print ">>>starting running art for new central_atom_list in parallel!"
+		  run_art_mp(path_to_data_dir, input_param)
+		  #run_art_mp(args.run[0])
+		  exit()
 
 	if args.filter:
 		#if args.path:

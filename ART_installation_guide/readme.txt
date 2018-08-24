@@ -109,10 +109,9 @@ This will build lammps library with all needed packaged and a liblammps_lammps_f
 
 5. Build ART with lammps library:
 
-Copy the liblammps_lammps_for_art_ubuntu.a and liblammps.a that links to liblammps_lammps_for_art_ubuntu.a into the ART_dir/source
-
 Copy the Makefile.ubuntu_lammps in this dir into the ART_dir/source/MAKE
 Cd into ART_dir/source, type make ubuntu_lammps
+This should work. If not, the LAMMPS_USER_PATH is not set up correctly. Try either modify Makefile.ubuntu_lammps or Copy the liblammps_lammps_for_art_ubuntu.a and liblammps.a that links to liblammps_lammps_for_art_ubuntu.a into the ART_dir/source
 Note:
 1)Change the lammps_dir name if necessary, here lammps dir lammps-16Mar18 installed in $HOME
  LAMMPS_USER_PATH = $HOME/lammps-16Mar18/src
