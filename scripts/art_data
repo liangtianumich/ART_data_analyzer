@@ -11,6 +11,7 @@ from calculator.strain_calculator import strain_calculator_run_all_tests_mp
 from calculator.voronoi_structural_analysis import run_all_tests_voronoi_calculator, run_all_tests_voronoi_classifier
 from visualizer.strain_visualizer import events_strain_visualization,strain_events_stats_visualization
 from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms
+from data_reader import *
 from util import run_tests_triggered_atom_is_max_disp
 #from lammps.run import run_lammps
 from ART_wrapper.run import run_art_mp, set_up_input_files
@@ -35,6 +36,7 @@ def print_input_help():
 	
 	  total_energy: float
 		total potential energy of the ART sample (calculated by lammps)
+		currently, can be any float, e.g. 0.0, ART will re_calculate total energy during initial minimization
 	  
 	  sample_name: str
 		file name of the sample configuration file containing atomic coordinates
@@ -107,8 +109,14 @@ def print_desc_help():
 	running lammps and ART simulations to generate sample for ART and ART data of the sample,
 	post-processing of ART data in a user workflow in parallel.	
 	
-	If only a subsection of the MD sample are interested (e.g. grain boundary atoms), it is suggested 
-	that only these subsection atoms are output as the configuration sample file.
+	If only a subsection of the MD sample are interested (e.g. grain boundary atoms), 
+	the whole MD sample are still used by ART as the configuration sample file to ensure
+	that the initial minimized MD sample configuration does not deviates from the ART 
+	initial minimized configuration too much so that we probe the PEL of the initial MD sample.
+	In this case, user need to create a file called central_atom_list.json under path_to_data_dir
+	that contains a list, whose elements are all interested central atoms in grain boundary.
+	If this file not exists, central atoms list will be the list of all atoms in whole sample
+	unless we want to perturb less central atoms (as specified in --example n_tests) than all atoms in the whole sample.
 	
 	It is suggested to run a few set of ART data with different paramters to 
 	ensure post-filtering activation energy distribution indeed converge by a
@@ -131,24 +139,34 @@ def print_desc_help():
 	Example 'art_data' JSON input files can be output by the
 	  'art_data --example' options:
 		
-		art_data --example > input.json
+		art_data --example n_tests > input.json
+		where n_test specifies the total number of central atom tests
 	Then the user can edit the parameters in the file as needed and 
 	see 'art_data --settings-format' for help.
 	
 	running ART:
+	First, user need to specify where to run and store ART_data, this is
+	specified by the path_to_data_dir in the input settings, e.g. input.json file.
+	User can manually modify this path to where they want to put their ART data in.
+	Currently, path_to_input_files are set up to be the same as path_to_data_dir
+	so that all ART input files should be located under path_to_data_dir.
+	To summarize, in the input settings file, user need to update path_to_data_dir
+	(to be the same of path_to_input_files),sample_name, sample_type, box_dim for submitting ART to run.
+	
 	art_data -s SETTINGS --art --run will take the input parameters in SETTINGS
 	such as path_to_input_files, total_energy, box_dim, sample_name, sample_type
 	to automatically set up the input files for running art and running ./mod_bart.sh
 	inside each run_dir. 
 	
 	The name of each run_dir is determined by whether there is 
-	a file inside path_to_data_dir called central_atom_list.json. 
+	a file inside path_to_data_dir called central_atom_list.json.
+	
 	This file will be generated when running art_data --example ...
 	
-	If this file exists, it will load the list inside the file and use each integer element (central_atom id)
-	as the name of each run_dir to create each run_dir. If this file does not exists,
-	it will load all atoms id in lammps dump or lammps data file and save them as a list
-	in a file called central_atom_list.json inside path_to_data_dir.
+	If this file exists, it will load the list inside the file to be central_atom_list
+	and use each integer element (central_atom id) as the name of each run_dir to create each run_dir. 
+	If this file does not exists, it will load each of all atoms id in 
+	lammps dump or lammps data file and save them as a list to be the central_atom_list.
 	
 	Then ART input files will be modified corresponding to each central_atom id and copied into each run_dir.
 	
@@ -179,7 +197,11 @@ def print_desc_help():
 	  event_energy_calculator.eng_convergence_ttest_ind if OPTION is ind 
 	  or event_energy_calculator.eng_convergence_ttest_rel if OPTION is rel
 	  , where PATH_1 is the path string to the ART data directory 1 and PATH_2
-	  is the path string to the ART data directory 2.	 
+	  is the path string to the ART data directory 2.	
+	  
+	  'art_data -s SETTINGS --eng --ttest_kfold OPTION k n' will
+	  randomly divide the ART data in path_to_data_dir into k folds for n different times
+	  and perform t test on each fold pair to ensure all fold pairs are convergent
 	  
 	 2) run calculations:
 	 
@@ -248,7 +270,37 @@ def print_desc_help():
 	 input file
 	  
 	"""
-def example_input(n_atoms, n_tests):
+def get_central_atom_list(path_to_data_dir, path_to_input_files,sample_name, sample_type, n_tests):
+	
+	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
+	# get the path string of dump or lammps data file
+	path_to_sample = os.path.join(path_to_input_files, sample_name)
+	
+	if os.path.isfile(path_to_central_atom_list):
+		try:
+			central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
+		except ValueError:
+			raise Exception("%s is an empty file or can not be read"%path_to_central_atom_list)
+	else:
+		print "central_atom_list.json file does not exist, set each atom in the configuration \
+		to be central atom"
+		
+		if sample_type == 'dump':
+			config_results = read_data_from_dump(path_to_sample)
+		elif sample_type == 'lammps_data':
+			config_results = read_data_from_lammps_data(path_to_sample)
+		central_atom_list = config_results['item'].tolist()
+		
+	
+	if len(central_atom_list) >= n_tests:
+		random.seed(0)
+		central_atom_list = random.sample(central_atom_list, n_tests)
+	
+	with open(path_to_central_atom_list, 'w+') as f:
+		json.dump(central_atom_list,f)
+	return central_atom_list	
+	
+def example_input(n_tests):
 	"""
 	this function returns an example input file json/dict
 	"""
@@ -259,27 +311,20 @@ def example_input(n_atoms, n_tests):
 		os.makedirs(input["path_to_data_dir"])
 	
 	input["path_to_input_files"] = os.environ['ART_INPUT']
-	if n_atoms >= n_tests:
-		random.seed(0)
-		central_atom_list = random.sample([x+1 for x in xrange(n_atoms)],n_tests)
-	else:
-		central_atom_list = [x+1 for x in xrange(n_atoms)]
-	path_to_central_atom_list = os.path.join(input["path_to_data_dir"],'central_atom_list.json')
-	
-	with open(path_to_central_atom_list, 'w+') as f:
-		json.dump(central_atom_list,f)
+	input['sample_name'] = "dump_10E11"
+	input['sample_type'] = "dump"
+	input["central_atom_list"] = get_central_atom_list(input["path_to_data_dir"],input["path_to_input_files"],input['sample_name'],input['sample_type'],n_tests)
 	
 	# create all tests for each atom in central_atoms_list
 	# select part tests for further post-processing in list_of_test_id
 	# default using all tests, which are created by central_atom_list
 	# usually user are interested in a single test post-processing results
-	# then they can manually edit the input file
+	# then manually edit the input file
 	input["list_of_test_id"] = central_atom_list
 	size = 32.130125 - 0.299875
 	input['box_dim'] = [size, size, size]
-	input['total_energy'] = -46021.0583322591
-	input['sample_name'] = "dump_10E11"
-	input['sample_type'] = "dump"
+	input['total_energy'] = 0.0
+	
 	input['cut_off'] = {str((1,1)):3.7,str((1,2)):3.7,str((2,2)):3.7}
 	input['identical_event_criteria'] = {"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
 	input['num_of_proc'] = mp.cpu_count()
@@ -310,7 +355,7 @@ if __name__ == "__main__":
   parser.add_argument('--desc', help='Print extended usage description', action="store_true")
   parser.add_argument('--settings-format', help='Print input file description', action="store_true")
   # when --example argument is missing in command line, the default created by store_true is False
-  parser.add_argument('--example', nargs=2, help='Print example input file, need two input integer arguments',type=int, metavar=('n_atoms in sample', 'num central_atom tests to be created'))
+  parser.add_argument('--example', nargs=1, help='Print example input file, need one input integer arguments',type=int, metavar=('num of each central atom tests to be created'))
   
   
   parser.add_argument('-s', '--settings', nargs=1, help='Settings input filename, where SETTINGS is the input file name', type=str)
@@ -368,7 +413,7 @@ if __name__ == "__main__":
   
   if args.example:
 	#print jsonpickle.encode(example_input())
-	print json.dumps(example_input(args.example[0],args.example[1]), indent=2)
+	print json.dumps(example_input(args.example[0]), indent=2)
 	#print example_input()
 	exit()
   if args.path:
