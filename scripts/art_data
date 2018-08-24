@@ -270,35 +270,63 @@ def print_desc_help():
 	 input file
 	  
 	"""
-def get_central_atom_list(path_to_data_dir, path_to_input_files,sample_name, sample_type, n_tests):
-	
+def get_central_atom_list(path_to_data_dir, path_to_input_files, sample_name, sample_type, n_tests):
+	path_to_interested_atom_list = os.path.join(path_to_data_dir,"interested_atom_list.json")
 	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
 	# get the path string of dump or lammps data file
 	path_to_sample = os.path.join(path_to_input_files, sample_name)
 	
-	if os.path.isfile(path_to_central_atom_list):
+	if os.path.isfile(path_to_interested_atom_list):
 		try:
-			central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
+			interested_atom_list = json.load(open(path_to_interested_atom_list, 'r'))
 		except ValueError:
-			raise Exception("%s is an empty file or can not be read"%path_to_central_atom_list)
+			raise Exception("%s is an empty file or can not be read"%path_to_interested_atom_list)
 	else:
-		print "central_atom_list.json file does not exist, set each atom in the configuration \
+		print "interested_atom_list.json file does not exist, set each atom in the configuration \
 		to be central atom"
 		
 		if sample_type == 'dump':
 			config_results = read_data_from_dump(path_to_sample)
 		elif sample_type == 'lammps_data':
 			config_results = read_data_from_lammps_data(path_to_sample)
-		central_atom_list = config_results['item'].tolist()
+		interested_atom_list = config_results['item'].tolist()
 		
+		with open(path_to_interested_atom_list, 'w+') as f:
+			json.dump(interested_atom_list,f)
 	
-	if len(central_atom_list) >= n_tests:
+	if len(interested_atom_list) >= n_tests:
 		random.seed(0)
-		central_atom_list = random.sample(central_atom_list, n_tests)
+		central_atom_list = random.sample(interested_atom_list, n_tests)
+	else:
+		central_atom_list = interested_atom_list
 	
 	with open(path_to_central_atom_list, 'w+') as f:
 		json.dump(central_atom_list,f)
-	return central_atom_list	
+	return central_atom_list
+
+def get_more_central_atoms(path_to_data_dir, n_tests):
+	path_to_interested_atom_list = os.path.join(path_to_data_dir,"interested_atom_list.json")
+	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
+	try:
+		interested_atom_list = json.load(open(path_to_interested_atom_list, 'r'))
+		central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
+	except ValueError:
+		raise Exception("either interested_atom_list.json or central_atom_list.json file does not exist or is empty!")
+	
+	left_central_atom_list = [x for x in interested_atom_list if x not in central_atom_list]
+	
+	if len(left_central_atom_list) >= n_tests:
+		random.seed(0)
+		new_central_atom_list = random.sample(left_central_atom_list, n_tests)
+		final_central_atom_list = central_atom_list + new_central_atom_list
+	else:
+		new_central_atom_list = left_central_atom_list
+		final_central_atom_list = interested_atom_list
+
+	with open(path_to_central_atom_list, 'w+') as f:
+		json.dump(final_central_atom_list,f)
+
+	return new_central_atom_list
 	
 def example_input(n_tests):
 	"""
@@ -400,6 +428,9 @@ if __name__ == "__main__":
   
   parser.add_argument('--run', help='begin running simulations after --lammps or --art mode', action="store_true")
   
+  parser.add_argument('--run_more', nargs=1, metavar=('number of tests'), help='running more ART simulations if ART data is not converged', type=int)
+  
+  
   #parser.add_argument('-v','--verbose', help='verbose output', action="store_true", default=False)
   
   
@@ -461,6 +492,18 @@ if __name__ == "__main__":
 		  run_art_mp(path_to_data_dir, input_param)
 		  #run_art_mp(args.run[0])
 		  exit()
+		if args.run_more:
+			print ">>>ART_data is not converged, running more ART data!"
+			new_central_atom_list = get_more_central_atoms(path_to_data_dir, args.run_more[0])
+			print ">>>get new central atom list"
+			input_param["central_atom_list"] = new_central_atom_list
+			
+			print ">>>setting up the ART input files for new central atom list!"
+		    set_up_input_files(path_to_data_dir, input_param)
+		    print ">>>starting running art for new central_atom_list in parallel!"
+		    run_art_mp(path_to_data_dir, input_param)
+		    #run_art_mp(args.run[0])
+		    exit()
 
 	if args.filter:
 		#if args.path:
