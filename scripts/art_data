@@ -113,7 +113,7 @@ def print_desc_help():
 	the whole MD sample are still used by ART as the configuration sample file to ensure
 	that the initial minimized MD sample configuration does not deviates from the ART 
 	initial minimized configuration too much so that we probe the PEL of the initial MD sample.
-	In this case, user need to create a file called central_atom_list.json under path_to_data_dir
+	In this case, user need to create a file called interested_atom_list.json under path_to_data_dir
 	that contains a list, whose elements are all interested central atoms in grain boundary.
 	If this file not exists, central atoms list will be the list of all atoms in whole sample
 	unless we want to perturb less central atoms (as specified in --example n_tests) than all atoms in the whole sample.
@@ -202,6 +202,20 @@ def print_desc_help():
 	  'art_data -s SETTINGS --eng --ttest_kfold OPTION k n' will
 	  randomly divide the ART data in path_to_data_dir into k folds for n different times
 	  and perform t test on each fold pair to ensure all fold pairs are convergent
+	  
+	  User need to test which ttest mode is a good convergence criteria, for example,
+	  2 fold 3 times t tests
+	  
+	  if ART data is not converged, then you can run more ART_data by the following command
+	  
+	  art_data -s SETTINGS --art --run_more N_TESTS
+	  this command will update the central_atom_list.json as well.
+	  until you achieve the convergence.
+	  
+	  Eacht time using --art --run_more command, user need to update the
+	  input SETTINGS file 'central_atom_list' and 'list_of_test_id' by
+	  art_data -s SETTINGS --update_input
+	  
 	  
 	 2) run calculations:
 	 
@@ -327,6 +341,12 @@ def get_more_central_atoms(path_to_data_dir, n_tests):
 		json.dump(final_central_atom_list,f)
 
 	return new_central_atom_list
+
+def update_input(input_param):
+	path_to_central_atom_list = os.path.join(input_param["path_to_data_dir"],"central_atom_list.json")
+	input_param["central_atom_list"] = json.load(open(path_to_central_atom_list, 'r'))
+	input_param["list_of_test_id"] = input_param["central_atom_list"]
+	return input_param
 	
 def example_input(n_tests):
 	"""
@@ -348,7 +368,7 @@ def example_input(n_tests):
 	# default using all tests, which are created by central_atom_list
 	# usually user are interested in a single test post-processing results
 	# then manually edit the input file
-	input["list_of_test_id"] = central_atom_list
+	input["list_of_test_id"] = input["central_atom_list"]
 	size = 32.130125 - 0.299875
 	input['box_dim'] = [size, size, size]
 	input['total_energy'] = 0.0
@@ -387,6 +407,7 @@ if __name__ == "__main__":
   
   
   parser.add_argument('-s', '--settings', nargs=1, help='Settings input filename, where SETTINGS is the input file name', type=str)
+  parser.add_argument('--update_input', help='update input SETTINGS file after run more ART_data', action="store_true")
   
   parser.add_argument('--filter', help='filter events to remove unsuccessful and redudant event', action="store_true")  
   
@@ -465,6 +486,11 @@ if __name__ == "__main__":
 	#input_param = jsonpickle.decode(open(args.settings[0],'r').read())
 	#input_param = json.loads(open(args.settings[0], 'r').read())
 	input_param = json.load(open(args.settings[0], 'r'))
+	
+	if args.update_input:
+		updated_input_param = update_input(input_param)
+		json.dump(updated_input_param, open(args.settings[0], 'w'))
+		exit()
 	
 	new_cut_off_dict = dict()
 	for k,v in input_param['cut_off'].items():
