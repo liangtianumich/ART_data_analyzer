@@ -89,6 +89,11 @@ make is an building automation exe program default installed in /usr/bin, which 
 User can check which packages will be included in the compiled lammps library by make package-ps
 Then, if user want to install extra packages, first check if this package need external library by typing make package. It will show whether this package is standard or user package, whether this package need system libraries, or lammps included libraries or external libraries that user has to install for themselves. It would take extra efforts to install packages with external libraries, such as VORONOI. In the /src dir, type make lib-voronoi to see the instructions on how to download, build, install external libraries or go to the lib/voronoi/README to check the instructions. You can check the instruction of how to install external libraries for packages on lammps website: http://lammps.sandia.gov/doc/Section_start.html#start-3-3
 
+Here for the basic needs and a quick installation, it is suggested to load the standard package without any library by make yes-standard; make no-lib
+Some packages are the basic need in order for the lammps to run. 
+
+If the user forget to add the desired package for lammps to run lammps input file so that ART can not read some commands of in.lammps, they need to re-compile lammps with those additional packages and also has to re-compile ART.
+
 After you load all needed packages and their dependent libraries, you can start building lammps library by:
 
 Copy the attached Makefile.lammps_for_art_ubuntu into the lammps_dir/src/MAKE/MINE

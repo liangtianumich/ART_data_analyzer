@@ -61,6 +61,7 @@ def set_up_input_files(path_to_data_dir, input_param):
 	path_to_input_files = input_param['path_to_input_files']
 	total_energy = input_param['total_energy']
 	box_dim = input_param['box_dim']
+	box_range = input_param['box_range']
 	sample_name = input_param['sample_name']
 	sample_type = input_param['sample_type']
 	
@@ -71,7 +72,7 @@ def set_up_input_files(path_to_data_dir, input_param):
 	
 	# obtain the refconfig file from the dump or lammps data file, need total energy, box_dim
 	if sample_type == 'dump':
-		dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim)
+		dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim, box_range)
 	elif sample_type == 'lammps_data':
 		data_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim)
 	else:
@@ -134,7 +135,7 @@ def data_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim):
 		f.close()
 	print "saving refconfig in %s"%path_to_input_files	
 
-def dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim):
+def dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim, box_range):
 	"""
 	this function takes a dump file and modify the dump file to a refconfig
 	file for periodic boundary condition
@@ -149,8 +150,8 @@ def dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim):
 	df = result[['atom_id', 'x','y','z']]
 	df.insert(loc=0, column='1', value='')
 	# the atomic coordinates in dump file are fractional coordinates
-	# the actual coordinates are (x_s - 0.5) * box_dim[0],...
-	df.update((df[['x','y','z']]-0.5) * box_dim)
+	# the actual coordinates are (x_s * box_dim[0]) + box_range_x_start,...
+	df.update((df[['x','y','z']] * box_dim) + [box_range[0][0],box_range[1][0],box_range[2][0]])
 	file_to_save = os.path.join(path_to_input_files,'refconfig')
 	with open(file_to_save, 'w') as f:
 		f.write(' run_id: 1000\n total_energy: %s \n P %s %s %s\n'%(total_energy, box_dim[0],box_dim[1],box_dim[2]))

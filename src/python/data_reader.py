@@ -72,7 +72,6 @@ def read_data_from_lammps_data(path_to_file=None, quiet = False):
 	else:
 		data = pd.read_csv(path_to_file,sep='\s+',skiprows = 9, header=None)
 		result = data.iloc[:,0:5]
-		print result
 		if quiet is False:
 			print "read lammps data file:", path_to_file
 		result.columns = ['item', 'atom_id', 'x','y','z']

@@ -77,6 +77,8 @@ if pip install does not work, especially for pip version 9.0.1, user need to upg
 
 User also need to install pathos package for a unified event level parallel computation by using the util.operation_on_events function by pip install --user pathos. Pathos can serialize any function that are not defined at the top level of the module that greatly favor the implementation. Check: https://stackoverflow.com/questions/8804830/python-multiprocessing-pickling-error. It seems that any file that call util.operations_on_events() will need to import os, pickle numpy as np.
 
+It seems that when installing the latest pathos, it will install a new version of dill, which will cause some import error. This can be fixed by using dill version 0.2.7.1 by pip uninstall dill and then pip install —-user dill==0.2.7.1
+
 For windows 10 user, you can search Ubuntu app in Microsoft App Store to use Ubuntu app like regular linux Ubuntu. Make sure you are running Windows Powershell as admistrator by right click and copy commands https://docs.microsoft.com/en-us/windows/wsl/install-win10
 If you encounter error like wslregisterdisribution failed with error ox800700b7
 First, try search windows feature, turn off windows subsystem for linux (WSL), reboot, then turn on windows subsystem for linux, reboot. This should work. If not work, try reinstall ubuntu app from app store, see https://github.com/Microsoft/WSL/issues/2982
