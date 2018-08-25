@@ -90,7 +90,7 @@ def set_up_input_files(path_to_data_dir, input_param):
 		# copy all modified files into the path_to_run_dir, mod_bart.sh,
 		src_files = os.listdir(path_to_input_files)
 		for file_name in src_files:
-			if file_name == 'bart.sh' or file_name == "central_atom_list.json":
+			if file_name == 'bart.sh' or file_name == "central_atom_list.json" or file_name == "interested_atom_list.json":
 				continue
 			full_file_name = os.path.join(path_to_input_files, file_name)
 			if (os.path.isfile(full_file_name)):
