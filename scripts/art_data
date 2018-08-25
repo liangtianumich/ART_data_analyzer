@@ -5,6 +5,9 @@ import time
 import random
 import multiprocessing as mp
 import argparse
+import sys
+import contextlib
+import io
 from event_selector import filter_events_all_tests_stage_1,filter_events_all_tests_stage_2
 from calculator.event_energy_calculator import *
 from calculator.strain_calculator import strain_calculator_run_all_tests_mp
@@ -342,6 +345,13 @@ def get_more_central_atoms(path_to_data_dir, n_tests):
 
 	return new_central_atom_list
 
+@contextlib.contextmanager
+def nostdout():
+    save_stdout = sys.stdout
+    sys.stdout = io.BytesIO()
+    yield
+    sys.stdout = save_stdout
+
 def update_input(input_param):
 	path_to_central_atom_list = os.path.join(input_param["path_to_data_dir"],"central_atom_list.json")
 	input_param["central_atom_list"] = json.load(open(path_to_central_atom_list, 'r'))
@@ -354,14 +364,15 @@ def example_input(n_tests):
 	"""
 	input = dict()
 	input["path_to_data_dir"] = os.environ['DATA_DIR']
-	if not os.path.isdir(os.environ['DATA_DIR']):
-		print "creating directory: %s"%input["path_to_data_dir"]
-		os.makedirs(input["path_to_data_dir"])
-	
 	input["path_to_input_files"] = os.environ['ART_INPUT']
 	input['sample_name'] = "dump_10E11"
 	input['sample_type'] = "dump"
-	input["central_atom_list"] = get_central_atom_list(input["path_to_data_dir"],input["path_to_input_files"],input['sample_name'],input['sample_type'],n_tests)
+	
+	with nostdout():
+		if not os.path.isdir(os.environ['DATA_DIR']):
+			print "creating directory: %s"%input["path_to_data_dir"]
+			os.makedirs(input["path_to_data_dir"])
+		input["central_atom_list"] = get_central_atom_list(input["path_to_data_dir"],input["path_to_input_files"],input['sample_name'],input['sample_type'],n_tests)
 	
 	# create all tests for each atom in central_atoms_list
 	# select part tests for further post-processing in list_of_test_id
@@ -449,7 +460,7 @@ if __name__ == "__main__":
   
   parser.add_argument('--run', help='begin running simulations after --lammps or --art mode', action="store_true")
   
-  parser.add_argument('--run_more', nargs=1, metavar=('number of tests'), help='running more ART simulations if ART data is not converged', type=int)
+  parser.add_argument('--run_more', nargs=1, metavar=('NUM_OF_TESTS'), help='running more ART simulations if ART data is not converged', type=int)
   
   
   #parser.add_argument('-v','--verbose', help='verbose output', action="store_true", default=False)
