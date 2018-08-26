@@ -365,8 +365,8 @@ def example_input(n_tests):
 	input = dict()
 	input["path_to_data_dir"] = os.environ['DATA_DIR']
 	input["path_to_input_files"] = os.environ['ART_INPUT']
-	input['sample_name'] = "dump_10E11"
-	input['sample_type'] = "dump"
+	input['sample_name'] = os.environ["ART_SAMPLE"]
+	input['sample_type'] = os.environ["SAMPLE_TYPE"]
 	
 	with nostdout():
 		if not os.path.isdir(os.environ['DATA_DIR']):

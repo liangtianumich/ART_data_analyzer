@@ -3,8 +3,10 @@
 # the directory path of the python package in user's machine
 export MY_ART=$HOME/Documents/alabama/ART_data_analyzer
 
-# user need to specify the ART data directory
+# user need to specify the ART data directory, ART_sample file inside ART data directory, sample_type
 export DATA_DIR=$MY_ART/examples/
+export ART_SAMPLE = conf.lammps
+export SAMPLE_TYPE = lammps_data
 
 # user need to specify the test directory for running tests
 export TEST_DIR=$MY_ART/tests/
@@ -19,8 +21,9 @@ export PATH=$MY_ART/scripts:$PATH
 # for running ART
 # set up the path to ART executable
 export ART_EXE=$HOME/artn/source/ARTn_exec
-
 export ART_INPUT=$DATA_DIR
+
+
 
 
 
