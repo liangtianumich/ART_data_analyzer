@@ -135,7 +135,7 @@ def data_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim):
 		f.close()
 	print "saving refconfig in %s"%path_to_input_files	
 
-def dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim, box_range):
+def dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim, box_range, fractional_coordinates=True):
 	"""
 	this function takes a dump file and modify the dump file to a refconfig
 	file for periodic boundary condition
@@ -151,7 +151,8 @@ def dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim, b
 	df.insert(loc=0, column='1', value='')
 	# the atomic coordinates in dump file are fractional coordinates
 	# the actual coordinates are (x_s * box_dim[0]) + box_range_x_start,...
-	df.update((df[['x','y','z']] * box_dim) + [box_range[0][0],box_range[1][0],box_range[2][0]])
+	if fractional_coordinates == True:
+		df.update((df[['x','y','z']] * box_dim) + [box_range[0][0],box_range[1][0],box_range[2][0]])
 	file_to_save = os.path.join(path_to_input_files,'refconfig')
 	with open(file_to_save, 'w') as f:
 		f.write(' run_id: 1000\n total_energy: %s \n P %s %s %s\n'%(total_energy, box_dim[0],box_dim[1],box_dim[2]))

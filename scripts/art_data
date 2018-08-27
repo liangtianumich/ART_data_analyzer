@@ -388,6 +388,8 @@ def delete_art_input_file(path_to_data_dir, file_names):
 					print "confirm deleting (y/n):"
 					if prompt_yes_no() is True:
 						os.remove(path_to_file)
+			else:
+				print "%s"%each_file, "does not exist in %s"%os.path.join(path_to_data_dir, str(central_atom))
 		i = i + 1
 	
 def example_input(n_tests):
@@ -405,15 +407,14 @@ def example_input(n_tests):
 			print "creating directory: %s"%input["path_to_data_dir"]
 			os.makedirs(input["path_to_data_dir"])
 		input["central_atom_list"] = get_central_atom_list(input["path_to_data_dir"],input["path_to_input_files"],input['sample_name'],input['sample_type'],n_tests)
-	
+		l_range = read_box_range_from_file(input["path_to_input_files"], input['sample_name'], input['sample_type'])
 	# create all tests for each atom in central_atoms_list
 	# select part tests for further post-processing in list_of_test_id
 	# default using all tests, which are created by central_atom_list
 	# usually user are interested in a single test post-processing results
 	# then manually edit the input file
-	input["list_of_test_id"] = input["central_atom_list"]
-	size = 32.130125 - 0.299875
-	input['box_dim'] = [size, size, size]
+	input["list_of_test_id"] = input["central_atom_list"]	
+	input['box_dim'] = [l_range[0][1] - l_range[0][0], l_range[1][1] - l_range[1][0], l_range[2][1] - l_range[2][0]]
 	input['total_energy'] = 0.0
 	
 	input['cut_off'] = {str((1,1)):3.7,str((1,2)):3.7,str((2,2)):3.7}
@@ -431,8 +432,8 @@ def example_input(n_tests):
 	
 	# for voronoi analysis
 	input['voro_cut_off'] = 3.7
-	l_range = [0.299875, 32.130125]
-	input['box_range'] = [l_range, l_range, l_range]
+	#l_range = [0.299875, 32.130125]
+	input['box_range'] = l_range
 	input['periodic'] = [True, True, True]
 	
 	return input
