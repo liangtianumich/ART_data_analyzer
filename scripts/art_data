@@ -327,7 +327,7 @@ def get_more_central_atoms(path_to_data_dir, n_tests):
 	try:
 		interested_atom_list = json.load(open(path_to_interested_atom_list, 'r'))
 		central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
-	except ValueError:
+	except IOError:
 		raise Exception("either interested_atom_list.json or central_atom_list.json file does not exist or is empty!")
 	
 	left_central_atom_list = [x for x in interested_atom_list if x not in central_atom_list]
@@ -357,6 +357,36 @@ def update_input(input_param):
 	input_param["central_atom_list"] = json.load(open(path_to_central_atom_list, 'r'))
 	input_param["list_of_test_id"] = input_param["central_atom_list"]
 	return input_param
+
+def prompt_yes_no():
+	yes = {'yes','y'}
+	no = {'no','n'}
+	choice = raw_input().lower()
+	if choice in yes:
+	   return True
+	elif choice in no:
+	   return False
+	else:
+	   sys.stdout.write("Please respond with 'yes' or 'no'")
+	   
+def delete_art_input_file(path_to_data_dir, file_names):
+	"""
+	file_names is a list of files to be deleted in the final art tests directory
+	"""
+	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
+	central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
+	i=0
+	for central_atom in central_atom_list:
+		for each_file in file_names:
+			path_to_file = os.path.join(path_to_data_dir, central_atom, each_file)
+			if os.path.isfile(path_to_file):
+				if i >= 1:
+					os.remove(path_to_file)
+				else:
+					print "deleting the files %s"%path_to_file
+					if prompt_yes_no() is True:
+						os.remove(path_to_file)
+		i = i + 1	
 	
 def example_input(n_tests):
 	"""
@@ -419,8 +449,9 @@ if __name__ == "__main__":
   
   parser.add_argument('-s', '--settings', nargs=1, help='Settings input filename, where SETTINGS is the input file name', type=str)
   parser.add_argument('--update_input', help='update input SETTINGS file after run more ART_data', action="store_true")
+  parser.add_argument('--delete_tests_files', nargs='+', help='delete multiple files specified in command line for all ART tests directory', type=str)
   
-  parser.add_argument('--filter', help='filter events to remove unsuccessful and redudant event', action="store_true")  
+  parser.add_argument('--filter', help='filter events to remove unsuccessful and redudant event', action="store_true")
   
   parser.add_argument('--eng', help='perform operations on activation and relaxation energy', action="store_true")
   parser.add_argument('--strain', help='perform operations on atomic strain and displacement', action="store_true")
@@ -500,7 +531,7 @@ if __name__ == "__main__":
 	
 	if args.update_input:
 		updated_input_param = update_input(input_param)
-		json.dump(updated_input_param, open(args.settings[0], 'w'))
+		json.dump(updated_input_param, open(args.settings[0], 'w'), indent=2)
 		exit()
 	
 	new_cut_off_dict = dict()
@@ -540,6 +571,10 @@ if __name__ == "__main__":
 		  run_art_mp(path_to_data_dir, input_param)
 		  #run_art_mp(args.run[0])
 		  exit()
+		if args.delete_tests_files:
+			file_names = args.delete_tests_files
+			delete_art_input_file(path_to_data_dir, file_names)
+
 
 	if args.filter:
 		#if args.path:
