@@ -378,15 +378,17 @@ def delete_art_input_file(path_to_data_dir, file_names):
 	i=0
 	for central_atom in central_atom_list:
 		for each_file in file_names:
-			path_to_file = os.path.join(path_to_data_dir, central_atom, each_file)
+			path_to_file = os.path.join(path_to_data_dir, str(central_atom), each_file)
 			if os.path.isfile(path_to_file):
 				if i >= 1:
+					print "deleting the file %s"%path_to_file
 					os.remove(path_to_file)
 				else:
-					print "deleting the files %s"%path_to_file
+					print "deleting the file %s"%path_to_file
+					print "confirm deleting (y/n):"
 					if prompt_yes_no() is True:
 						os.remove(path_to_file)
-		i = i + 1	
+		i = i + 1
 	
 def example_input(n_tests):
 	"""
@@ -573,6 +575,7 @@ if __name__ == "__main__":
 		  exit()
 		if args.delete_tests_files:
 			file_names = args.delete_tests_files
+			print "deleting files :", file_names, "in %s"%path_to_data_dir
 			delete_art_input_file(path_to_data_dir, file_names)
 
 
