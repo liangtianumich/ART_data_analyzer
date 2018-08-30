@@ -31,6 +31,7 @@ def residual_threshold_finder(path_to_data_dir, input_param):
 	
 	"""
 	residual_threshold = input_param["residual_threshold"]
+	critical_slope = input_param["critical_local_atoms_slope"]
 	ave_local_atoms = []
 	ave_k = []
 	print "all residual_threshold:",residual_threshold
@@ -43,14 +44,14 @@ def residual_threshold_finder(path_to_data_dir, input_param):
 		if i>=1:
 			if doubt == True:
 				check_criteria = float(ave_local_atoms[i] - ave_local_atoms[i-1])/(residual_threshold[i] - residual_threshold[i-1])
-				if check_criteria >= -15:
+				if check_criteria >= critical_slope:
 					print "stopping at relative threshold:", x
 					break
 				else:
 					doubt = False	
 			else:
 				check_criteria = float(ave_local_atoms[i] - ave_local_atoms[i-1])/(residual_threshold[i] - residual_threshold[i-1])
-				if check_criteria >= -15:
+				if check_criteria >= critical_slope:
 					doubt = True
 				else:
 					doubt = False

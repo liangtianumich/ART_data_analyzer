@@ -25,79 +25,124 @@ def print_input_help():
 	"""
 	print \
 	"""
-	art_data --settings need an input file in json format specifies the
-	following keys:
+	art_data --settings / -s need an input file in json format specifies the
+	following keys (keys are organized based on how they are used):
+	1) ART_running needed keys:
 	
-	  path_to_data_dir: str
-		path to the art data directory
+	  path_to_data_dir: str,
+		path to the art data directory, get by os.environ['DATA_DIR'] in environment.sh
+	  
+	  path_to_input_files: str,
+		path to ART input files, get by os.environ['ART_INPUT'], default
+		the same as os.environ['DATA_DIR'] in environment.sh
+	
+	  total_energy: float,
+		total potential energy of the ART sample
+		currently, can be any float number, e.g. 0.0, ART will re_calculate total energy during initial minimization
+	  
+	  sample_name: str,
+		file name of the sample configuration file containing atomic coordinates
+		get by os.environ['ART_SAMPLE'] in environment.sh, e.g conf.lammps
+	  
+	  sample_type: str,
+		sample_type can be either 'dump' or 'lammps_data', get by
+		os.environ['SAMPLE_TYPE'] in environment.sh
+	  
+	  box_range: list,
+		the simulation box range in x,y,z direction
+	    e.g. [[-27,27], [-27,27], [-27,27]], default read the box
+		range from the sample configuration file, i.e sample_name
+
+	  box_dim: list,
+		the orthogonal simulation box dimension along x, y, z, default read the box
+		dimension from the sample configuration file, i.e sample_name
+	
+	  central_atom_list: list
+		a list of central atoms id used to create all test directories,
+		default, created based on randomly select user specified number of atoms 
+		out of total interested atoms (Here total interested atoms can be a subset of all atoms in whole sample). 
+		A list of selected atoms' atom id will be central_atom_list
+	  
+	2) In addition to the above keys, ART post-processing needed keys:
 	  
 	  list_of_test_id: list
-		list of the tests to be filtered
+		list of the tests to be post-processed, default all tests calculated, the same as central_atom_list
 	  
-	  path_to_input_files: str
-		path to ART input files, get by os.environ['ART_INPUT']
-	
-	  total_energy: float
-		total potential energy of the ART sample (calculated by lammps)
-		currently, can be any float, e.g. 0.0, ART will re_calculate total energy during initial minimization
-	  
-	  sample_name: str
-		file name of the sample configuration file containing atomic coordinates
-	  
-	  sample_type: str
-		sample_type can be either 'dump' or 'lammps_data'
-	  
-	  box_dim: list,
-		the orthogonal box dimension along x, y, z, can be found in
-		each ART data directory 1st configuration in the test, e.g.min1000
-		
 	  identical_event_criteria: dict
-	   {"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
+		stage 2 criteria to filter redudantant events, user need to customize 
+		the values of three keys "D_init_fin", "E_init_fin", "E_init_sad"
+		these value can be different for different type of samples. 
+		A good starting point for metallic materials, e.g. 
+		{"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
+		this means that event pair is redundant if
+		abs(D(fin - init)_1-D(fin-init)_2) < 0.1 (A)
+		AND abs(E(fin-init)_1-E(fin-init))_2 < 0.005 (eV)
+		AND abs(E(sad-init)_1-E(sad-init))_2 < 0.01 (eV)
 	  
 	  re_calc: boolean
-		True or False
+	    default False
+		decide whether to override prior existing calculations, True or False
+		if the user only want to re-do calculation for a single calculation,
+		then he can either
+		1) modify the re_calc to be True in input SETTINGS file, then 
+		use this input file for once and then change it back to be False
+		or
+		2) add --re_calc argument when using art_data command line tool
 	  
-	  cut_off: cut_off distance for different atom type pair
-		eg. {str((1,1)):3.7,str((1,2)):3.7,str((2,2)):3.7}
+	  cut_off: dict
+		cut_off distance for different atom type pair when determining the nearest neighbor
+		eg. {str((1,1)):3.7,str((1,2)):3.2,str((2,2)):3.5}
 		means atom type 1 and type 1 cut off distance is 3.7 A
+		atom type 1 and type 2 cut off distance is 3.2 A
+		atom type 2 and type 2 cut off distance is 3.5 A
 		
-	  num_of_proc" number of processors used to run jobs
-	    default, max number of cores, mp.cpu_count()
+	  num_of_proc: integer
+		number of processors used to run a task
+	    default, max number of cores, mp.cpu_count()		
 	  
-	  re_calc: whether to re-do the calculation and overide,
-		default False
-	  
-	  atom_list: None or local
+	  atom_list: None or 'local'
+	    default None
 		if None, calculate all atoms in the configuration
-		if local, calculate the local atoms
-		e.g. [1,2,3,4,5]
+		if local, calculate the local atoms, there must be a file called local_atoms_index.json
+		existing for each event, this local_atoms_index.json is generated automatically
+		by the machine learning outlier detection of local atoms.
 	
-	  # for the outlier detection
+	  # keys below are used for the machine learning outlier detection of local atoms
+	  
 	  model: sklearn machine learning model used to do outlier detection
 		default "LinearSVR"
 	  
 	  feature: features used as input
-		default "displacement"
+		default "displacement", feature used for outlier detection of local atoms
 	  
 	  target: targeted properties as model output
-		default "shear_strain"
+		default "shear_strain", target used for outlier detection of local atoms
 	  
-	  residual_threshold: list of relative residual threshold candidates to determine the best residual threshold
+	  residual_threshold: list of relative residual threshold candidates 
+	    to determine the best residual threshold
 	    default, np.arange(0.01, 1.0, 0.01).tolist()
 	  
-	  final_residual_threshold: float, relative residual threshold used to determine the local atoms index
-	   default, 0.54
+	  final_residual_threshold: float,
+	    relative residual threshold used to determine the local atoms index
+	    default, 0.54.  This value will be obtained after doing the
+	    relative residual threshold parameter sweep. 
+	  
+	  critical_local_atoms_slope: float
+	    the critical slope in the double slope stopping convergence criteria 
+	    when plotting local atoms vs relative residual threshold. 
+	    currently, default -15.  User need to customize this value for their system
 	
-	  # for voronoi analysis
-	  voro_cut_off: float, cut_off to determine the nearest neighbors in voronoi analysis
-	  a single value, should be max of the cut-off for different atom types, 3.7
+	  # keys below are for voronoi analysis
 	  
+	  voro_cut_off: float, 
+	    cut_off to determine the nearest neighbors in voronoi analysis
+	    a single float value, should be max of the cut-off for different atom types, e.g.3.7
+	    ensure that this cut_off value will contain all atoms that could possibly form the voronoi
+	    polyhedron, check the ovito radial distribution function of current sample
+	    to get a feeling of how much a proper value would be. 
 	  
-	  box_range: the simulation box range in x,y ,z direction
-	    e.g. [l_range, l_range, l_range], where l_range = [0.299875, 32.130125]
-	    can be found from each ART data directory, e.g. 1st configuration in the test, e.g.min1000
-	  
-	  periodic: list of perioidic condition in x,y,z
+	  periodic: list of 3 Boolean elements
+		specify the perioidic condition in x,y,z direction
 	    for 3D periodic boundary condition, using [True, True, True]
 	"""
 
@@ -108,99 +153,254 @@ def print_desc_help():
 	"""
 	print \
 	"""
-	This art_data command line tool are expected to perform the following tasks:
-	running lammps and ART simulations to generate sample for ART and ART data of the sample,
-	post-processing of ART data in a user workflow in parallel.	
+	This art_data command line tool is expected to perform the following tasks:
 	
-	If only a subsection of the MD sample are interested (e.g. grain boundary atoms), 
-	the whole MD sample are still used by ART as the configuration sample file to ensure
-	that the initial minimized MD sample configuration does not deviates from the ART 
-	initial minimized configuration too much so that we probe the PEL of the initial MD sample.
-	In this case, user need to create a file called interested_atom_list.json under path_to_data_dir
-	that contains a list, whose elements are all interested central atoms in grain boundary.
-	If this file not exists, central atoms list will be the list of all atoms in whole sample
-	unless we want to perturb less central atoms (as specified in --example n_tests) than all atoms in the whole sample.
+	1) automating the process of running ART simulations in parallel 
+	to generate ART data (tens of GBs) of the molecular dynamics created configuration sample
 	
-	It is suggested to run a few set of ART data with different paramters to 
-	ensure post-filtering activation energy distribution indeed converge by a
-	statistical test, such as the t test implemented by --ttest. This ttest argument 
-	will need two path arguments that point to two data directories to ensure that
-	the average of activation energy and relaxation energy indeed converges.
-	
-	The post-processing of ART_data needs an input file to set up the settings to run the following tasks.
-	The number of processors that will be used will be specified preferaly
-	in the input file, if this information does not exists, it will use
-	the setting by the command line argument -np
-	
-	For test whose test_id = 1, the test directory naming test1 or 1 in each ART data 
-	directory will be searched.
-	
-	To run the following tasks, an input file to set up SETTINGS are needed
-	
-	'art_data -s SETTINGS' (where SETTINGS is the input file name or full path to input file name)
-	
-	Example 'art_data' JSON input files can be output by the
-	  'art_data --example' options:
+	2) automating various post-processing tasks of ART data in a user workflow in parallel.
+	including but not limited to: save all most necessary calculations in files, 
+	, extract data for automated pretty plotting, perform correlation analysis between
+	physical quantities.
 		
-		art_data --example n_tests > input.json
-		where n_test specifies the total number of central atom tests
-	Then the user can edit the parameters in the file as needed and 
-	see 'art_data --settings-format' for help.
+	>>> automate running ART in parallel:
+	This package has been written in a general way to be robust to a wide range of
+	homogeneous and heterogenous samples, e.g. crystal, interface, grain boundary,amorphous materials. 
 	
-	running ART:
-	First, user need to specify where to run and store ART_data, this is
-	specified by the path_to_data_dir in the input settings, e.g. input.json file.
-	User can manually modify this path to where they want to put their ART data in.
-	Currently, path_to_input_files are set up to be the same as path_to_data_dir
-	so that all ART input files should be located under path_to_data_dir.
-	To summarize, in the input settings file, user need to update path_to_data_dir
-	(to be the same of path_to_input_files),sample_name, sample_type, box_dim for submitting ART to run.
+	The default setting is that the user are interested in the energy barrier distribution from the whole MD sample.
 	
-	art_data -s SETTINGS --art --run will take the input parameters in SETTINGS
-	such as path_to_input_files, total_energy, box_dim, sample_name, sample_type
-	to automatically set up the input files for running art and running ./mod_bart.sh
-	inside each run_dir. 
+	If user are only interested in the energy barrier distribution from a subsection of the MD sample,
+	(e.g. grain boundary atoms out of a bicrystal sample), user need to create a file
+	called interested_atom_list.json, which contains a list of all interested sub-section
+	atom_ids under the directory path_to_data_dir. path_to_data_dir has been set up by the user in 
+	environment.sh as DATA_DIR.
+	If this interested_atom_list.json file does not exist, central atoms list will be the list of all atoms in whole sample
+	unless we want to perturb less central atoms (as specified in --example n_tests)
+	than all atoms in the whole sample.
 	
-	The name of each run_dir is determined by whether there is 
-	a file inside path_to_data_dir called central_atom_list.json.
-	
-	This file will be generated when running art_data --example ...
-	
-	If this file exists, it will load the list inside the file to be central_atom_list
-	and use each integer element (central_atom id) as the name of each run_dir to create each run_dir. 
-	If this file does not exists, it will load each of all atoms id in 
-	lammps dump or lammps data file and save them as a list to be the central_atom_list.
-	
-	Then ART input files will be modified corresponding to each central_atom id and copied into each run_dir.
-	
-	running ./mod_bart.sh will be then done in parallel with the number of processors specified
-	in the input settings file
+	Notes about why we can not just use the configuration of the subsection:
+	the whole MD configuration sample are still used by ART as the configuration sample file to ensure
+	that the initial minimized MD sample configuration does not deviates from the ART 
+	initial minimized configuration too much so that we are truly probing the Potential Energy Landscape(PEL) 
+	of the initial MD sample.
 	
 	
-	1) filter events and perform activation and relaxation energy convergence tests:
+	>>> Steps to set up running ART in parallel:
 	
-	  Before this operation, the user should have a few set of ART data
-	  available for checking the rough convergence of filtered events and
-	  check the convergence of activation energy and relaxation energy by ttest.
-	  The ART data can be generated by two arguments --art --run option with different input file parameters.
+	Before this, you need to ensure that artn (built with lammps library) is installed correctly
+	(including loading all necessary lammps package before building lammps),
+	and PATH and LD_LIBRARY_PATH has been set up in your current terminal session (
+	the same as when you are building lammps and artn)
+	in order for artn and lammps to find the openmpi, openblas library.
+	This has been documented in great details in the guide to install ART with lammps,
+	which is located in /artn/ART_data_analyzer/readme.txt
+	
+	Please read this ART installation guide carefully since it contains various common reasons
+	user can encounter. 
+	
+	
+	1) modify environment.sh:
+	modify DATA_DIR to your desired directory path to save the ART data,
+	Generally, we do not need to modify other environmental variables,
+	can be the same as default. Current default is that ART_INPUT storing path_to_input_files 
+	are set up to be the same as path_to_data_dir so that all ART input files
+	should be located under path_to_data_dir.
+	
+	The default sample is lammps_data type of sample, whose name must be
+	modified to conf.lammps. This lammps data conf.lammps file can be
+	converted from dump file by Ovito easily.
+	export ART_SAMPLE=conf.lammps
+	export SAMPLE_TYPE=lammps_data
+	
+	Sometimes, if user need to use the dump file sample, they can modify
+	the ART_SAMPLE to the dump file name (e.g.conf.dump),  SAMPLE_TYPE=dump
+	export ART_SAMPLE=conf.dump
+	export SAMPLE_TYPE=dump
+	
+	if necessary modify MY_ART. If you can see this print-out, it also means
+	that you are using art_data command line tool, ART_data_analyzer is in your path.
+	No need to modify
+	
+	2) source environment.sh
+	
+	3) put 4 art input files in path_to_data_dir you just specified in $DATA_DIR
+	
+	They are bart.sh, conf.lammps, in.lammps, potential file. refconfig file will
+	be automatically created based on lammps_data file conf.lammps or lammps dump file
+	conf.dump.  When sample_type is dump, user need to pay attention if the atomic coordinates
+	in lammps dump file is fractional or absolute, now the default is using fractional coordinates.
+	Then user need to convert it to a dump file with fractional coordinates.
+	
+	> bart.sh
+	Users need to be really careful to modify bart.sh to have the correct parameters,
+	it is strongly suggested that user can refer to developers for further questions
+	about a particular parameter if the artn user guide does not provide sufficient information.
+	because bart.sh need tcsh shell instead of bash shell to run,
+	set up environmental variables by setenv (case-sensitive) instead of export.
+	
+	Central_Atom in bart.sh do not need to be modified since art_data will automatically load
+	each central atom in central_atom_list key in input SETTINGS file as Central_Atom
+	
+	a few important parameters to converge to the true saddle point are:
+	Exit_Force_Threshold should be less than 0.1
+	Incremental_Size 0.1, the atom move step size during artn running the saddle state convergence algorithm
+	
+	If the event is a local event, setenv LOCAL_FORCE .true. will invoke
+	local force computation that will improve the computation speed substantially, from tens of times to 100 times.
+	INNER_REGION_RADIUS need to be tested so that the elastically frozon inner regions contains about 800-1000 atoms,
+	this will ensure energy barrier has an accuracy of about 0.01 eV.
+	OUTER_REGION_WIDTH is determined by the forcefield length. 
+	The purpose is to make sure that all atoms in the inner region have the right force applied on them.
+	
+	> in.lammps
+	in.lammps default read lammps_data file conf.lammps by read_data conf.lammps.
+	If the sample is dump file conf.dump, in.lammps need to tricked and tested by lammps to
+	do read_dump XXX. In addition, the potential file name and style need to be specified correctly.
+	
+	> conf.lammps
+	conf.lammps is the lammps data file that can be converted from dump file by Ovito.
+	
+	> potential file
+	potential file need to be present. 
+	It is worthwhile to note that some potential need specific lammps packages when building lammps.
+	Otherwise, in.lammps can not read this potential.
+	
+	4) run the --example command to generate input SETTINGS file
+	As mentioned before, if you are interested in sub-section (grain boundary or interface)
+	of the whole sample,
+	you need to create a file called interested_atom_list.json under path_to_data_dir
+	to specify the interested sub-section. If this file does not pre-exist, --example
+	will automatically generate the file interested_atom_list.json based on
+	all atoms in the whole sample. 
+	
+	e.g. art_data --example 2000 > input_sample_id.json
+	
+	After this command, it will update the ART_running needed keys 
+	(these keys can be checked by art_data --settings-format) in the
+	input_sample_id.json file. 
+	
+	The usage of this input SETTINGS file is
+	'art_data -s SETTINGS' (where SETTINGS is the input file name or full path to input file name)
+	For the example above, SETTINGS is input_sample_id.json
+	
+	User no longer need to modify these ART_running needed keys manually any more.
+	
+	In the command above, 
+	2000 is the number of tests user want to calculate. Each test directory
+	name will be the central atom id. Each test directory may contain multiple events
+	specified by the Max_Number_Events in bart.sh ART input parameters file.
+	
+	If the number of atoms in interested_atom_list.json is less than 2000, 
+	it will just run each of all atoms in interested_atom_list.json as central_atom for each test. 
+	Otherwise, it will randomly select 2000 atoms from interested_atom_list.json as central_atom
+	to calculate. For both cases, after this command, the actual list of central_atoms 
+	to be calculated will be saved in a file called central_atom_list.json, which is created
+	automatically.
+	
+	input_sample_id.json is an example input SETTINGS file name. sample_id
+	is a placeholder that can be something related to the sample,
+	e.g the sample is created under cooling rate 10E10. Then input_10E10.json
+	is a good name.
+	
+	5) run the command: art_data -s input_sample_id.json --art --run
+	where input_sample_id.json is the same file you created in step 4. 
+	
+	It now will ran all tests under the path_to_data_dir in parallel. 
+	The input SETTINGs file input_sample_id.json contains the key num_of_proc,
+	which specify the number of cores to run in parallel. Default using all cores
+	in the local machine. This command will automatically set up the input files 
+	for running art by running ./mod_bart.sh inside each test dir.
+	
+	
+	
+	>>> Steps to set up running ART post-processing in parallel:
+	The previously created input SETTNGs file is needed for post-processing 
+	of ART_data to run the following tasks.
+	
+	Once again, the same as mentioned above, Example 'art_data' JSON input SETTINGS files can be output by the
+	  'art_data --example' options:
+		e.g. art_data --example n_tests > input.json
+		where n_test specifies the total number of tests for each central atom ids
+	
+	However, the user should manually edit the parameters related to ART post-processing 
+	in this input settings file as needed for the following tasks to proceed.
+	
+	Notes about some parameters in input SETTINGs file:
+	
+	list_of_test_id: If the test whose test_id is 1, art_data will search 
+	the test directory naming either test1 or 1 in path_to_data_dir
+	Command line argument override rule:
+	num_of_proc: The number of processors/cores used will be specified preferably
+	in the input file, if this information does not exists in input file, 
+	it will use the value by the command line argument -np;
+	path_to_data_dir: will be specified preferably by the command line argument -p;
+	if this information does not exist, it will use the path_to_data_dir in input file.
+	re_calc: will be specified preferably by the command line argument --re_calc
+	if --re_calc does not exist, it will use the re_calc key value in input file.
+
+	To check the meaning of each key in input file, see 'art_data --settings-format' for help.
+	
+	
+	>>>Post-processing tasks in a user workflow:
+	
+	1) filter events:
+	
+	  Before this operation, the user should have at least one SET of ART data
+	  available (after finishing ART running)
+	  checking the rough convergence of filtered events and
+	  checking the convergence of activation energy and relaxation energy by ttest.
 	  
-	  'art_data -s SETTINGS --filter' 
-	  will perform the task on path_to_data_dir:
-	  it will invoke event_selector.filter_events_all_tests_stage_1 and filter_events_all_tests_stage_2
-	  in and filter events based on the three criteria implemented
-	  with -p or --path option, it will filter events in the path specified
+	  'art_data -s SETTINGS --filter'
+	  will filter all events in tests stored in list_of_test_id under path_to_data_dir 
+	  (-p argument will override the input file SETTINGS)
+	  it will invoke function event_selector.filter_events_all_tests_stage_1
+	  and filter_events_all_tests_stage_2 and filter events based on 
+	  three criteria implemented.
 	  
-	  'art_data -s SETTINGS --eng --calc' will invoke
+	  This step can take a few hours to complete due to expensive event pair comparison in
+	  stage 2. 
+	  
+	  Currently, stage 1 filtering two criteria are based on a single event,
+	  implemented as constant criterias
+	  For a single event, if the saddle state energy is less than any of initial or final state,
+	  this event is not successful. 
+	  E(sad-init) <0 or E(sad - fin) <0,
+	  
+	  For a single event, if both the energy difference AND distance between the final state and initial state 
+	  are small, then the final state is identical to the initial state,
+	  this event is not successful. The criteria value are chosen as:
+	  dE < 0.02 (eV) AND distance < 1
+	  
+	  stage 2 filtering criteria are for comparing event pairs to remove redundant events.
+	  There are 3 threshold values needed to be specified by the user in the
+	  input SETTINGS file's identical_event_criteria key. For example,
+	  "identical_event_criteria key": {"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
+	  User need to customize the threshold values for "D_init_fin", "E_init_fin",
+	  "E_init_sad" for their studied system. 
+	  
+	  These filtering criteria was brought up by Prof Yue Fan at University of Michigan,
+	  proved to be successful in his Paper "How thermally activated deformation starts in metallic glass".
+	  
+	  2) perform activation and relaxation energy convergence tests:
+	  
+	  'art_data -s SETTINGS --eng --calc' will invoke function
 	  event_energy_calculator.energy_calculator_run_all_tests_mp to calculate
 	  the activation energy and relaxation energy for all filtered events in
-	  path_to_data_dir. With -p or --path option, it will calculate eng 
-	  in filter events in the path specified
+	  list_of_test_id under path_to_data_dir.
 	  
-	  'art_data -s SETTINGS --eng --ttest OPTION PATH_1 PATH_2' will invoke
+	  User can choose to run either one SET or a few SET of ART data with different paramters to 
+	  ensure post-filtering activation energy distribution indeed converge by a
+	  statistical test. Currently the statistical tests implemented t test by --ttest argument. 
+	  
+	  --ttest argument will work on the energy data calculated above.
+	  
+	  The current ttest argument has two modes: 
+	  
+	  'art_data -s SETTINGS --eng --ttest OPTION PATH_1 PATH_2' will invoke function
 	  event_energy_calculator.eng_convergence_ttest_ind if OPTION is ind 
 	  or event_energy_calculator.eng_convergence_ttest_rel if OPTION is rel
 	  , where PATH_1 is the path string to the ART data directory 1 and PATH_2
-	  is the path string to the ART data directory 2.	
+	  is the path string to the ART data directory 2.
 	  
 	  'art_data -s SETTINGS --eng --ttest_kfold OPTION k n' will
 	  randomly divide the ART data in path_to_data_dir into k folds for n different times
@@ -209,83 +409,141 @@ def print_desc_help():
 	  User need to test which ttest mode is a good convergence criteria, for example,
 	  2 fold 3 times t tests
 	  
-	  if ART data is not converged, then you can run more ART_data by the following command
+	  >>>if ART data is not converged, then you can run more ART_data by the following command
 	  
 	  art_data -s SETTINGS --art --run_more N_TESTS
-	  this command will update the central_atom_list.json as well.
-	  until you achieve the convergence.
+	  where N_TESTS is the number of tests to be calculated more.
+	  Run more tests until you achieve the convergence.
+	  This command will update the central_atom_list.json as well.
 	  
-	  Eacht time using --art --run_more command, user need to update the
+	  Each time using --art --run_more command, user need to update the
 	  input SETTINGS file 'central_atom_list' and 'list_of_test_id' by
 	  art_data -s SETTINGS --update_input
 	  
+	  After these --run_more and --update_input commands, user need to repeat 
+	  the event filtering, energy calculation and checking the convergence again.
 	  
-	 2) run calculations:
+	  User need to add --re_calc when re-do the event filtering
+	  (Such as "art_data -s SETTINGS --filter --re_calc").
+	  
+	  User need to add --re_calc when re-do the energy calculation 
+	  (Such as "art_data -s SETTINGS --eng --calc --re_calc").
+	  
+	  and then re-do ttest by the same command above 
+	  "art_data -s SETTINGS --eng --ttest_kfold OPTION k n". 
+	  
+	  
+	 3) run calculations and visualizations:
 	 
-	 "art_data -s SETTINGS --strain --calc" will invoke the strain and displacement calculations for
-	 all filtered events and automatically plots results for individual event and statistics
-	 for all events, implemented in calculator.strain_calculator.strain_calculator_run_all_tests_mp
-	 With -p or --path option, it will calculate strain in the data dir specified
+	 "art_data -s SETTINGS --strain --calc" will invoke the strain and displacement calculations
+	 and automatically plots results for individual event and statistics
+	 for all filtered events in tests stored in list_of_test_id, 
+	 implemented in function calculator.strain_calculator.strain_calculator_run_all_tests_mp
 	 
 	 "art_data -s SETTINGS --strain -v" will plot the event level quantities after strain calculation
+	 
 	 "art_data -s input.json --strain --stats" will plot the statists of all events after strain calculation
 	 
-	 3) determine the local atoms in a STZs for each event by a relative
-	 residual threshold
+	 Note: 
+	 In the above commands,
+	 -p or --path option will overide the path_to_data_dir in input files
+	 --re_calc will overide pre-existing calculations and plots
 	 
-	 art_data -s SETTINGS --find_residual will invoke the 
-	 correlation_model.correlation_model.residual_threshold_finder
-	 With -p or --path option, it will find residual in the data dir specified
+	 atomic strain calculation is done by using the algorithm proposed
+	 by Prof Ju Li at MIT:
+	 http://li.mit.edu/A/Graphics/A/annotate_atomic_strain/Doc/main.pdf
 	 
-	 current implemented criteria is to plot the relation between
-	 the average number of local atoms of all filtered events vs the user
-	 chosen relative residual threshold. when it reach convergence as defined by
-	 the double slope criteria, it stops.
+	 4) determine the local atom indexes of each filtered event in list_of_test_id
+	 by a machine learning outlier detection algorithm
 	 
-	 This will determine a reasonable relative residual threshold, e.g. 
-	 0.54 for all events
+	 This algorithm has been tested by Dr Liang Tian to work very well
+	 on metallic glass sample using LinearSVR model between atomic displacement vs shear strain.
 	 
-	 4) obtain the local atom index for all individual events
+	 art_data -s SETTINGS --find_residual will find
+	 the critical relative residual threshold by invoking the function
+	 correlation_model.correlation_model.residual_threshold_finder. 
 	 
-	 art_data -s SETTINGS --find_local_index rel_residual_threshold, where
-	 rel_residual_threshold is the relative residual threshold to find 
-	 the local atoms. 
-	 With -p or --path option, it will find local atom indexes in the data 
-	 dir specified.
+	 This algorithm need a parameter called relative residual threshold to
+	 determine the critical relative residual threshold whether an atom should be called an outlier.
 	 
-	 Use the found relative residual threshold to get all local atoms indexes 
-	 for all filtered events by correlation_model.correlation_model.all_events_local_atoms_finder
+	 The current criteria to determine the critical residual threshold is to 
+	 do a relative residual threshold parameter sweep on their resultant 
+	 average number of local atoms of all filtered events.
+	 The critical relative residual threshold is the relative residual threshold 
+	 when local atoms vs relative residual threshold curve reach convergence, 
+	 where the convergence criteria is defined as double slope stopping criteria
+	 to prevent slope fluctuation and be a more rigourous criteria.
+	 The critical slope could vary for different types of samples.
+	 
+	 User can customize the critical slope by the key critical_local_atoms_slope
+	 in the input SETTINGS file
+	 
+	 A reasonable value of this critical relative residual threshold, is usually 
+	 around e.g. 0.54.
+	 
+	 -p or --path option applied, -np and --re_calc does not apply
+	 
+	 5) find all local atom indexes for each of filtered events
+	 
+	 art_data -s SETTINGS --find_local_index rel_residual_threshold,
+	 will find the local atoms indexes for all filtered events in interested 
+	 tests list_of_test_id, and save them in a file called local_atoms_index.json 
+	 inside each event directory.
+	 
+	 where rel_residual_threshold is the critical relative residual threshold found in step 4. 
+	 
+	 Function used: correlation_model.correlation_model.all_events_local_atoms_finder
+	 
+	 -p/--path, -np, --re_calc option applied	 
 
-	 5) run local calculations:
+	 6) run calculations for local atoms only:
+	 
+	 > atomic strain and displacement:
+	 
 	 art_data -s SETTINGS --local --strain --calc will invoke the strain and displacement
-	 calculations for local atoms
+	 calculations for local atoms only for all filtered events in interested tests stored in list_of_test_id.
+	 
+	 Pre-existing calculations for all atoms strain and displacement will be overwritten
 	 
 	 It will rerun calculator.strain_calculator.strain_calculator_run_all_tests_mp 
 	 with atom_list = 'local',
 	 which will read all local atom indexs saved in local_atoms_index.json
 	 
-	 art_data -s SETTINGS --local --voro --calc will invoke
-	 calculator.voronoi_structural_analysis.run_all_tests_voronoi_calculator
-	 with atom_list ='local' when --local is invoked, 
-	 it will read local_atoms_index.json and calculate local atoms voronoi index 
+	 > voronoi index calculation:
+	 
+	 art_data -s SETTINGS --local --voro --calc will read 
+	 local_atoms_index.json and calculate local atoms voronoi index for all filtered events 
+	 in interested tests list_of_test_id, 
+	 by invoking calculator.voronoi_structural_analysis.run_all_tests_voronoi_calculator
+	 with atom_list ='local' when --local is invoked.
+	 
 	 If local_atoms_index.json not exists, it will calculate all atoms voronoi index
 	 
-	 art_data -s SETTINGS --voro --classify will
-	 Run voronoi_structural_analysis.run_all_tests_voronoi_classifier 
-	 to classify and plot the results in voronoi_index_results.json of each event, 
-	 and calculate and plot the dynamic transition correlation matrix
+	 Note: voronio index calculation is done by using pyvoro package to provide 
+	 a python interface to voro++ C++ library developed by Chris Rycroft at Harvard
+	 "Voro++: A three-dimensional Voronoi cell library in C++"
 	 
+	 > voronoi index classification and visualization:
+	 
+	 art_data -s SETTINGS --voro --classify will classify voronoi index 
+	 and plot the results in voronoi_index_results.json for all filtered events 
+	 in interested tests list_of_test_id, 
+	 and calculate and plot the dynamic transition correlation matrix
+	 by using function voronoi_structural_analysis.run_all_tests_voronoi_classifier
+	 
+	 Note: classification of voronoi indexes can be referred to 
+	 Prof En Ma Nature Material paper "Tuning order in disorder" and 
+	 "Nanometer-scale gradient atomic packing structure surrounding 
+	 soft spots in metallic glasses"
+	 
+	 > statistics of local atoms for all filtered events in list_of_test_id
 	 art_data -s SETTINGS --events_local_atoms will
 	 calculate and plot the statistics of number of local atoms and slope for all filtered events 
 	 in interested tests list_of_test_id
 	 
 	 art_data -s SETTINGS --central_atom_max_disp will
-	 check if the triggered atom is the max displacement atom in all 
+	 check if the triggered central atom is the max displacement atom in all 
 	 filtered events in list_of_test_id
-	 
-	 6) further correlation analysis between local structure and local properties
-	 input file
-	  
 	"""
 def get_central_atom_list(path_to_data_dir, path_to_input_files, sample_name, sample_type, n_tests):
 	path_to_interested_atom_list = os.path.join(path_to_data_dir,"interested_atom_list.json")
@@ -428,6 +686,7 @@ def example_input(n_tests):
 	input['feature'] = "displacement"
 	input['target'] =  "shear_strain"
 	input['residual_threshold'] = np.arange(0.01, 1.0, 0.01).tolist()
+	input['critical_local_atoms_slope'] = -15
 	#input['final_residual_threshold'] = 0.54
 	
 	# for voronoi analysis
@@ -435,7 +694,6 @@ def example_input(n_tests):
 	#l_range = [0.299875, 32.130125]
 	input['box_range'] = l_range
 	input['periodic'] = [True, True, True]
-	
 	return input
 	
 	
