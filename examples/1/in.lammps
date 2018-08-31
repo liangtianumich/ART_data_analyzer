@@ -1,0 +1,12 @@
+clear
+units		metal
+atom_style	atomic
+atom_modify     map array
+dimension	3
+boundary	p p p
+
+# can be customized
+read_data	conf.eam
+# can be read from the current potential fileinside
+pair_style	eam/alloy
+pair_coeff	* * ZrCu.lammps.eam Zr Cu

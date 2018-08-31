@@ -1,0 +1,10 @@
+ min1000             sad1001             min1001                 accepted
+ min1001             sad1002             min1002                 accepted
+ min1002             sad1003             min_push_failed         rejected
+ min1002             sad1004             min_push_failed         rejected
+ min1002             sad1005             min_push_failed         rejected
+ min1002             sad1006             min1006                 accepted
+ min1006             sad1007             min1007                 accepted
+ min1007             sad1008             min1008                 accepted
+ min1008             sad1009             min_push_failed         rejected
+ min1008             sad1010             min1010                 rejected
