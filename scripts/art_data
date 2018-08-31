@@ -327,7 +327,8 @@ def print_desc_help():
 	
 	Notes about some parameters in input SETTINGs file:
 	
-	list_of_test_id: If the test whose test_id is 1, art_data will search 
+	list_of_test_id: a list of interested test ids that will be post-processed
+	If the test whose test_id is 1, art_data will search 
 	the test directory naming either test1 or 1 in path_to_data_dir
 	Command line argument override rule:
 	num_of_proc: The number of processors/cores used will be specified preferably
