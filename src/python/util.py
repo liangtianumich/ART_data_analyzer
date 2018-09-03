@@ -300,7 +300,7 @@ def get_list_of_final_filtered_events_str(path_to_data_dir):
 	after both stage I and stage II three criteria for all tests in list_of_test_id
 	"""
 	all_selected_events = []
-	path_to_final_selected_events = path_to_data_dir + "final_selected_events.json"
+	path_to_final_selected_events = os.path.join(path_to_data_dir,"final_selected_events.json")
 	if os.path.exists(path_to_final_selected_events):
 		final_selected_events = json.load(open(path_to_final_selected_events,'r'))
 		# value = [init_state, sad_state, fin_state]

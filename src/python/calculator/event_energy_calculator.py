@@ -24,7 +24,7 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 		num_of_proc = input_param['num_of_proc']
 		re_calc = input_param["re_calc"]
 	
-	path_to_all_act_relax_eng = path_to_data_dir + "act_relax_eng_filtered_events.json"
+	path_to_all_act_relax_eng = os.path.join(path_to_data_dir,"act_relax_eng_filtered_events.json")
 	
 	if re_calc is False:
 		if os.path.exists(path_to_all_act_relax_eng):
@@ -52,7 +52,7 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	energy_results.describe()
 	
 	# plot the energy distribution
-	path_to_eng_plot = path_to_data_dir + "act_relax_eng_filtered_events.png"
+	path_to_eng_plot = os.path.join(path_to_data_dir, "act_relax_eng_filtered_events.png")
 	
 	plot_act_relax_histogram(path_to_eng_plot, [all_act_eng, all_relax_eng])
 	print "done finding all activation energy and relaxation energy for all filtered events in list_of_test_id"
@@ -73,8 +73,8 @@ def eng_convergence_ttest_ind(path_to_data_dir_1, path_to_data_dir_2, equal_var 
 	return True if two data has identical average
 	return False if two data does not have identical average
 	"""
-	path_to_eng_1 = path_to_data_dir_1 + "act_relax_eng_filtered_events.json"
-	path_to_eng_2 = path_to_data_dir_2 + "act_relax_eng_filtered_events.json"
+	path_to_eng_1 = os.path.join(path_to_data_dir_1,"act_relax_eng_filtered_events.json")
+	path_to_eng_2 = os.path.join(path_to_data_dir_2,"act_relax_eng_filtered_events.json")
 	if os.path.exists(path_to_eng_1) and os.path.exists(path_to_eng_2):
 		eng_data_1 = json.load(open(path_to_eng_1, 'r'))
 		eng_data_2 = json.load(open(path_to_eng_2, 'r'))
@@ -111,8 +111,8 @@ def eng_convergence_ttest_rel(path_to_data_dir_1, path_to_data_dir_2):
 	return True if two subset data has identical average
 	return False if two subset data does not have identical average
 	"""
-	path_to_eng_1 = path_to_data_dir_1 + "act_relax_eng_filtered_events.json"
-	path_to_eng_2 = path_to_data_dir_2 + "act_relax_eng_filtered_events.json"
+	path_to_eng_1 = os.path.join(path_to_data_dir_1,"act_relax_eng_filtered_events.json")
+	path_to_eng_2 = os.path.join(path_to_data_dir_2,"act_relax_eng_filtered_events.json")
 	if os.path.exists(path_to_eng_1) and os.path.exists(path_to_eng_2):
 		eng_data_1 = json.load(open(path_to_eng_1, 'r'))
 		eng_data_2 = json.load(open(path_to_eng_2, 'r'))
@@ -146,7 +146,7 @@ def eng_k_fold_ttest(path_to_data_dir, k=2, option='ind', n=1):
 	the amount of eng data is convergent
 	"""
 	print "current t test mode is %s"%option
-	path_to_eng = path_to_data_dir + "act_relax_eng_filtered_events.json"
+	path_to_eng = os.path.join(path_to_data_dir,"act_relax_eng_filtered_events.json")
 	
 	if os.path.exists(path_to_eng):
 		eng_data = json.load(open(path_to_eng, 'r'))
