@@ -43,7 +43,7 @@ def filter_events_all_tests_stage_2(path_to_data_dir, input_param, save_results=
 		re_calc = input_param["re_calc"]
 	
 	if re_calc is False:
-		path_to_final_selected_events = path_to_data_dir + "final_selected_events.json"
+		path_to_final_selected_events = os.path.join(path_to_data_dir,"final_selected_events.json")
 		if os.path.exists(path_to_final_selected_events):
 			print "reduadancy has already been checked, total number of final selected events:"
 			final_events= json.load(open(path_to_final_selected_events,'r'))
@@ -79,7 +79,7 @@ def filter_events_all_tests_stage_2(path_to_data_dir, input_param, save_results=
 	
 	#save it into a file called final_selected_events.json
 	if save_results is True:
-		path_to_final_selected_events = path_to_data_dir + "final_selected_events.json"
+		path_to_final_selected_events = os.path.join(path_to_data_dir,"final_selected_events.json")
 		json.dump(final_selected_events, open(path_to_final_selected_events,'w'))
 	
 	print "done redudancy check for all interested tests!"
@@ -171,7 +171,6 @@ def filter_events_all_tests_stage_1(path_to_data_dir, input_param, save_results=
 		except Exception:
 			pass
 	list_of_test_id = existed_tests
-	
 	box_dim = input_param["box_dim"]
 
 	# preferably use the re_calc and num_of_proc in input_param
@@ -231,6 +230,9 @@ def event_selection(path_to_test_dir = None, box_dim = None, save_results=True, 
 			value being a list containing the string of initial state, saddle state
 			final state
 	"""
+	path_to_test_result = path_to_test_dir + "/results"
+	if not os.path.exists(path_to_test_result):
+		os.makedirs(path_to_test_result)
 	path_to_selected_events = path_to_test_dir + "/results/selected_events.json"
 	if re_calc is False:
 		if os.path.exists(path_to_selected_events):

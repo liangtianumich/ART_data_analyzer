@@ -30,7 +30,7 @@ def data_dir_to_test_dir(path_to_data_dir, test_id):
 	"""
 	this function return the path to test dir for test with test_id
 	"""
-	path_to_curr_test = [path_to_data_dir + "test%s"%test_id, path_to_data_dir + "%s"%test_id]
+	path_to_curr_test = [os.path.join(path_to_data_dir, "test%s"%test_id), os.path.join(path_to_data_dir, "%s"%test_id)]
 	if os.path.exists(path_to_curr_test[0]):
 		return path_to_curr_test[0]
 	elif os.path.exists(path_to_curr_test[1]):
