@@ -77,7 +77,7 @@ def set_up_input_files(path_to_data_dir, input_param):
 		data_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim)
 	else:
 		raise Exception('the sample type can be either dump or lammps_data, please select the correct sample!')
-	
+	potential_file = raw_input("Please type the potential file name:")
 	# manual: modify the in.lammps file 1) modify the dump file name of read_dump
 	# 2) modify potential file string
 	
@@ -89,10 +89,11 @@ def set_up_input_files(path_to_data_dir, input_param):
 		# modify the central_atom in bart.sh, with iteration from central_atom_list
 		modify_bart(path_to_input_files, central_atom)
 		# copy all modified files into the path_to_run_dir, mod_bart.sh,
-		src_files = os.listdir(path_to_input_files)
-		for file_name in src_files:
-			if file_name == 'bart.sh' or file_name == "central_atom_list.json" or file_name == "interested_atom_list.json":
-				continue
+		# src_files = os.listdir(path_to_input_files)
+		#for file_name in src_files:
+		for file_name in ['mod_bart.sh','refconfig',input_param['sample_name'],"in.lammps",potential_file]:
+		#if file_name == 'bart.sh' or file_name == "central_atom_list.json" or file_name == "interested_atom_list.json":
+		#	continue
 			full_file_name = os.path.join(path_to_input_files, file_name)
 			if (os.path.isfile(full_file_name)):
 				shutil.copy(full_file_name, path_to_run_dir)
