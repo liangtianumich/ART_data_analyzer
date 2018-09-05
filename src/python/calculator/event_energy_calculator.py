@@ -49,7 +49,7 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	
 	# get statistics
 	energy_results = pd.DataFrame({"act_eng":np.array(all_act_eng),"relax_eng": np.array(all_relax_eng)})
-	energy_results.describe()
+	print energy_results.describe()
 	
 	# plot the energy distribution
 	path_to_eng_plot = os.path.join(path_to_data_dir, "act_relax_eng_filtered_events.png")

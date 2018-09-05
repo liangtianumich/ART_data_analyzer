@@ -75,6 +75,7 @@ def filter_events_all_tests_stage_2(path_to_data_dir, input_param, save_results=
 	removed_index = np.unique(removed_index)
 	# final_selected_events = np.delete(all_selected_events, removed_index).tolist()
 	final_selected_events = [i for j, i in enumerate(all_selected_events) if j not in removed_index]
+	print "total number of selected events before redundacy check:", num_of_selected_events
 	print "total number of final selected events after removing redundacy:", len(final_selected_events)
 	
 	#save it into a file called final_selected_events.json
