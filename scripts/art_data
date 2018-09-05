@@ -424,11 +424,18 @@ def print_desc_help():
 	  After these --run_more and --update_input commands, user need to repeat 
 	  the event filtering, energy calculation and checking the convergence again.
 	  
-	  User need to add --re_calc when re-do the event filtering
+	  If user only run more tests without changing filtering criteria, 
+	  user need to use "art_data -s SETTINGS --filter" to filter new calculated tests.
+	  It will generate accepted_events.json and selected_events.json in each new test directory 
+	  and override final_selected_events.json in path_to_data_directory.
+	  However, user need to add --re_calc argument to make keyword re_calc=True 
+	  when re-do the event filtering with different filtering criteria
 	  (Such as "art_data -s SETTINGS --filter --re_calc").
 	  
 	  User need to add --re_calc when re-do the energy calculation 
 	  (Such as "art_data -s SETTINGS --eng --calc --re_calc").
+	  This will override the "act_relax_eng_filtered_events.json" and 
+	  "act_relax_eng_filtered_events.png" in path_to_data_dir
 	  
 	  and then re-do ttest by the same command above 
 	  "art_data -s SETTINGS --eng --ttest_kfold OPTION k n". 
