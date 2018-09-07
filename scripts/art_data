@@ -79,6 +79,14 @@ def print_input_help():
 		AND abs(E(fin-init)_1-E(fin-init))_2 < 0.005 (eV)
 		AND abs(E(sad-init)_1-E(sad-init))_2 < 0.01 (eV)
 	  
+	  significance:
+		the significance level of we can not reject that mean are equal
+		during two sample student t test
+		Significance Level: alpha
+		Critical Region: Reject the hypothesis that the two means are equal if
+		|T|> t1-alpha/2,v
+		where t1-alpha/2,v is the critical value of the t distribution with v degrees of freedom
+	  
 	  re_calc: boolean
 	    default False
 		decide whether to override prior existing calculations, True or False
@@ -393,7 +401,14 @@ def print_desc_help():
 	  ensure post-filtering activation energy distribution indeed converge by a
 	  statistical test. Currently the statistical tests implemented t test by --ttest argument. 
 	  
-	  --ttest argument will work on the energy data calculated above.
+	  --ttest argument will work on the energy data calculated above. ttest
+	  need the significance key word value in input SETTINGS file, if not in
+	  input SETTINGS file, use default value 0.05
+	  
+	  Reject the hypothesis that the two means are equal if
+	  |T|> t1-alpha/2,v, where t1-alpha/2,v is the critical value of 
+	  the t distribution with v degrees of freedom, significance Level alpha
+	  
 	  
 	  The current ttest argument has two modes: 
 	  
@@ -682,6 +697,8 @@ def example_input(n_tests):
 	input["list_of_test_id"] = input["central_atom_list"]	
 	input['box_dim'] = [l_range[0][1] - l_range[0][0], l_range[1][1] - l_range[1][0], l_range[2][1] - l_range[2][0]]
 	input['total_energy'] = 0.0
+	# for significance level of student t test, check --settings-format
+	input['significance'] = 0.05
 	
 	input['cut_off'] = {str((1,1)):3.7,str((1,2)):3.7,str((2,2)):3.7}
 	input['identical_event_criteria'] = {"D_init_fin": 0.1, "E_init_fin": 0.005, "E_init_sad": 0.01}
@@ -869,7 +886,11 @@ if __name__ == "__main__":
 			print "t test mode is", args.ttest_kfold[0]
 			print "random %s fold number"%args.ttest_kfold[1]
 			print "split data into k fold into %s times"%args.ttest_kfold[2]
-			is_converged = eng_k_fold_ttest(path_to_data_dir, int(args.ttest_kfold[1]), args.ttest_kfold[0], int(args.ttest_kfold[2]))
+			try:
+				is_converged = eng_k_fold_ttest(path_to_data_dir, input_param['significance'], int(args.ttest_kfold[1]), args.ttest_kfold[0], int(args.ttest_kfold[2]))
+			except KeyError:
+				is_converged = eng_k_fold_ttest(path_to_data_dir, k=int(args.ttest_kfold[1]), option=args.ttest_kfold[0], n=int(args.ttest_kfold[2]))
+
 			if is_converged == True:
 				print "activation and relaxation energy converged"
 			else:
@@ -883,14 +904,20 @@ if __name__ == "__main__":
 			print "path to ART data dir 2:", args.ttest[2]
 			if args.ttest[0] == 'ind':
 				# ttest_ind has equal_var = False option, default True
-				is_converged = eng_convergence_ttest_ind(args.ttest[1], args.ttest[2])
+				try:
+					is_converged = eng_convergence_ttest_ind(args.ttest[1], args.ttest[2],input_param['significance'])
+				except KeyError:
+					is_converged = eng_convergence_ttest_ind(args.ttest[1], args.ttest[2])
 			elif args.ttest[0] == 'rel':
-				is_converged = eng_convergence_ttest_rel(args.ttest[1], args.ttest[2])
+				try:
+					is_converged = eng_convergence_ttest_rel(args.ttest[1], args.ttest[2],input_param['significance'])
+				except KeyError:
+					is_converged = eng_convergence_ttest_rel(args.ttest[1], args.ttest[2])
 			if is_converged == True:
 				print "activation and relaxation energy converged"
 			else:
 				print "activation and relaxation energy did NOT converged!"
-			exit()	
+			exit()
 	
 	if args.strain:
 		if args.local:

@@ -63,13 +63,17 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	return [all_act_eng, all_relax_eng]
 
 
-def eng_convergence_ttest_ind(path_to_data_dir_1, path_to_data_dir_2, equal_var = True):
+def eng_convergence_ttest_ind(path_to_data_dir_1, path_to_data_dir_2, significance = 0.05, equal_var = True):
 	
 	"""
 	this function takes the act_eng and relax_eng data from two independent samples in 
 	two ART data directories with different input parameters, perform the two independent sample t tests
 	to check if the mean of samples are identical to confirm if the act and relax energy distributions converge
 	
+	Significance Level: alpha
+		Critical Region: Reject the hypothesis that the two means are equal if
+		|T|> t1-alpha/2,v
+		where t1-alpha/2,v is the critical value of the t distribution with v degrees of freedom
 	return True if two data has identical average
 	return False if two data does not have identical average
 	"""
@@ -89,17 +93,17 @@ def eng_convergence_ttest_ind(path_to_data_dir_1, path_to_data_dir_2, equal_var 
 	for event in eng_data_2:
 		act_eng_2.append(event[1])
 		relax_eng_2.append(event[2])
-	
+	print "current significance level is", significance
 	t_1, prob_1 = ttest_ind(np.array(act_eng_1), np.array(act_eng_2), equal_var = equal_var)
 	
 	t_2, prob_2 = ttest_ind(np.array(relax_eng_1), np.array(relax_eng_2), equal_var = equal_var)
 	
-	if prob_1 < 0.05 and prob_2 < 0.05:
+	if prob_1 > significance and prob_2 > significance:
 		return True
 	else:
 		return False
 
-def eng_convergence_ttest_rel(path_to_data_dir_1, path_to_data_dir_2):
+def eng_convergence_ttest_rel(path_to_data_dir_1, path_to_data_dir_2, significance = 0.05):
 	
 	"""
 	this function takes the act_eng and relax_eng data from two related samples 
@@ -127,23 +131,28 @@ def eng_convergence_ttest_rel(path_to_data_dir_1, path_to_data_dir_2):
 	for event in eng_data_2:
 		act_eng_2.append(event[1])
 		relax_eng_2.append(event[2])
-	
+	print "current significance level is", significance
 	t_1, prob_1 = ttest_rel(np.array(act_eng_1), np.array(act_eng_2))
 	
 	t_2, prob_2 = ttest_rel(np.array(relax_eng_1), np.array(relax_eng_2))
 	
-	if prob_1 < 0.05 and prob_2 < 0.05:
+	if prob_1 > significance and prob_2 > significance:
 		return True
 	else:
 		return False
 
-def eng_k_fold_ttest(path_to_data_dir, k=2, option='ind', n=1):
+def eng_k_fold_ttest(path_to_data_dir, significance = 0.05, k=2, option='ind', n=1):
 	"""
 	A more rigorous way to check convergence
 	this function randomly divides the data in path_to_data_dir into k_folds in n times,
 	for each time, do t test on each fold-pair of the k folder,
 	if all t tests satisfied the criteria, then we can confidently say that
 	the amount of eng data is convergent
+	
+	Significance Level: alpha
+		Critical Region: Reject the hypothesis that the two means are equal if
+		|T|> t1-alpha/2,v
+		where t1-alpha/2,v is the critical value of the t distribution with v degrees of freedom
 	"""
 	print "current t test mode is %s"%option
 	path_to_eng = os.path.join(path_to_data_dir,"act_relax_eng_filtered_events.json")
@@ -160,23 +169,22 @@ def eng_k_fold_ttest(path_to_data_dir, k=2, option='ind', n=1):
 	
 	# or we can kfold act_eng and relax_eng independently by KFold_n_times(X,k,n)
 	kfolds_n_act,kfolds_n_relax = KFold_xy_n_times(act_eng,relax_eng,k,n)
-	
 	for i in range(n):
 		kfolds_act, kfolds_relax = kfolds_n_act[i],kfolds_n_relax[i]
 		print "k fold %s times"%(i+1)
-		is_act, is_relax = ttest_kfold(kfolds_act, option=option),ttest_kfold(kfolds_relax, option=option)
+		is_act, is_relax = ttest_kfold(kfolds_act, significance=significance, option=option),ttest_kfold(kfolds_relax, significance=significance, option=option)
 		if is_act == False or is_relax == False:
 			return False
 	return True
-			
 
-def ttest_kfold(kfolds, option='ind'):
+def ttest_kfold(kfolds, significance=0.05, option='ind'):
+	print "current significance level is", significance
 	if option == 'ind':
-		return ttest_ind_kfold(kfolds)
+		return ttest_ind_kfold(kfolds,significance=significance)
 	elif option == 'rel':
-		return ttest_rel_kfold(kfolds)
+		return ttest_rel_kfold(kfolds,significance=significance)
 			
-def ttest_ind_kfold(kfolds):
+def ttest_ind_kfold(kfolds, significance=0.05):
 	"""
 	this function perform t test on all possible fold pairs, return True
 	if all fold pairs are convergent, return False otherwise
@@ -186,11 +194,11 @@ def ttest_ind_kfold(kfolds):
 	for i in range(k):
 		for j in range(i+1,k):
 			t_1, prob_1 = ttest_ind(np.array(kfolds[i]), np.array(kfolds[j]))
-			if prob_1 > 0.05:
+			if prob_1 < significance:
 				return False
 	return True
 
-def ttest_rel_kfold(kfolds):
+def ttest_rel_kfold(kfolds, significance=0.05):
 	"""
 	this function perform t test on all possible fold pairs, return True
 	if all fold pairs are convergent, return False otherwise
@@ -200,7 +208,7 @@ def ttest_rel_kfold(kfolds):
 	for i in range(k):
 		for j in range(i+1,k):
 			t_1, prob_1 = ttest_rel(np.array(kfolds[i]), np.array(kfolds[j]))
-			if prob_1 > 0.05:
+			if prob_1 < significance:
 				return False
 	return True
 	
