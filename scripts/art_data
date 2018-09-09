@@ -59,7 +59,7 @@ def print_input_help():
 	
 	  central_atom_list: list
 		a list of central atoms id used to create all test directories,
-		default, created based on randomly select user specified number of atoms 
+		default, created based on randomly select user specified number of atoms
 		out of total interested atoms (Here total interested atoms can be a subset of all atoms in whole sample). 
 		A list of selected atoms' atom id will be central_atom_list
 	  
@@ -103,6 +103,8 @@ def print_input_help():
 		means atom type 1 and type 1 cut off distance is 3.7 A
 		atom type 1 and type 2 cut off distance is 3.2 A
 		atom type 2 and type 2 cut off distance is 3.5 A
+		The cut-off values for different atom type pairs can be obtained from
+		Ovito by selected particle type, delete selected particles, coordination analysis.
 		
 	  num_of_proc: integer
 		number of processors used to run a task
@@ -312,6 +314,10 @@ def print_desc_help():
 	
 	5) run the command: art_data -s input_sample_id.json --art --run
 	where input_sample_id.json is the same file you created in step 4. 
+	After user type this command, it will prompt in command line to type
+	the potential file name (located inside the path_to_input_files).
+	If user type the wrong potential file name, it will not copy this potential file
+	and running art will give error.
 	
 	It now will ran all tests under the path_to_data_dir in parallel. 
 	The input SETTINGs file input_sample_id.json contains the key num_of_proc,
@@ -399,7 +405,16 @@ def print_desc_help():
 	  
 	  User can choose to run either one SET or a few SET of ART data with different paramters to 
 	  ensure post-filtering activation energy distribution indeed converge by a
-	  statistical test. Currently the statistical tests implemented t test by --ttest argument. 
+	  statistical test. 
+	  
+	  Currently, the statistical tests can be either by checking the mean of activation energy
+	  diff by less than 0.01 eV (since the artn local force evaluation on inner region atoms
+	  from 800 to 1500 atoms has a barrier precision ~0.01 eV)
+	  as we calculate more tests
+	  or 
+	  by implementing t test by --ttest argument.
+	  --ttest should be much more rigorous convergence criteria. User may need to
+	  calculate much more tests if using ttest convergence criteria
 	  
 	  --ttest argument will work on the energy data calculated above. ttest
 	  need the significance key word value in input SETTINGS file, if not in
