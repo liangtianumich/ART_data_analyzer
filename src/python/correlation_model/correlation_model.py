@@ -13,9 +13,58 @@ from sklearn import linear_model
 from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import NearestNeighbors
-from visualizer.general_visualizer import plot_histogram_3
+from visualizer.general_visualizer import plot_histogram_3, plot_2d
 from util import operation_on_events, Configuration, state_energy_barrier, data_dir_to_test_dir
 
+def eng_max_disp(path_to_data_dir, input_param):
+	"""
+	plot the max displacement vs activiation energy or relaxation energy 
+	of all filtered events
+	"""
+	path_to_act_eng_disp = os.path.join(path_to_data_dir, "act_eng_max_disp.png")
+	path_to_relax_eng_disp = os.path.join(path_to_data_dir, "relax_eng_max_disp.png")
+	
+	path_to_all_act_relax_eng = os.path.join(path_to_data_dir,"act_relax_eng_filtered_events.json")
+	if os.path.exists(path_to_all_act_relax_eng):
+		saved_results = json.load(open(path_to_all_act_relax_eng, 'r'))
+		all_max_disp_A, all_max_disp_B, all_act_eng, all_relax_eng = [],[], [], []
+		for result in saved_results:
+			event_state = result[0]
+			curr_max_disp = event_max_disp(path_to_data_dir, event_state)
+			all_max_disp_A.append(curr_max_disp[0])
+			all_max_disp_B.append(curr_max_disp[1])
+			all_act_eng.append(result[1])
+			all_relax_eng.append(result[2])
+		plot_2d(path_to_act_eng_disp, all_max_disp_A, all_act_eng, "Max disp /A", "Activation energy /eV")
+		plot_2d(path_to_relax_eng_disp, all_max_disp_B, all_relax_eng, "Max disp /A", "Relaxation energy /eV")
+	else:
+		raise Exception("act_relax_eng_filtered_events.json file does not exist, please do art_data -s SETTINGS --eng --calc first")
+
+def event_max_disp(path_to_data_dir, event_state):
+	"""
+	get the maximum displacement values for init to sad, sad to fin for
+	a single event in data directory
+	"""
+	path_to_test_dir = os.path.join(path_to_data_dir, event_state[0])
+	init, sad, fin = event_state[1][0],event_state[1][1],event_state[1][2]
+	path_to_event = path_to_test_dir + "/results/event_" + init + "_" + sad + "_" + fin
+	
+	max_disp = []
+	path_to_init_sad = path_to_event + "/init_sad"
+	path_to_displacement_A = path_to_init_sad + "/displacement_results_dict.pkl"
+	if os.path.exists(path_to_displacement_A):
+		event_disp_A = pickle.load(open(path_to_displacement_A,'r'))
+		max_disp_A = max(event_disp_A.values())
+		max_disp.append(max_disp_A)
+	
+	path_to_sad_fin = path_to_event + "/sad_fin"
+	path_to_displacement_B = path_to_sad_fin + "/displacement_results_dict.pkl"
+	if os.path.exists(path_to_displacement_B):
+		event_disp_B = pickle.load(open(path_to_displacement_B,'r'))
+		max_disp_B = max(event_disp_B.values())
+		max_disp.append(max_disp_B)
+	return max_disp
+	
 def residual_threshold_finder(path_to_data_dir, input_param):
 	"""
 	this function did a parameter sweep on relative residual threshold

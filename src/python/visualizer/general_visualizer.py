@@ -10,6 +10,22 @@ import matplotlib.cm as cmx
 from mpl_toolkits.mplot3d import Axes3D
 from util import Atom
 
+def plot_2d(path_to_dir, x, y, x_label, y_label):
+	
+	"""
+	this function plot a 2d plot for displacement and strain for a single event
+	
+	displacement:list
+	
+	strain:list
+	"""
+	plt.figure()
+	plt.plot(x, y,'ro',markersize=1.5)
+	plt.xlabel(x_label,fontsize=20)
+	plt.ylabel(y_label,fontsize=20)
+	plt.savefig(path_to_dir)
+	plt.close()
+	
 def plot_histogram_3(path_to_image, x):
 	"""
 	path to image now point to the event dir
