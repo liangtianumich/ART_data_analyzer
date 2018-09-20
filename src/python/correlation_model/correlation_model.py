@@ -16,6 +16,19 @@ from sklearn.neighbors import NearestNeighbors
 from visualizer.general_visualizer import plot_histogram_3, plot_2d
 from util import operation_on_events, Configuration, state_energy_barrier, data_dir_to_test_dir
 
+def shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param, save_results=True):
+	"""
+	shear_strain_vol_strain_cluster_init_sad.json
+	shear_strain_vol_strain_cluster_init_fin.json
+	shear_strain_vol_strain_cluster_sad_fin.json
+	"""
+	#
+	path_to_shear_vol_strain_init_sad = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_sad_all_events.png")
+	path_to_shear_vol_strain_init_fin = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_fin_all_events.png")
+	path_to_shear_vol_strain_sad_fin = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_sad_fin_all_events.png")
+	
+	
+	
 def eng_max_disp(path_to_data_dir, input_param):
 	"""
 	plot the max displacement vs activiation energy or relaxation energy 

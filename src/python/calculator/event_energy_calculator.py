@@ -17,9 +17,7 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	this function extract the activation energy and relaxation energy
 	for all final filtered events in all tests in list_of_test_id, summary of their statistics
 	, for the purpose of checking the convergence of their distribution
-	"""
-	list_of_test_id = input_param['list_of_test_id']
-	
+	"""	
 	if 'num_of_proc' in input_param and 're_calc' in input_param:
 		num_of_proc = input_param['num_of_proc']
 		re_calc = input_param["re_calc"]

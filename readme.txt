@@ -9,6 +9,9 @@ This python package is originally developed by Dr Lin Li group at University of 
 Lead developer: Dr Liang Tian.
 Contact: liangtianisu@gmail.com
 
+License:
+This package is under GNU General Public License v3.0
+
 Acknowledgement:
 
 The author acknowledge many valuable discussions with Prof Mousseau and the financial support of U.S. DOE grant DOE: DE-SC0016164
@@ -31,8 +34,9 @@ Using the ART_data_analyzer package and its command line tool art_data need to c
 This python package depends on some python packages such as numpy, pandas, matplotlib, python-tk,scipy, mpl_toolkits, scikit-learn, pathos, pyvoro. 
 First, user need to set up the python development environment for your OS, such as install python setuptools to get easy_install, pip. pip is the best way to handle additional python packages installation.
 
-For Mac or Linux Ubuntu OS,
+For Linux Ubuntu OS,
 Install easy_install and pip by >>> sudo apt-get install python-pip python-dev build-essential
+For Mac, install pip by >>> sudo easy_install pip
 
 install previous mentioned python package by >>> python -m pip install --user numpy scipy matplotlib jupyter pandas scikit-learn pyvoro pathos. 
 
@@ -89,6 +93,24 @@ input_sample_id.json is an example input SETTINGS file
 automate running ART in parallel:
 	art_data -s input_sample_id.json --art --run
 
+ART simulations are performed under constant volume so that the simulation box size does not change.
+
+New features of artn:
+1) local force evaluation:
+LOCAL_FORCE .true.
+will only perform the deformation and force evaluation inside an inner spherical region defined by INNER_REGION_RADIUS
+with a shell of atoms surrounding this region to ensure forces acting on inner region are correct
+Each configuration will be fully relaxed before writing into the configuration file to avoid building long range strain effect
+
+2) remove the configuration files of rejected events to save disk space:
+WRITE_REJECTED_EVENT:
+default .true., all events configurations files are saved,
+Max_num_events parameter now in bart.sh is total number of attempted events. 
+ .false. it will overwrite the sad and min files for rejected events so that only saving the configuration files of accepted events.
+Max_num_events parameter now in bart.sh is total number of accepted events. 
+events.list file will always contain all accepted/rejected events so that you can see event history.
+
+
 Post-processing tasks in a user workflow:
 1)filtering events:
 	art_data -s input_sample_id.json --filter
@@ -127,7 +149,7 @@ The long term goal of this ART_data_analyzer package would be integrated into a 
 
 
 Scientific objective:
-The overall goal is to correlate the local change in atomic structures with the change of activation energy by sampling sufficient number of local potential energy basins to reproduce the correct statistical distributions as training data for the machine learning model to train correlation models, by triggering various local events. By forcing to trigger a group of atoms surrounding central atom initially away from their minimum (1st step of ART perform minimization, after minimization, the configuration should be very close to the lammps input configuration to guarantee we are getting the activation energy barrier of initial lammps input sample), the ART algorithm will climb the potential energy landscape to its nearest saddle state and check how many atoms are rearranged during this trigger to estimate the number of involved atoms/size of STZ during the activation of a potential hypothetical STZ (since we only call it STZ when it actually rearrange). Each triggering event corresponds to a potential individual STZ being activated to rearrange their atoms. Each activation of individual STZ is corresponding to a local beta relaxation. With these information probed by ART, thinking reversely, the physics is that the thermal energy kT relative to STZ activation energy distribution will determine the percentage of STZs will be activated. The percolation of activated STZs will transfer from local atomic rearrangement events, i.e. activation of individual STZs, into a global atomic rearrangement event associated with/characterized by a large global potential energy decrease, alpha relaxation, finish the glass transition into their equilibrium liquid-like phase as we increase the thermal energy kT to activate more STZs. The critical temperature is the glass transition temperature. The deformation of glass is affected by this process since the external stress can not only directly change the rate of STZ activation in STZ dynamics, but also stress should be able to change the activation energy distribution probed by ART by changing the atomic structures, which is usually not incorporated. It is possible that stress may not change the average activation energy barrier though it can distort the potential energy landscape. It is also interesting to see softness (average rearrangement displacement magnitude of local involved atoms in STZs or nonaffine displacement D2min) correlated with local shear modulus, and activation energy.
+The overall goal is to correlate the local change in atomic structures with the change of local properties (e.g. activation energy) by sampling sufficient number of local potential energy basins to reproduce the correct statistical distributions as training data for the machine learning model to train correlation models, by triggering various local events. By forcing to trigger a group of atoms surrounding central atom initially away from their minimum (1st step of ART perform minimization, after minimization, the configuration should be very close to the lammps input configuration to guarantee we are getting the activation energy barrier of initial lammps input sample), the ARTn 1st order saddle point convergence algorithm will climb the potential energy landscape to its nearest saddle state. During the initial to saddle process, the machine learning outlier detection algorithm will check how many atoms are inelastically rearranged during this trigger to estimate the number of involved atom(size of flow defect) during the activation of a potential hypothetical STZ (since we only call it STZ when it actually rearrange). Each triggering event corresponds to a potential individual STZ being activated to rearrange their atoms. Each activation of individual STZ is corresponding to a local beta relaxation. With these information probed by ART, thinking reversely, the physics is that the thermal energy kT relative to STZ activation energy distribution will determine the percentage of STZs will be activated. The percolation of activated STZs will transfer from local atomic rearrangement events, i.e. activation of individual STZs, into a global atomic rearrangement event associated with/characterized by a large global potential energy decrease, i.e. alpha relaxation, to finish the glass transition into their equilibrium liquid-like phase as we increase the thermal energy kT to activate more STZs. The critical temperature is the glass transition temperature. The deformation of glass is affected by this process since the external stress can not only directly change the rate of STZ activation in STZ dynamics, but also stress should be able to change the activation energy distribution probed by ART by changing the atomic structures, which is usually not incorporated. It is possible that stress may not change the average activation energy barrier though it can distort the potential energy landscape. It is also interesting to see softness (average rearrangement displacement magnitude of local involved atoms in STZs or nonaffine displacement D2min) correlated with local shear modulus, and activation energy.
 
 
 
