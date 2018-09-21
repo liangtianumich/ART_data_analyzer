@@ -98,8 +98,8 @@ def read_box_range_from_lammps_data(path_to_file):
 		[[x_low,x_high],[y_low, y_high],[z_low,z_high]]
 	
 	"""
-	data = pd.read_csv(path_to_file,sep='\s+', header=None)
-	result = (data.iloc[3:6, 0:2]).astype('float')
+	data = pd.read_csv(path_to_file,sep='\s+')
+	result = (data.iloc[2:5, 0:2]).astype('float')
 	return [[result.iloc[0,0],result.iloc[0,1]],[result.iloc[1,0],result.iloc[1,1]],[result.iloc[2,0],result.iloc[2,1]]]
 
 def read_box_range_from_dump(path_to_file):
