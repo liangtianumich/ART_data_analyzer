@@ -36,7 +36,7 @@ def data_dir_to_test_dir(path_to_data_dir, test_id):
 	elif os.path.exists(path_to_curr_test[1]):
 		return path_to_curr_test[1]
 	else:
-		raise Exception("each test dir in %s should be named either test_1 or 1 for test_id = 1"%path_to_data_dir)
+		raise Exception("each test dir in %s should be named either test1 or 1 for test_id = 1"%path_to_data_dir)
 	
 	
 class Atom(object):
@@ -465,8 +465,9 @@ def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_pro
 	"""
 	test_id = ["test%s"%i for i in list_of_test_id]
 	pool = Pool(processes = num_of_proc)
-	path_to_final_selected_events = path_to_data_dir + "final_selected_events.json"
+	path_to_final_selected_events = os.path.join(path_to_data_dir, "final_selected_events.json")
 	if os.path.exists(path_to_final_selected_events):
+		print "reading final_selected_events.json"
 		final_selected_events = json.load(open(path_to_final_selected_events,"r"))
 		final_interested_events = []
 		for event in final_selected_events:

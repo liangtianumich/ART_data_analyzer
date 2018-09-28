@@ -95,6 +95,12 @@ automate running ART in parallel:
 
 ART simulations are performed under constant volume so that the simulation box size does not change.
 
+For ubuntu machine with small RAM (e.g.8GB), when running art in parallel in ubuntu box, some I/O error issues could occur during the writing of a single large configuration file (>20MB, >300,000 atoms) to obtain an incomplete/corrupted configuration file due to the insufficient RAM memory and swap space. 
+It is suggested that the user should allow sufficient swap space according to their RAM as described in this article: https://www.cyberciti.biz/tips/linux-swap-space.html
+For further information on swap (swap file or swap partition) in Ubuntu and how to increase the swap file size, check the following two articles:
+https://help.ubuntu.com/community/SwapFaq
+https://askubuntu.com/questions/927854/how-do-i-increase-the-size-of-swapfile-without-removing-it-in-the-terminal/927870
+
 New features of artn:
 1) local force evaluation:
 LOCAL_FORCE .true.
