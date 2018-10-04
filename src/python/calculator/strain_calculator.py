@@ -91,6 +91,17 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 			vol_ave_3.append(init_fin["ave"][0])
 			vol_std_3.append(init_fin["std"][0])
 			vol_max_3.append(init_fin["max"][0])
+	print "init to sad: average of all filtered events average_shear_strain", np.mean(shear_ave)
+	print "sad to fin: average of all filtered events average_shear_strain", np.mean(shear_ave_2)
+	print "init to fin: average of all filtered events average_shear_strain", np.mean(shear_ave_3)
+	
+	print "init to sad: average of all filtered events average_volumetric_strain", np.mean(vol_ave)
+	print "sad to fin: average of all filtered events average_volumetric_strain", np.mean(vol_ave_2)
+	print "init to fin: average of all filtered events average_volumetric_strain", np.mean(vol_ave_3)
+	
+	print "init to sad: average of all filtered events average_displacement", np.mean(disp_ave)
+	print "sad to fin: average of all filtered events average_displacement", np.mean(disp_ave_2)
+	print "init to fin: average of all filtered events average_displacement", np.mean(disp_ave_3)
 			
 	pickle.dump({"ave":disp_ave,"std":disp_std,"max":disp_max}, open(path_to_data_dir+"/init_sad_disp_stats.pkl",'w'))
 	pickle.dump({"ave":shear_ave,"std":shear_std,"max":shear_max}, open(path_to_data_dir+"/init_sad_shear_stats.pkl",'w'))

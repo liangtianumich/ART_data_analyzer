@@ -13,6 +13,26 @@ from data_reader import *
 from periodic_kdtree import PeriodicCKDTree
 from functools import wraps
 import time
+import sys
+import contextlib
+
+@contextlib.contextmanager
+def nostdout():
+    save_stdout = sys.stdout
+    sys.stdout = io.BytesIO()
+    yield
+    sys.stdout = save_stdout
+
+def prompt_yes_no():
+	yes = {'yes','y'}
+	no = {'no','n'}
+	choice = raw_input().lower()
+	if choice in yes:
+	   return True
+	elif choice in no:
+	   return False
+	else:
+	   sys.stdout.write("Please respond with 'yes' or 'no'")
 
 def fn_timer(function):
     @wraps(function)

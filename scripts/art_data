@@ -5,8 +5,6 @@ import time
 import random
 import multiprocessing as mp
 import argparse
-import sys
-import contextlib
 import io
 from event_selector import filter_events_all_tests_stage_1,filter_events_all_tests_stage_2
 from calculator.event_energy_calculator import *
@@ -15,9 +13,9 @@ from calculator.voronoi_structural_analysis import run_all_tests_voronoi_calcula
 from visualizer.strain_visualizer import events_strain_visualization,strain_events_stats_visualization
 from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp
 from data_reader import *
-from util import run_tests_triggered_atom_is_max_disp
+from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no
 #from lammps.run import run_lammps
-from ART_wrapper.run import run_art_mp, set_up_input_files
+from ART_wrapper.run import run_art_mp, set_up_input_files, delete_art_tests_files, delete_art_tests, check_tests_status
 
 def print_input_help():
 	"""
@@ -325,7 +323,22 @@ def print_desc_help():
 	in the local machine. This command will automatically set up the input files 
 	for running art by running ./mod_bart.sh inside each test dir.
 	
+	Note: if running art in parallel quit unexpectedly due to either machine failure or human error,
+	it is good practice to check the status of all tests by using
+	art_data -s input_sample_id.json --art --check_tests_status
 	
+	This will create two input SETTINGS files called input_tests_done.json 
+	storing the id of finished tests and input_tests_undone.json storing 
+	the id of unfinished tests
+	
+	For finished tests:
+	user can check the results of only finished tests as described in the
+	following post-processing section by e.g.
+	art_data -s input_tests_done.json --filter, art_data -s input_tests_done.json --eng --calc
+	
+	For unfinished tests:
+	user can choose to delete these unfinished tests completely by art_data -s input_tests_undone.json --art --delete_tests
+	Then user can continue to run these unfinished tests from the beginning by art_data -s input_tests_undone.json --art --run
 	
 	>>> Steps to set up running ART post-processing in parallel:
 	The previously created input SETTNGs file is needed for post-processing 
@@ -641,52 +654,11 @@ def get_more_central_atoms(path_to_data_dir, n_tests):
 
 	return new_central_atom_list
 
-@contextlib.contextmanager
-def nostdout():
-    save_stdout = sys.stdout
-    sys.stdout = io.BytesIO()
-    yield
-    sys.stdout = save_stdout
-
 def update_input(input_param):
 	path_to_central_atom_list = os.path.join(input_param["path_to_data_dir"],"central_atom_list.json")
 	input_param["central_atom_list"] = json.load(open(path_to_central_atom_list, 'r'))
 	input_param["list_of_test_id"] = input_param["central_atom_list"]
 	return input_param
-
-def prompt_yes_no():
-	yes = {'yes','y'}
-	no = {'no','n'}
-	choice = raw_input().lower()
-	if choice in yes:
-	   return True
-	elif choice in no:
-	   return False
-	else:
-	   sys.stdout.write("Please respond with 'yes' or 'no'")
-	   
-def delete_art_input_file(path_to_data_dir, file_names):
-	"""
-	file_names is a list of files to be deleted in the final art tests directory
-	"""
-	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
-	central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
-	i=0
-	for central_atom in central_atom_list:
-		for each_file in file_names:
-			path_to_file = os.path.join(path_to_data_dir, str(central_atom), each_file)
-			if os.path.isfile(path_to_file):
-				if i >= 1:
-					print "deleting the file %s"%path_to_file
-					os.remove(path_to_file)
-				else:
-					print "deleting the file %s"%path_to_file
-					print "confirm deleting (y/n):"
-					if prompt_yes_no() is True:
-						os.remove(path_to_file)
-			else:
-				print "%s"%each_file, "does not exist in %s"%os.path.join(path_to_data_dir, str(central_atom))
-		i = i + 1
 	
 def example_input(n_tests):
 	"""
@@ -796,6 +768,9 @@ if __name__ == "__main__":
   
   parser.add_argument('--run_more', nargs=1, metavar=('NUM_OF_TESTS'), help='running more ART simulations if ART data is not converged', type=int)
   
+  parser.add_argument('--delete_tests', help='combine with --art to delete all test directories whose test id stored in central_atom_list of input SETTINGS file', action="store_true")
+  parser.add_argument('--check_tests_status', help='combine with --art to check the status of all tests whose test id stored in central_atom_list of input SETTINGs file', action="store_true")
+  
   
   #parser.add_argument('-v','--verbose', help='verbose output', action="store_true", default=False)
   
@@ -875,10 +850,19 @@ if __name__ == "__main__":
 		  #run_art_mp(args.run[0])
 		  exit()
 		if args.delete_tests_files:
-			file_names = args.delete_tests_files
-			print "deleting files :", file_names, "in %s"%path_to_data_dir
-			delete_art_input_file(path_to_data_dir, file_names)
-
+		  file_names = args.delete_tests_files
+		  print "deleting files :", file_names, "in %s"%path_to_data_dir
+		  delete_art_tests_files(path_to_data_dir, file_names)
+		  exit()
+		if args.delete_tests:
+		  central_atom_list = input_param["central_atom_list"]
+		  print "deleting tests:",central_atom_list, "in %s"%path_to_data_dir
+		  delete_art_tests(path_to_data_dir,central_atom_list)
+		  exit()
+		if args.check_tests_status:
+		  print "begin checking status of tests in central_atom_list of current input SETTINGS file"
+		  check_tests_status(path_to_data_dir, input_param)
+		  exit()
 
 	if args.filter:
 		#if args.path:

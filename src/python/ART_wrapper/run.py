@@ -9,8 +9,10 @@ import os
 import re
 import json
 import shutil
+import copy
 import multiprocessing as mp
 from data_reader import *
+from util import data_dir_to_test_dir, prompt_yes_no
 
 
 def run_art_mp(path_to_data_dir, input_param, pbs=False):
@@ -160,3 +162,113 @@ def dump_to_refconfig(path_to_input_files, sample_name, total_energy, box_dim, b
 		df.to_csv(f, header=False, index=False, sep=' ')
 		f.close()
 	print "saving refconfig in %s"%path_to_input_files
+
+def check_tests_status(path_to_data_dir, input_param):
+	"""
+	check the status of each test of central_atom_list in input_param under path_to_data_dir
+	as finished test or unfinished test
+	
+	This function will always overwrite the most update test status result
+	into input SETTINGS file input_tests_done.json and input_tests_undone.json
+	for the following processing
+	
+	Return:
+		tests_undone: list
+			the list of test id that has not been done yet
+	"""
+	
+	# read the Max_num_events from bart.sh in path_to_input_files
+	path_to_input_files = input_param['path_to_input_files']
+	path_to_bart = os.path.join(path_to_input_files,"bart.sh")
+	
+	with open(path_to_bart, 'r') as f:
+		data = f.read()
+	pattern = "(setenv[\s]+Max_Number_Events[\s]+)([\d]+)"
+	match = re.search(pattern, data)
+	max_num_events = int(match.group(2))
+	
+	#list_of_test_id = input_param["list_of_test_id"]
+	central_atom_list = input_param['central_atom_list']
+	tests_not_done = []
+	tests_done = []
+	for test in central_atom_list:
+		path_to_test = data_dir_to_test_dir(path_to_data_dir, test)
+		# check if this test contains the final configuration file
+		# based on max_num_events
+		final_min_id = 1000 + max_num_events
+		path_to_final_min = os.path.join(path_to_test,"min%s"%final_min_id)
+		if os.path.isfile(path_to_final_min):
+			tests_done.append(test)
+		else:
+			tests_not_done.append(test)
+	print "In %s , finished tests ids in central_atom_list of current input SETTINGS file are:"%path_to_data_dir, tests_done
+	print "In %s , un-finished tests ids in central_atom_list of current input SETTINGS file are:"%path_to_data_dir, tests_not_done
+	print "In %s, creating art_data input SETTINGs files for finished tests (input_tests_done.json) and unfinished tests(input_tests_undone.json):"
+	
+	path_to_tests_done = os.path.join(path_to_data_dir,"input_tests_done.json")
+	path_to_tests_undone = os.path.join(path_to_data_dir,"input_tests_undone.json")
+	
+	input_param_tests_done = copy.deepcopy(input_param)
+	input_param_tests_undone = copy.deepcopy(input_param)
+	
+	input_param_tests_done["central_atom_list"] = tests_done
+	input_param_tests_undone["central_atom_list"] = tests_not_done
+	
+	input_param_tests_done["list_of_test_id"] = tests_done
+	input_param_tests_undone["list_of_test_id"] = tests_not_done
+	
+	with open(path_to_tests_done, 'w') as f:
+		json.dump(input_param_tests_done,f,indent=2)
+	
+	with open(path_to_tests_undone, 'w') as f:
+		json.dump(input_param_tests_undone,f,indent=2)
+	
+	print "\n"
+	print "For finished tests:"
+	print "Now user can check only the results of finished tests by using art_data -s input_tests_done.json --filter, art_data -s input_tests_done.json --eng --calc etc"
+	print "For unfinished tests:"
+	print "Now user can choose to delete these unfinished tests completely by using art_data -s input_tests_undone.json --art --delete_tests"
+	print "Then user can continue to run these unfinished tests from the beginning by using art_data -s input_tests_undone.json --art --run"
+	print "test status check done!"
+	return tests_not_done
+	
+def delete_art_tests_files(path_to_data_dir, file_names):
+	"""
+	file_names is a list of files to be deleted in the final art tests directory
+	"""
+	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
+	central_atom_list = json.load(open(path_to_central_atom_list, 'r'))
+	i=0
+	for central_atom in central_atom_list:
+		for each_file in file_names:
+			path_to_file = os.path.join(path_to_data_dir, str(central_atom), each_file)
+			if os.path.isfile(path_to_file):
+				if i >= 1:
+					print "deleting the file %s"%path_to_file
+					os.remove(path_to_file)
+				else:
+					print "deleting the file %s"%path_to_file
+					print "confirm deleting (y/n):"
+					if prompt_yes_no() is True:
+						os.remove(path_to_file)
+			else:
+				print "%s"%each_file, "does not exist in %s"%os.path.join(path_to_data_dir, str(central_atom))
+		i = i + 1
+
+def delete_art_tests(path_to_data_dir, central_atom_list):
+	"""
+	file_names is a list of files to be deleted in the final art tests directory
+	"""
+	print "begining delete tests:", central_atom_list
+	print "confirm deleting (y/n):"
+	if prompt_yes_no() is True:
+		for test in central_atom_list:
+			path_to_test = data_dir_to_test_dir(path_to_data_dir, test)
+			if os.path.isdir(path_to_test):
+				print "deleting the test %s"%path_to_test
+				shutil.rmtree(path_to_test)
+			else:
+				print "test %s"%test, "does not exist in %s"%path_to_data_dir
+	else:
+		print "Not deleting!"
+	print "done deleting all tests in central_atom_list (key of current input SETTINGS file) in %s"%path_to_data_dir
