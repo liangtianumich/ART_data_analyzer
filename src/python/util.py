@@ -591,7 +591,7 @@ def read_from_art_input_file(path_to_test_dir):
 	"""
 	this function get the triggered atom index from the art input file bart.sh
 	"""
-	path_to_test_bart = path_to_test_dir + "/bart.sh"
+	path_to_test_bart = os.path.join(path_to_test_dir, "bart.sh")
 	f=open(path_to_test_bart)
 	string=f.read()
 	pattern = "([#\n])setenv[\s]+Central_Atom[\s]+([1-9]+)"
@@ -602,9 +602,31 @@ def read_from_art_input_file(path_to_test_dir):
 	elif match.group(1) == "\n":
 		return [int(match.group(2))]
 	
-	
-	
-	
+def read_from_art_log_file(path_to_test_dir):
+	path_to_test_log = os.path.join(path_to_test_dir, "log.file.1")
+	f=open(path_to_test_log)
+	string=f.read()
+	# ((?!Attempt).)*?  *? lazy match any string without string Attempt
+	pattern = "That atom\s+:\s+([0-9]+)\n\s+E-Eref((?!Attempt).)*?SADDLE ([0-9]+) CONVERGED"
+	match = re.findall(pattern, string,re.DOTALL)
+	#sad_id,central_atom_id =[],[]
+	sad_central_atom_dict = dict()
+	for item in match:
+		sad_central_atom_dict[int(item[2])] = int(item[0])
+	return sad_central_atom_dict
+
+def read_cluster_radius_from_bart(path_to_test_dir):
+	bart_file = [os.path.join(path_to_test_dir, "bart.sh"), os.path.join(path_to_test_dir, "mod_bart.sh")]
+	for it in bart_file:
+		if os.path.exists(it):
+			bart_exist = it
+			break
+	f=open(bart_exist)
+	string=f.read()
+	pattern = "setenv[\s]+Radius_Initial_Deformation[\s]+([.0-9]+)"
+	match = re.search(pattern, string)
+	return float(match.group(1))
+
 class results(object):
 	def __init__(self, path_test_dir, path_to_data):
 		

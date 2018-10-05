@@ -11,7 +11,7 @@ from calculator.event_energy_calculator import *
 from calculator.strain_calculator import strain_calculator_run_all_tests_mp
 from calculator.voronoi_structural_analysis import run_all_tests_voronoi_calculator, run_all_tests_voronoi_classifier
 from visualizer.strain_visualizer import events_strain_visualization,strain_events_stats_visualization
-from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp
+from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp, all_events_triggered_cluster_atoms_finder
 from data_reader import *
 from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no
 #from lammps.run import run_lammps
@@ -741,6 +741,7 @@ if __name__ == "__main__":
   
   parser.add_argument('--find_residual', help='find the relative residual threshold for outlier detection in atomic displacement vs strain for all events in specified tests', action = "store_true")
   parser.add_argument('--find_local_index', nargs=1,metavar=('rel_residual_threshold'), type=float, help='find the local atom index in all events in specified tests, where rel_residual_threshold is the user specified relative threshold residual')
+  parser.add_argument('--find_triggered_cluster_atoms_index', help='find the initial triggered cluster atoms index in all filtered events in list_of_test_id tests, saving cluster atom indexes into file in each event directory', action = "store_true")
   parser.add_argument('--local', help='invoke calculations on local atoms that are determined by --find_local_index', action="store_true")
   parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all filtered events in specified tests', action = "store_true")
   parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for all filtered events in specified tests', action = "store_true")
@@ -770,7 +771,6 @@ if __name__ == "__main__":
   
   parser.add_argument('--delete_tests', help='combine with --art to delete all test directories whose test id stored in central_atom_list of input SETTINGS file', action="store_true")
   parser.add_argument('--check_tests_status', help='combine with --art to check the status of all tests whose test id stored in central_atom_list of input SETTINGs file', action="store_true")
-  
   
   #parser.add_argument('-v','--verbose', help='verbose output', action="store_true", default=False)
   
@@ -952,7 +952,9 @@ if __name__ == "__main__":
 		residual_threshold = args.find_local_index[0]
 		all_events_local_atoms_finder(path_to_data_dir, input_param, residual_threshold)
 		exit()
-	
+	if args.find_triggered_cluster_atoms_index:
+		all_events_triggered_cluster_atoms_finder(path_to_data_dir, input_param)
+		exit()
 	if args.events_local_atoms:		
 		events_local_atoms(path_to_data_dir, input_param)
 		exit()
