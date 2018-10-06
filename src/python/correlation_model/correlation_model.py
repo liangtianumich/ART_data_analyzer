@@ -195,7 +195,7 @@ def all_events_triggered_cluster_atoms_finder(path_to_data_dir, input_param):
 	box_dim = input_param["box_dim"]
 	num_of_proc = input_param["num_of_proc"]
 	re_calc = input_param["re_calc"]
-	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_triggered_cluster_atoms_index(x, path_to_data_dir, box_dim=box_dim, save_results=True, re_calc=re_calc),num_of_proc)
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_triggered_cluster_atoms_index(x, path_to_data_dir, box_dim, save_results=True, re_calc=re_calc),num_of_proc)
 	print "done finding all triggered cluster atoms index for all final selected events in list_of_test_id!"
 
 def single_event_triggered_cluster_atoms_index(event, path_to_data_dir, box_dim, save_results=True, re_calc = False):
@@ -210,10 +210,10 @@ def single_event_triggered_cluster_atoms_index(event, path_to_data_dir, box_dim,
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	
 	print "path_to_current_event:", path_to_curr_event
-	path_to_triggeded_atoms_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
+	path_to_triggered_atoms_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
 	
 	if re_calc is False:
-		if os.path.exists(path_to_triggeded_atoms_index):
+		if os.path.exists(path_to_triggered_atoms_index):
 			return json.load(open(path_to_triggered_atoms_index,'r'))
 	print "re_calculating"
 	test_sad_central_atom_id = read_from_art_log_file(path_to_test_dir)
@@ -229,10 +229,9 @@ def single_event_triggered_cluster_atoms_index(event, path_to_data_dir, box_dim,
 	central_atom_df = initial_config_data[initial_config_data['item'] == central_atom_id]
 	
 	cluster_radius = read_cluster_radius_from_bart(path_to_test_dir)
-	
-	result_tree = PeriodicCKDTree(box_dim, central_atom_df[['x','y','z']].values)
-	result_groups = result_tree.query_ball_point(initial_config_data[['x','y','z']].values, cluster_radius)
-	cluster_atoms_df = initial_config_data.iloc[result_groups]
+	result_tree = PeriodicCKDTree(box_dim, initial_config_data[['x','y','z']].values)
+	result_groups = result_tree.query_ball_point(central_atom_df[['x','y','z']].values, cluster_radius)
+	cluster_atoms_df = initial_config_data.iloc[result_groups[0],:]
 	cluster_atoms_id = (cluster_atoms_df['item']).tolist()
 	
 	if save_results is True:
