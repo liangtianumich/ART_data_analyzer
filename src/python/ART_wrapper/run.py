@@ -203,14 +203,13 @@ def check_tests_status(path_to_data_dir, input_param):
 			tests_not_done.append(test)
 	print "In %s , finished tests ids in central_atom_list of current input SETTINGS file are:"%path_to_data_dir, tests_done
 	print "In %s , un-finished tests ids in central_atom_list of current input SETTINGS file are:"%path_to_data_dir, tests_not_done
-	print "In %s, creating art_data input SETTINGs files for finished tests (input_tests_done.json) and unfinished tests(input_tests_undone.json):"
+	print "In %s, start creating art_data input SETTINGs files for finished tests (input_tests_done.json) and unfinished tests(input_tests_undone.json):"%path_to_data_dir
 	
 	path_to_tests_done = os.path.join(path_to_data_dir,"input_tests_done.json")
 	path_to_tests_undone = os.path.join(path_to_data_dir,"input_tests_undone.json")
 	
 	input_param_tests_done = copy.deepcopy(input_param)
 	input_param_tests_undone = copy.deepcopy(input_param)
-	
 	input_param_tests_done["central_atom_list"] = tests_done
 	input_param_tests_undone["central_atom_list"] = tests_not_done
 	
@@ -219,7 +218,6 @@ def check_tests_status(path_to_data_dir, input_param):
 	
 	with open(path_to_tests_done, 'w') as f:
 		json.dump(input_param_tests_done,f,indent=2)
-	
 	with open(path_to_tests_undone, 'w') as f:
 		json.dump(input_param_tests_undone,f,indent=2)
 	

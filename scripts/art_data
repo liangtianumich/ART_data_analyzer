@@ -861,6 +861,10 @@ if __name__ == "__main__":
 		  exit()
 		if args.check_tests_status:
 		  print "begin checking status of tests in central_atom_list of current input SETTINGS file"
+		  new_cut_off_dict = dict()
+		  for k,v in input_param['cut_off'].items():
+			new_cut_off_dict[str(k)] = v
+		  input_param['cut_off'] = new_cut_off_dict
 		  check_tests_status(path_to_data_dir, input_param)
 		  exit()
 
