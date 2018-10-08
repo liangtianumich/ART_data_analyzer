@@ -43,9 +43,10 @@ def shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param, sa
 	
 	plot_2d(path_to_shear_vol_strain_init_sad_png, event_shear_strain, event_vol_strain, "local event averaged shear strain","local event averaged volumetric strain")
 	
-	with open(path_to_shear_vol_init_sad, 'w') as f:
-		json.dump(result_list, f)
-		f.close()
+	if save_results is True:
+		with open(path_to_shear_vol_init_sad, 'w') as f:
+			json.dump(result_list, f)
+			f.close()
 	print "done finding cluster averaged shear strain vs cluster averaged volumetric strain for all final selected events in list_of_test_id!"
 	
 def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir):
