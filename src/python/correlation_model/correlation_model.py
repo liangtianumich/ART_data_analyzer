@@ -20,16 +20,136 @@ from periodic_kdtree import PeriodicCKDTree
 
 def shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param, save_results=True):
 	"""
-	shear_strain_vol_strain_cluster_init_sad.json
-	shear_strain_vol_strain_cluster_init_fin.json
-	shear_strain_vol_strain_cluster_sad_fin.json
+	this function find cluster averaged shear strain vs cluster averaged volumetric strain 
+	for all final selected events in list_of_test_id
 	"""
-	#
-	path_to_shear_vol_strain_init_sad = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_sad_all_events.png")
-	path_to_shear_vol_strain_init_fin = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_fin_all_events.png")
-	path_to_shear_vol_strain_sad_fin = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_sad_fin_all_events.png")
+	path_to_shear_vol_strain_init_sad_png = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_sad_all_events.png")
+	#path_to_shear_vol_strain_init_fin_png = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_fin_all_events.png")
+	#path_to_shear_vol_strain_sad_fin_png = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_sad_fin_all_events.png")
 	
+	path_to_shear_vol_init_sad = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_sad_all_events.json")
+	#path_to_shear_vol_sad_fin = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_sad_fin_all_events.json")
+	#path_to_shear_vol_init_fin = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_fin_all_events.json")
 	
+	list_of_test_id = input_param["list_of_test_id"]
+	num_of_proc = input_param["num_of_proc"]
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_cluster_averaged_shear_vol_strain(x, path_to_data_dir),num_of_proc)
+	
+	event_shear_strain, event_vol_strain, event_disp = [], [], []
+	for result in result_list:
+		event_shear_strain.append(result[0])
+		event_vol_strain.append(result[1])
+		#event_disp.append(result[2])
+	
+	plot_2d(path_to_shear_vol_strain_init_sad_png, event_shear_strain, event_vol_strain, "local event averaged shear strain","local event averaged volumetric strain")
+	
+	with open(path_to_shear_vol_init_sad, 'w') as f:
+		json.dump(result_list, f)
+		f.close()
+	print "done finding cluster averaged shear strain vs cluster averaged volumetric strain for all final selected events in list_of_test_id!"
+	
+def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir):
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	path_to_curr_result = path_to_test_dir + "/results"
+	init,sad,fin = event[1][0], event[1][1], event[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	
+	print "path_to_current_event:", path_to_curr_event
+	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
+	if os.path.exists(path_to_local_atom_index):
+		local_atoms_index = json.load(open(path_to_local_atom_index),'r')
+	else:
+		raise Exception("indexes of cluster local atoms has not been determined, please find the cluster local atoms first")
+	
+	path_to_init_sad = path_to_curr_event + "/init_sad"
+	path_to_all_strain_results_init_sad = path_to_init_sad + "/strain_results_dict.pkl"
+	path_to_all_displacement_init_sad = path_to_init_sad + "/displacement_results_dict.pkl"
+	
+	path_to_strain_results_init_sad = path_to_init_sad + "/local_strain_results_dict.pkl"
+	path_to_displacement_init_sad = path_to_init_sad + "/local_displacement_results_dict.pkl"
+	
+	if os.path.exists(path_to_strain_results_init_sad) and os.path.exists(path_to_displacement_init_sad):
+		strains = pickle.load(open(path_to_strain_results_init_sad,'r'))
+		disp = pickle.load(open(path_to_displacement_init_sad,'r'))
+		local_strains = strains.values()
+		local_shear_strain = [strain[1] for strain in local_strains]
+		local_vol_strain = [strain[0] for strain in local_strains]
+		local_disp = disp.values()
+	elif os.path.exists(path_to_all_strain_results_init_sad) and os.path.exists(path_to_all_displacement_init_sad):
+		all_strains = pickle.load(open(path_to_all_strain_results_init_sad,'r'))
+		all_disp = pickle.load(open(path_to_all_displacement_init_sad,'r'))
+		local_strains = [all_strains[k] for k in local_atoms_index if k in all_strains]
+		local_shear_strain = [strain[1] for strain in local_strains]
+		local_vol_strain = [strain[0] for strain in local_strains]
+		local_disp = [all_disp[k] for k in local_atoms_index if k in all_disp]
+	else:
+		raise Exception("No strain and displacement results found in %s"%path_to_init_sad)
+	cluster_ave_shear_strain = np.mean(local_shear_strain)
+	cluster_ave_vol_strain = np.mean(local_vol_strain)
+	cluster_ave_disp = np.mean(local_disp)
+	
+	"""
+	path_to_sad_fin = path_to_curr_event + "/sad_fin"
+	path_to_all_strain_results_sad_fin = path_to_sad_fin + "/strain_results_dict.pkl"
+	path_to_all_displacement_sad_fin = path_to_sad_fin + "/displacement_results_dict.pkl"
+	
+	path_to_strain_results_sad_fin = path_to_sad_fin + "/local_strain_results_dict.pkl"
+	path_to_displacement_sad_fin = path_to_sad_fin + "/local_displacement_results_dict.pkl"
+	
+	if os.path.exists(path_to_strain_results_sad_fin) and os.path.exists(path_to_displacement_sad_fin):
+		strains_2 = pickle.load(open(path_to_strain_results_sad_fin,'r'))
+		disp_2 = pickle.load(open(path_to_displacement_sad_fin,'r'))
+		local_strains_2 = strains_2.values()
+		local_shear_strain_2 = [strain[1] for strain in local_strains_2]
+		local_vol_strain_2 = [strain[0] for strain in local_strains_2]
+		local_disp_2 = disp_2.values()
+	elif os.path.exists(path_to_all_strain_results_sad_fin) and os.path.exists(path_to_all_displacement_sad_fin):
+		all_strains_2 = pickle.load(open(path_to_all_strain_results_sad_fin,'r'))
+		all_disp_2 = pickle.load(open(path_to_all_displacement_sad_fin,'r'))
+		local_strains_2 = [all_strains_2[k] for k in local_atoms_index if k in all_strains_2]
+		local_shear_strain_2 = [strain[1] for strain in local_strains_2]
+		local_vol_strain_2 = [strain[0] for strain in local_strains_2]
+		local_disp_2 = [all_disp_2[k] for k in local_atoms_index if k in all_disp_2]
+	else:
+		raise Exception("No strain and displacement results found in %s"%path_to_sad_fin)
+	cluster_ave_shear_strain_2 = np.mean(local_shear_strain_2)
+	cluster_ave_vol_strain_2 = np.mean(local_vol_strain_2)
+	cluster_ave_disp_2 = np.mean(local_disp_2)
+	
+	path_to_init_fin = path_to_curr_event + "/init_fin"
+	path_to_all_strain_results_init_fin = path_to_init_fin + "/strain_results_dict.pkl"
+	path_to_all_displacement_init_fin = path_to_init_fin + "/displacement_results_dict.pkl"
+	
+	path_to_strain_results_init_fin = path_to_init_fin + "/local_strain_results_dict.pkl"
+	path_to_displacement_init_fin = path_to_init_fin + "/local_displacement_results_dict.pkl"
+	
+	if os.path.exists(path_to_strain_results_init_fin) and os.path.exists(path_to_displacement_init_fin):
+		strains_3 = pickle.load(open(path_to_strain_results_init_fin,'r'))
+		disp_3 = pickle.load(open(path_to_displacement_init_fin,'r'))
+		local_strains_3 = strains_3.values()
+		local_shear_strain_3 = [strain[1] for strain in local_strains_3]
+		local_vol_strain_3 = [strain[0] for strain in local_strains_3]
+		local_disp_3 = disp_3.values()
+	elif os.path.exists(path_to_all_strain_results_init_fin) and os.path.exists(path_to_all_displacement_init_fin):
+		all_strains_3 = pickle.load(open(path_to_all_strain_results_init_fin,'r'))
+		all_disp_3 = pickle.load(open(path_to_all_displacement_init_fin,'r'))
+		local_strains_3 = [all_strains_3[k] for k in local_atoms_index if k in all_strains_3]
+		local_shear_strain_3 = [strain[1] for strain in local_strains_3]
+		local_vol_strain_3 = [strain[0] for strain in local_strains_3]
+		local_disp_3 = [all_disp_3[k] for k in local_atoms_index if k in all_disp_3]
+	else:
+		raise Exception("No strain and displacement results found in %s"%path_to_init_fin)
+	cluster_ave_shear_strain_3 = np.mean(local_shear_strain_3)
+	cluster_ave_vol_strain_3 = np.mean(local_vol_strain_3)
+	cluster_ave_disp_3 = np.mean(local_disp_3)
+	"""
+	
+	return [cluster_ave_shear_strain, cluster_ave_vol_strain, cluster_ave_disp, event]
 	
 def eng_max_disp(path_to_data_dir, input_param):
 	"""
