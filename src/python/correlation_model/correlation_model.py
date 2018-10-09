@@ -63,7 +63,8 @@ def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir):
 	print "path_to_current_event:", path_to_curr_event
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	if os.path.exists(path_to_local_atom_index):
-		local_atoms_index = json.load(open(path_to_local_atom_index),'r')
+		local_atoms = json.load(open(path_to_local_atom_index),'r')
+		local_atoms_index = [atom + 1 for atom in local_atoms]
 	else:
 		raise Exception("indexes of cluster local atoms has not been determined, please find the cluster local atoms first")
 	
