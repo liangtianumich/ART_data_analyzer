@@ -11,7 +11,7 @@ from calculator.event_energy_calculator import *
 from calculator.strain_calculator import strain_calculator_run_all_tests_mp
 from calculator.voronoi_structural_analysis import run_all_tests_voronoi_calculator, run_all_tests_voronoi_classifier
 from visualizer.strain_visualizer import events_strain_visualization,strain_events_stats_visualization
-from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp, all_events_triggered_cluster_atoms_finder, shear_strain_vol_strain_cluster_all_events
+from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp, all_events_triggered_cluster_atoms_finder, shear_strain_vol_strain_cluster_all_events,shear_strain_vol_strain_local_atom_all_events
 from data_reader import *
 from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no
 #from lammps.run import run_lammps
@@ -748,6 +748,7 @@ if __name__ == "__main__":
   parser.add_argument('--find_triggered_cluster_atoms_index', help='find the initial triggered cluster atoms index in all filtered events in list_of_test_id tests, saving cluster atom indexes into file in each event directory', action = "store_true")
   parser.add_argument('--local', help='invoke calculations on local atoms that are determined by --find_local_index', action="store_true")
   parser.add_argument('--cluster_shear_vol', help='combine with --strain --local to plot the local event cluster averaged shear strain vs cluster averaged volumetric strain for all filtered events in list_of_test_id', action="store_true")
+  parser.add_argument('--atom_shear_vol', help='combine with --strain --local to plot the shear strain vs volumetric strain of all local atoms for all filtered events in list_of_test_id', action="store_true")
   parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all filtered events in specified tests', action = "store_true")
   parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for all filtered events in specified tests', action = "store_true")
   parser.add_argument('--max_disp_eng', help='plot max displacement vs activiation and relaxation energy', action = "store_true")
@@ -934,6 +935,9 @@ if __name__ == "__main__":
 			input_param["atom_list"] = "local"
 			if args.cluster_shear_vol:
 				shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param)
+				exit()
+			if args.atom_shear_vol:
+				shear_strain_vol_strain_local_atom_all_events(path_to_data_dir, input_param)
 				exit()
 		if (args.calc and args.v) or (args.calc and args.stats) or (args.stats and args.v):
 			raise Exception("operations on strain can not be more than 1 at one time")

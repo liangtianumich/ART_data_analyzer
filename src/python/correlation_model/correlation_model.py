@@ -152,6 +152,77 @@ def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir):
 	"""
 	
 	return [cluster_ave_shear_strain, cluster_ave_vol_strain, cluster_ave_disp, event]
+
+def shear_strain_vol_strain_local_atom_all_events(path_to_data_dir, input_param, save_results=True):
+	"""
+	this function find shear strain vs volumetric strain of all local atoms
+	for all final selected events in list_of_test_id
+	"""
+	path_to_shear_vol_strain_init_sad_png = os.path.join(path_to_data_dir, "shear_vol_strain_local_atom_init_sad_all_events.png")
+	
+	path_to_shear_vol_init_sad = os.path.join(path_to_data_dir, "shear_vol_strain_local_atom_init_sad_all_events.json")
+	
+	list_of_test_id = input_param["list_of_test_id"]
+	num_of_proc = input_param["num_of_proc"]
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atom_shear_vol_strain(x, path_to_data_dir),num_of_proc)
+	
+	atom_shear_strain, atom_vol_strain, atom_disp = [], [], []
+	for result in result_list:
+		atom_shear_strain.extend(result[0])
+		atom_vol_strain.extend(result[1])
+	
+	plot_2d(path_to_shear_vol_strain_init_sad_png, atom_shear_strain, atom_vol_strain, "shear strain of each local atom", "volumetric strain of each local atom")
+	
+	if save_results is True:
+		with open(path_to_shear_vol_init_sad, 'w') as f:
+			json.dump(result_list, f)
+			f.close()
+	print "done finding shear strain vs volumetric strain for all individual local atoms of all final selected events in list_of_test_id!"
+
+def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir):
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	path_to_curr_result = path_to_test_dir + "/results"
+	init,sad,fin = event[1][0], event[1][1], event[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	
+	print "path_to_current_event:", path_to_curr_event
+	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
+	if os.path.exists(path_to_local_atom_index):
+		local_atoms = json.load(open(path_to_local_atom_index),'r')
+		local_atoms_index = [atom + 1 for atom in local_atoms]
+	else:
+		raise Exception("indexes of cluster local atoms has not been determined, please find the cluster local atoms first")
+	
+	path_to_init_sad = path_to_curr_event + "/init_sad"
+	path_to_all_strain_results_init_sad = path_to_init_sad + "/strain_results_dict.pkl"
+	path_to_all_displacement_init_sad = path_to_init_sad + "/displacement_results_dict.pkl"
+	
+	path_to_strain_results_init_sad = path_to_init_sad + "/local_strain_results_dict.pkl"
+	path_to_displacement_init_sad = path_to_init_sad + "/local_displacement_results_dict.pkl"
+	
+	if os.path.exists(path_to_strain_results_init_sad) and os.path.exists(path_to_displacement_init_sad):
+		strains = pickle.load(open(path_to_strain_results_init_sad,'r'))
+		disp = pickle.load(open(path_to_displacement_init_sad,'r'))
+		local_strains = strains.values()
+		local_shear_strain = [strain[1] for strain in local_strains]
+		local_vol_strain = [strain[0] for strain in local_strains]
+		local_disp = disp.values()
+	elif os.path.exists(path_to_all_strain_results_init_sad) and os.path.exists(path_to_all_displacement_init_sad):
+		all_strains = pickle.load(open(path_to_all_strain_results_init_sad,'r'))
+		all_disp = pickle.load(open(path_to_all_displacement_init_sad,'r'))
+		local_strains = [all_strains[k] for k in local_atoms_index if k in all_strains]
+		local_shear_strain = [strain[1] for strain in local_strains]
+		local_vol_strain = [strain[0] for strain in local_strains]
+		local_disp = [all_disp[k] for k in local_atoms_index if k in all_disp]
+	else:
+		raise Exception("No strain and displacement results found in %s"%path_to_init_sad)
+	return [local_shear_strain, local_vol_strain, local_disp, event]
+	
 	
 def eng_max_disp(path_to_data_dir, input_param):
 	"""
