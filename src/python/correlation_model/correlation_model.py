@@ -187,6 +187,8 @@ def shear_strain_vol_strain_local_atom_all_events(path_to_data_dir, input_param,
 	
 	atom_shear_strain, atom_vol_strain, atom_disp = [], [], []
 	for result in result_list:
+		if result is None:
+			continue
 		atom_shear_strain.extend(result[0])
 		atom_vol_strain.extend(result[1])
 	
@@ -229,6 +231,8 @@ def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir):
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	if os.path.exists(path_to_local_atom_index):
 		local_atoms = json.load(open(path_to_local_atom_index),'r')
+		if local_atoms == []:
+			return None
 		local_atoms_index = [atom + 1 for atom in local_atoms]
 	else:
 		raise Exception("indexes of cluster local atoms has not been determined, please find the cluster local atoms first")
