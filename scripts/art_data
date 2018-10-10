@@ -563,6 +563,11 @@ def print_desc_help():
 	 After getting local_atoms_index.json, user can plot the local event cluster averaged
 	 shear strain vs cluster averaged volumetric strain for all filtered events
 	 in list_of_test_id by art_data -s SETTINGS --strain --local --cluster_shear_vol
+	 or plot the shear strain vs volumetric strain for each local atom for
+	 all filtered events by art_data -s SETTINGS --strain --local --atom_shear_vol
+	 It will also fit a LinearRegression model on volumetric strain
+	 to shear strain data, print out the slope as the beta parameter, i.e. 
+	 the ratio of dilation to shear strain.
 	 
 	 > voronoi index calculation:
 	 

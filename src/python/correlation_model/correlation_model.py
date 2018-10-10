@@ -13,7 +13,7 @@ from sklearn import linear_model
 from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import NearestNeighbors
-from visualizer.general_visualizer import plot_histogram_3, plot_2d
+from visualizer.general_visualizer import plot_histogram_3, plot_2d, plot_2d_train_fit
 from util import operation_on_events, Configuration, state_energy_barrier, data_dir_to_test_dir, read_from_art_log_file, read_cluster_radius_from_bart
 from data_reader import read_data_from_file
 from periodic_kdtree import PeriodicCKDTree
@@ -41,7 +41,22 @@ def shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param, sa
 		event_vol_strain.append(result[1])
 		#event_disp.append(result[2])
 	
-	plot_2d(path_to_shear_vol_strain_init_sad_png, event_shear_strain, event_vol_strain, "local event averaged shear strain","local event averaged volumetric strain")
+	sample_size = len(event_shear_strain)
+	X= np.array(event_shear_strain).reshape(sample_size,1)
+	y= np.array(event_vol_strain)
+	#regr = LinearSVR(random_state=1, dual=True, epsilon=0.0)
+	regr = linear_model.LinearRegression()
+	regr.fit(X, y)
+	print "slope is", regr.coef_
+	shear_X = np.linspace(min(event_shear_strain), max(event_shear_strain),100)
+	fit_X= shear_X.reshape(100,1)
+	predict_y = regr.predict(fit_X)
+	
+	x_fit = fit_X.flatten()
+	y_fit = predict_y.flatten()
+	
+	plot_2d_train_fit(path_to_shear_vol_strain_init_sad_png, event_shear_strain, event_vol_strain, x_fit, y_fit, "local event averaged shear strain", "local event averaged volumetric strain")
+	#plot_2d(path_to_shear_vol_strain_init_sad_png, event_shear_strain, event_vol_strain, "local event averaged shear strain","local event averaged volumetric strain")
 	
 	if save_results is True:
 		with open(path_to_shear_vol_init_sad, 'w') as f:
@@ -171,7 +186,23 @@ def shear_strain_vol_strain_local_atom_all_events(path_to_data_dir, input_param,
 		atom_shear_strain.extend(result[0])
 		atom_vol_strain.extend(result[1])
 	
-	plot_2d(path_to_shear_vol_strain_init_sad_png, atom_shear_strain, atom_vol_strain, "shear strain of each local atom", "volumetric strain of each local atom")
+	sample_size = len(atom_shear_strain)
+	X= np.array(atom_shear_strain).reshape(sample_size,1)
+	y= np.array(atom_vol_strain)
+	
+	#regr = LinearSVR(random_state=1, dual=True, epsilon=0.0)
+	regr = linear_model.LinearRegression()
+	regr.fit(X, y)
+	print "slope is:", regr.coef_
+	shear_X = np.linspace(min(atom_shear_strain), max(atom_shear_strain),100)
+	fit_X= shear_X.reshape(100,1)
+	predict_y = regr.predict(fit_X)
+	x_fit = fit_X.flatten()
+	y_fit = predict_y.flatten()
+	
+	plot_2d_train_fit(path_to_shear_vol_strain_init_sad_png, atom_shear_strain, atom_vol_strain, x_fit, y_fit, "shear strain of each local atom", "volumetric strain of each local atom")
+	
+	#plot_2d(path_to_shear_vol_strain_init_sad_png, atom_shear_strain, atom_vol_strain, "shear strain of each local atom", "volumetric strain of each local atom")
 	
 	if save_results is True:
 		with open(path_to_shear_vol_init_sad, 'w') as f:
