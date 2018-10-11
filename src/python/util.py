@@ -162,6 +162,40 @@ class Atom(object):
 		return min(_pair_distance)
 	
 	@classmethod
+	def displacement_pbc(cls, atom_1, atom_2):
+		"""
+		class method to calculate the displacement between atom_1 and atom_2 under
+		periodic boundary condition, where atom_1 and atom_2 are the 
+		instances of class Atoms
+		
+		Arguments:
+			atom_1: instance of class Atom 
+				atomic coordinates of atom_1
+			atom_2: instance of class Atom
+				atomic coordinates of atom_2
+		return:
+			displacement: numpy array
+				the displacement between atom_1 and atom_2 under pbc
+		"""
+		if atom_1.box_dim is None or atom_2.box_dim is None:
+			raise Exception("simulation box size has not been specified")
+		if atom_1.box_dim != atom_2.box_dim:
+			raise Exception("simulation box size does not match")
+		
+		[lx,ly,lz] = [atom_2.box_dim[0],atom_2.box_dim[1],atom_2.box_dim[2]]
+		
+		_pair_list = np.array([[0,0,0],[lx,0,0],[-lx,0,0],[0,ly,0],[0,-ly,0],[0,0,lz],[0,0,-lz]])
+		
+		_pair_distance = []
+		
+		for _pair in _pair_list:
+			_curr_pair_distance = Atom.distance(atom_1, Atom((np.array(atom_2.atom_loc) + _pair).tolist()))
+			_pair_distance.append(_curr_pair_distance)
+		min_index = np.argmin(_pair_distance)
+		displacement_vector = np.array(atom_2.atom_loc) + _pair_list[min_index] - np.array(atom_1.atom_loc)
+		return displacement_vector
+
+	@classmethod
 	def from_ds(cls, data):
 		"""
 		create a Atom class object from single column pandas.DataFrame or pandas.Series

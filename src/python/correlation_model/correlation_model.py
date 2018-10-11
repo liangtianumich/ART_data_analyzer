@@ -536,6 +536,8 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 	init,sad,fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_init_sad = path_to_curr_event + "/init_sad"
+	path_to_sad_fin = path_to_curr_event + "/sad_fin"
+	path_to_init_fin = path_to_curr_event + "/init_fin"
 	
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	print "path_to_current_event:", path_to_curr_event
@@ -545,13 +547,20 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 	print "re_calculating"
 	if feature == "displacement" and target == "shear_strain":
 		init_sad_X,init_sad_y = get_strain_disp(path_to_init_sad)
+		sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
+		init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
 	
 	init_sad = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold, return_index = True)
+	sad_fin = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold, return_index = True)
+	init_fin = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold, return_index = True)
+	
+	final_results = {"init_sad":init_sad,"sad_fin":sad_fin,"init_fin":init_fin}
+	
 	if save_results is True:
 		with open(path_to_local_atom_index, 'w') as f:
-			json.dump(init_sad,f)
+			json.dump(final_results,f)
 			f.close()
-	return init_sad
+	return final_results
 
 def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residual_threshold =0.5):
 	"""

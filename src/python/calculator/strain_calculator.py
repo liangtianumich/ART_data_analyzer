@@ -91,17 +91,17 @@ def strain_calculator_run_all_tests_mp(path_to_data_dir, input_param):
 			vol_ave_3.append(init_fin["ave"][0])
 			vol_std_3.append(init_fin["std"][0])
 			vol_max_3.append(init_fin["max"][0])
-	print "init to sad: average of all filtered events average_shear_strain", np.mean(shear_ave)
-	print "sad to fin: average of all filtered events average_shear_strain", np.mean(shear_ave_2)
-	print "init to fin: average of all filtered events average_shear_strain", np.mean(shear_ave_3)
+	print "init to sad: average of all filtered events average_shear_strain", np.nanmean(shear_ave)
+	print "sad to fin: average of all filtered events average_shear_strain", np.nanmean(shear_ave_2)
+	print "init to fin: average of all filtered events average_shear_strain", np.nanmean(shear_ave_3)
 	
-	print "init to sad: average of all filtered events average_volumetric_strain", np.mean(vol_ave)
-	print "sad to fin: average of all filtered events average_volumetric_strain", np.mean(vol_ave_2)
-	print "init to fin: average of all filtered events average_volumetric_strain", np.mean(vol_ave_3)
+	print "init to sad: average of all filtered events average_volumetric_strain", np.nanmean(vol_ave)
+	print "sad to fin: average of all filtered events average_volumetric_strain", np.nanmean(vol_ave_2)
+	print "init to fin: average of all filtered events average_volumetric_strain", np.nanmean(vol_ave_3)
 	
-	print "init to sad: average of all filtered events average_displacement", np.mean(disp_ave)
-	print "sad to fin: average of all filtered events average_displacement", np.mean(disp_ave_2)
-	print "init to fin: average of all filtered events average_displacement", np.mean(disp_ave_3)
+	print "init to sad: average of all filtered events average_displacement", np.nanmean(disp_ave)
+	print "sad to fin: average of all filtered events average_displacement", np.nanmean(disp_ave_2)
+	print "init to fin: average of all filtered events average_displacement", np.nanmean(disp_ave_3)
 			
 	pickle.dump({"ave":disp_ave,"std":disp_std,"max":disp_max}, open(path_to_data_dir+"/init_sad_disp_stats.pkl",'w'))
 	pickle.dump({"ave":shear_ave,"std":shear_std,"max":shear_max}, open(path_to_data_dir+"/init_sad_shear_stats.pkl",'w'))
@@ -180,11 +180,7 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 	
 	test_atom_list = atom_list
 	# for each event, init to sad and sad to fin
-	for event in event_list:
-		init_sad_event_result = dict()
-		sad_fin_event_result = dict()
-		init_fin_event_result = dict()
-		
+	for event in event_list:		
 		init, sad, fin = event[0], event[1], event[2]
 		path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 		print ('\n')
@@ -224,50 +220,38 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 				# triggered atom is only related to initial config, for sad_fin, 
 				# also use the initial config to find the local NN index
 				atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
+				
+				atom_list_init_sad = atom_list
+				atom_list_sad_fin = atom_list
+				atom_list_init_fin = atom_list
 				print "NN item_id list (distance in increasing order including triggering atoms) of the triggering atoms"
 			elif test_atom_list == "local":
 				path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 				if os.path.exists(path_to_local_atom_index):
 					local_atom_list = json.load(open(path_to_local_atom_index,"r"))
-					atom_list = [atom + 1 for atom in local_atom_list]
+					atom_list_init_sad = [atom + 1 for atom in local_atom_list["init_sad"]]
+					atom_list_sad_fin = [atom + 1 for atom in local_atom_list["sad_fin"]]
+					atom_list_init_fin = [atom + 1 for atom in local_atom_list["init_fin"]]
 				else:
-					raise Exception("local_atoms_index.json file not exists, run local_atoms_index_finder.py first")
+					raise Exception("local_atoms_index.json file not exists")
 			
-			print "in initial configuration that will be used for all local strain calculations:", atom_list
-			if atom_list == []:
-				continue
+			print "local strain calculations, atoms will be calculated during init to sad:", atom_list_init_sad
+			print "local strain calculations, atoms will be calculated during sad to fin:", atom_list_sad_fin
+			print "local strain calculations, atoms will be calculated during init to fin:", atom_list_init_fin
+			
 			print "\n initial to saddle: \n"
-			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list,local=True,re_calc = re_calc)
+			init_sad_event_result = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list_init_sad,local=True,re_calc = re_calc)
 			print "\n saddle to final: \n"
-			sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list,local=True,re_calc = re_calc)
+			sad_fin_event_result = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list_sad_fin,local=True,re_calc = re_calc)
 			print "\n initial to final: \n"
-			init_fin_strain,init_fin_disp = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list,local=True,re_calc = re_calc)
+			init_fin_event_result = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list_init_fin,local=True,re_calc = re_calc)
 		else:
 			print "\n initial to saddle: \n"
-			init_sad_strain,init_sad_disp = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list, re_calc = re_calc)
+			init_sad_event_result = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list_init_sad, re_calc = re_calc)
 			print "\n saddle to final: \n"
-			sad_fin_strain,sad_fin_disp = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list, re_calc = re_calc)
+			sad_fin_event_result = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list_sad_fin, re_calc = re_calc)
 			print "\n initial to final: \n"
-			init_fin_strain,init_fin_disp = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list, re_calc = re_calc)
-			
-		#init_sad_vol_strain, init_sad_shear_strain, init_sad_displacement = event_strain_disp(init_sad_strain,init_sad_disp)
-		#sad_fin_vol_strain, sad_fin_shear_strain, sad_fin_displacement = event_strain_disp(sad_fin_strain,sad_fin_disp)
-		init_sad = event_strain_disp(init_sad_strain,init_sad_disp)
-		sad_fin = event_strain_disp(sad_fin_strain,sad_fin_disp)
-		init_fin = event_strain_disp(init_fin_strain,init_fin_disp)
-		
-		
-		init_sad_event_result['ave']=[np.mean(init_sad[0]),np.mean(init_sad[1]),np.mean(init_sad[2])]
-		init_sad_event_result['std']=[np.std(init_sad[0]),np.std(init_sad[1]),np.std(init_sad[2])]
-		init_sad_event_result['max']=[np.max(init_sad[0]),np.max(init_sad[1]),np.max(init_sad[2])]
-		
-		sad_fin_event_result['ave']=[np.mean(sad_fin[0]),np.mean(sad_fin[1]),np.mean(sad_fin[2])]
-		sad_fin_event_result['std']=[np.std(sad_fin[0]),np.std(sad_fin[1]),np.std(sad_fin[2])]
-		sad_fin_event_result['max']=[np.max(sad_fin[0]),np.max(sad_fin[1]),np.max(sad_fin[2])]
-		
-		init_fin_event_result['ave']=[np.mean(init_fin[0]),np.mean(init_fin[1]),np.mean(init_fin[2])]
-		init_fin_event_result['std']=[np.std(init_fin[0]),np.std(init_fin[1]),np.std(init_fin[2])]
-		init_fin_event_result['max']=[np.max(init_fin[0]),np.max(init_fin[1]),np.max(init_fin[2])]
+			init_fin_event_result = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list_init_fin, re_calc = re_calc)
 		
 		event_state = [test_id,[init,sad,fin]]
 		
@@ -329,7 +313,8 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		the nearest neighbor is determined through the atomic configuration in
 		initial_config_data
 	"""
-	
+	if atom_list == []:
+		return {"ave":[np.nan,np.nan,np.nan],"std":[np.nan,np.nan,np.nan],"max":[np.nan,np.nan,np.nan]}
 	# check if the strain_results_dict.pkl nn_results_dict.pkl file exists or not
 	if local is False:
 		path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
@@ -404,7 +389,13 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 			f.close()
 		print "atomic strain and displacement results saved into pkl file as dictionary"
 	print "done strain and displacement calculations!"
-	return (strain, disp_results)
+	init_sad_event_result = dict()
+	init_sad = event_strain_disp(strain, disp_results)
+	init_sad_event_result['ave']=[np.mean(init_sad[0]),np.mean(init_sad[1]),np.mean(init_sad[2])]
+	init_sad_event_result['std']=[np.std(init_sad[0]),np.std(init_sad[1]),np.std(init_sad[2])]
+	init_sad_event_result['max']=[np.max(init_sad[0]),np.max(init_sad[1]),np.max(init_sad[2])]
+	
+	return init_sad_event_result
 
 
 def local_strain_calculator_atom_orth(initial_config_atom, saddle_config_atom, atom_item, box_dim):

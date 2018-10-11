@@ -3,7 +3,7 @@ This ART data analyzer package is a python package containing a easy-to-use comm
 1) parallel computation of running Activation and Relaxation Techniques (ART) simulation jobs to generate ART data wrapped by python
 2) post-processing ART data by filtering, calculating, visualizing, correlating various physical quantities change for large amount of event searches.
 
-Currently, version 0.0.1 supports the automation of parallel ART simulations running and post-processing of ART data. Future versions should implement the automation of integrating with LAMMPS, Ovito, pymatgen.
+Currently, version 1.0 supports the automation of parallel ART simulations running and post-processing of ART data. Future versions should implement the automation of integrating with LAMMPS, Ovito, pymatgen.
 
 This python package is originally developed by Dr Lin Li group at University of Alabama and now has been integrated into part of artn project in gitlab.
 Lead developer: Dr Liang Tian.
@@ -154,14 +154,14 @@ Goal of future version:
 The long term goal of this ART_data_analyzer package would be integrated into a bigger package that establish a true multiscale and multiphysics framework (with the option of being multi-stage machine learning to simplify complex physics details at each length scale for the purpose of minimizing computational cost for accelerating rational material design without losing the multi-scale physics picture) for at least the material design of metallic glass community, by integrating LAMMPS (already has a nice python wrapper), ART, ART_data_analyzer (python ART wrapper, post-processing with machine learning tool, maybe incorporating some features of data processing and visualization software Ovito by its python wrapper), Materials project python API pymatgen to query some materials properties data, 3D STZ dynamics. “Art is never finished, only abandoned.”
 
 
-Scientific objective:
+Scientific background:
 The overall goal is to correlate the local change in atomic structures with the change of local properties (e.g. activation energy) by sampling sufficient number of local potential energy basins to reproduce the correct statistical distributions as training data for the machine learning model to train correlation models, by triggering various local events. By forcing to trigger a group of atoms surrounding central atom initially away from their minimum (1st step of ART perform minimization, after minimization, the configuration should be very close to the lammps input configuration to guarantee we are getting the activation energy barrier of initial lammps input sample), the ARTn 1st order saddle point convergence algorithm will climb the potential energy landscape to its nearest saddle state. During the initial to saddle process, the machine learning outlier detection algorithm will check how many atoms are inelastically rearranged during this trigger to estimate the number of involved atom(size of flow defect) during the activation of a potential hypothetical STZ (since we only call it STZ when it actually rearrange). Each triggering event corresponds to a potential individual STZ being activated to rearrange their atoms. Each activation of individual STZ is corresponding to a local beta relaxation. With these information probed by ART, thinking reversely, the physics is that the thermal energy kT relative to STZ activation energy distribution will determine the percentage of STZs will be activated. The percolation of activated STZs will transfer from local atomic rearrangement events, i.e. activation of individual STZs, into a global atomic rearrangement event associated with/characterized by a large global potential energy decrease, i.e. alpha relaxation, to finish the glass transition into their equilibrium liquid-like phase as we increase the thermal energy kT to activate more STZs. The critical temperature is the glass transition temperature. The deformation of glass is affected by this process since the external stress can not only directly change the rate of STZ activation in STZ dynamics, but also stress should be able to change the activation energy distribution probed by ART by changing the atomic structures, which is usually not incorporated. It is possible that stress may not change the average activation energy barrier though it can distort the potential energy landscape. It is also interesting to see softness (average rearrangement displacement magnitude of local involved atoms in STZs or nonaffine displacement D2min) correlated with local shear modulus, and activation energy.
 
 
 
 This package has the following modules and sub-packages:
 
-/src contains all the source code of various libraries, majorly in python, it may also contains other code such as Matlab or C code
+/src contains all the source code of various libraries, majorly in python, it may also contains other code such as Matlab or C code in the future
 
 data_reader: extracting data from various data file formats
 

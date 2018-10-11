@@ -223,7 +223,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	if re_calc is False:
 		if os.path.exists(path_to_voro_results):
 			return json.load(open(path_to_voro_results,"r"))
-	
+	print "re_calculating"
 	path_to_file_ini = path_to_test_dir + '/' + init + ".dump"
 	path_to_file_sad = path_to_test_dir + '/' + sad + ".dump"
 	path_to_file_fin = path_to_test_dir + '/' + fin + ".dump"
@@ -242,11 +242,11 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	if atom_list == "local":
 		if os.path.exists(path_to_local_atom_index):
 			# for local mode of voronoi calculation
-			print ("\n starting local mode voronoi calculations")
+			print ("\n starting local mode voronoi calculations for local atoms during init to sad process")
 			local_atom_list = json.load(open(path_to_local_atom_index,"r"))
-			if local_atom_list == []:
+			if local_atom_list["init_sad"] == []:
 				return None
-			atom_list = [atom + 1 for atom in local_atom_list]
+			atom_list = [atom + 1 for atom in local_atom_list["init_sad"]]
 		else:
 			raise Exception("local_atoms_index.json does not exist in %s"%path_to_curr_event)
 
