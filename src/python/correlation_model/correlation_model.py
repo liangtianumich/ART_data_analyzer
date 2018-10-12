@@ -24,10 +24,10 @@ def shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param, sa
 	for all final selected events in list_of_test_id
 	"""
 	path_to_shear_vol_strain_init_sad_png = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_sad_all_events.png")
-	#path_to_shear_vol_strain_init_fin_png = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_fin_all_events.png")
-	#path_to_shear_vol_strain_sad_fin_png = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_sad_fin_all_events.png")
+	path_to_shear_vol_strain_init_fin_png = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_fin_all_events.png")
+	path_to_shear_vol_strain_sad_fin_png = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_sad_fin_all_events.png")
 	
-	path_to_shear_vol_init_sad = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_sad_all_events.json")
+	#path_to_shear_vol_init_sad = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_sad_all_events.json")
 	#path_to_shear_vol_sad_fin = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_sad_fin_all_events.json")
 	#path_to_shear_vol_init_fin = os.path.join(path_to_data_dir, "shear_vol_strain_cluster_init_fin_all_events.json")
 	
@@ -35,36 +35,93 @@ def shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param, sa
 	num_of_proc = input_param["num_of_proc"]
 	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_cluster_averaged_shear_vol_strain(x, path_to_data_dir),num_of_proc)
 	
-	event_shear_strain, event_vol_strain, event_disp = [], [], []
-	for result in result_list:
-		if result is None:
-			continue
-		event_shear_strain.append(result[0])
-		event_vol_strain.append(result[1])
-		#event_disp.append(result[2])
+	init_sad_shear_strain, init_sad_vol_strain, init_sad_disp = [], [], []
+	sad_fin_shear_strain, sad_fin_vol_strain, sad_fin_disp = [], [], []
+	init_fin_shear_strain, init_fin_vol_strain, init_fin_disp = [], [], []
 	
-	sample_size = len(event_shear_strain)
-	X= np.array(event_shear_strain).reshape(sample_size,1)
-	y= np.array(event_vol_strain)
+	for result in result_list:
+		init_sad_shear_strain.append(result[0][0])
+		init_sad_vol_strain.append(result[1][0])
+		init_sad_disp.append(reault[2][0])
+		
+		sad_fin_shear_strain.append(result[0][1])
+		sad_fin_vol_strain.append(result[1][1])
+		sad_fin_disp.append(reault[2][1])
+		
+		init_fin_shear_strain.append(result[0][2])
+		init_fin_vol_strain.append(result[1][2])
+		init_fin_disp.append(reault[2][2])
+
+	
+	# init_sad
+	sample_size = len(init_sad_shear_strain)
+	X_init_sad = np.array(init_sad_shear_strain).reshape(sample_size,1)
+	y_init_sad = np.array(init_sad_vol_strain)
 	#regr = LinearSVR(random_state=1, dual=True, epsilon=0.0)
 	regr = linear_model.LinearRegression()
-	regr.fit(X, y)
-	print "slope is", regr.coef_
-	shear_X = np.linspace(min(event_shear_strain), max(event_shear_strain),100)
-	fit_X= shear_X.reshape(100,1)
-	predict_y = regr.predict(fit_X)
+	regr.fit(X_init_sad, y_init_sad)
+	print "init_sad process, the slope is", regr.coef_
 	
-	x_fit = fit_X.flatten()
-	y_fit = predict_y.flatten()
+	init_sad_shear_X = np.linspace(min(init_sad_shear_strain), max(init_sad_shear_strain),100)
+	init_sad_fit_X = init_sad_shear_X.reshape(100,1)
+	init_sad_predict_y = regr.predict(init_sad_fit_X)
 	
-	plot_2d_train_fit(path_to_shear_vol_strain_init_sad_png, event_shear_strain, event_vol_strain, x_fit, y_fit, "local event averaged shear strain", "local event averaged volumetric strain")
-	#plot_2d(path_to_shear_vol_strain_init_sad_png, event_shear_strain, event_vol_strain, "local event averaged shear strain","local event averaged volumetric strain")
+	init_sad_x_fit = init_sad_fit_X.flatten()
+	init_sad_y_fit = init_sad_predict_y.flatten()
 	
-	if save_results is True:
-		with open(path_to_shear_vol_init_sad, 'w') as f:
-			json.dump(result_list, f)
-			f.close()
-	print "done finding cluster averaged shear strain vs cluster averaged volumetric strain for all final selected events in list_of_test_id!"
+	plot_2d_train_fit(path_to_shear_vol_strain_init_sad_png, init_sad_shear_strain, init_sad_vol_strain, init_sad_x_fit, init_sad_y_fit, "local atoms averaged shear strain during init_sad", "local atoms averaged volumetric strain during init_sad")
+	
+	# sad_fin
+	sample_size = len(sad_fin_shear_strain)
+	X_sad_fin = np.array(sad_fin_shear_strain).reshape(sample_size,1)
+	y_sad_fin = np.array(sad_fin_vol_strain)
+	#regr = LinearSVR(random_state=1, dual=True, epsilon=0.0)
+	regr = linear_model.LinearRegression()
+	regr.fit(X_sad_fin, y_sad_fin)
+	print "sad_fin process, the slope is", regr.coef_
+	
+	sad_fin_shear_X = np.linspace(min(sad_fin_shear_strain), max(sad_fin_shear_strain),100)
+	sad_fin_fit_X = sad_fin_shear_X.reshape(100,1)
+	sad_fin_predict_y = regr.predict(sad_fin_fit_X)
+	
+	sad_fin_x_fit = sad_fin_fit_X.flatten()
+	sad_fin_y_fit = sad_fin_predict_y.flatten()
+	
+	plot_2d_train_fit(path_to_shear_vol_strain_sad_fin_png, sad_fin_shear_strain, sad_fin_vol_strain, sad_fin_x_fit, sad_fin_y_fit, "local atoms averaged shear strain during sad_fin", "local atoms averaged volumetric strain during sad_fin")
+	
+	# init_fin
+	sample_size = len(init_fin_shear_strain)
+	X_init_fin = np.array(init_fin_shear_strain).reshape(sample_size,1)
+	y_init_fin = np.array(init_fin_vol_strain)
+	#regr = LinearSVR(random_state=1, dual=True, epsilon=0.0)
+	regr = linear_model.LinearRegression()
+	regr.fit(X_init_fin, y_init_fin)
+	print "init_fin process, the slope is", regr.coef_
+	
+	init_fin_shear_X = np.linspace(min(init_fin_shear_strain), max(init_fin_shear_strain),100)
+	init_fin_fit_X = init_fin_shear_X.reshape(100,1)
+	init_fin_predict_y = regr.predict(init_fin_fit_X)
+	
+	init_fin_x_fit = init_fin_fit_X.flatten()
+	init_fin_y_fit = init_fin_predict_y.flatten()
+	
+	plot_2d_train_fit(path_to_shear_vol_strain_init_fin_png, init_fin_shear_strain, init_fin_vol_strain, init_fin_x_fit, init_fin_y_fit, "local atoms averaged shear strain during init_fin", "local atoms averaged volumetric strain during init_fin")
+	
+	
+	#result_init_sad = [init_sad_shear_strain,init_sad_vol_strain,init_sad_disp]
+	#result_sad_fin = [sad_fin_shear_strain,sad_fin_vol_strain, sad_fin_disp]
+	#result_init_fin = [init_fin_shear_strain,init_fin_vol_strain,init_fin_disp]
+	#if save_results is True:
+	#	with open(path_to_shear_vol_init_sad, 'w') as f:
+	#		json.dump(result_init_sad, f)
+	#		f.close()
+	#	with open(path_to_shear_vol_sad_fin, 'w') as f:
+	#		json.dump(result_sad_fin, f)
+	#		f.close()
+	#	with open(path_to_shear_vol_init_fin, 'w') as f:
+	#		json.dump(result_init_fin, f)
+	#		f.close()
+	print "done finding local atoms averaged shear strain vs local atoms averaged volumetric strain for init_sad, sad_fin, init_fin of all final selected events in list_of_test_id!"
 	
 def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir):
 	if 'test' in event[0]:
@@ -81,94 +138,114 @@ def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir):
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	if os.path.exists(path_to_local_atom_index):
 		local_atoms = json.load(open(path_to_local_atom_index),'r')
-		if local_atoms == []:
-			return None
-		local_atoms_index = [atom + 1 for atom in local_atoms]
+		local_atoms_index_init_sad = [atom + 1 for atom in local_atoms["init_sad"]]
+		local_atoms_index_sad_fin = [atom + 1 for atom in local_atoms["sad_fin"]]
+		local_atoms_index_init_fin = [atom + 1 for atom in local_atoms["init_fin"]]
 	else:
 		raise Exception("indexes of cluster local atoms has not been determined, please find the cluster local atoms first")
 	
-	path_to_init_sad = path_to_curr_event + "/init_sad"
-	path_to_all_strain_results_init_sad = path_to_init_sad + "/strain_results_dict.pkl"
-	path_to_all_displacement_init_sad = path_to_init_sad + "/displacement_results_dict.pkl"
-	
-	path_to_strain_results_init_sad = path_to_init_sad + "/local_strain_results_dict.pkl"
-	path_to_displacement_init_sad = path_to_init_sad + "/local_displacement_results_dict.pkl"
-	
-	if os.path.exists(path_to_strain_results_init_sad) and os.path.exists(path_to_displacement_init_sad):
-		strains = pickle.load(open(path_to_strain_results_init_sad,'r'))
-		disp = pickle.load(open(path_to_displacement_init_sad,'r'))
-		local_strains = strains.values()
-		local_shear_strain = [strain[1] for strain in local_strains]
-		local_vol_strain = [strain[0] for strain in local_strains]
-		local_disp = disp.values()
-	elif os.path.exists(path_to_all_strain_results_init_sad) and os.path.exists(path_to_all_displacement_init_sad):
-		all_strains = pickle.load(open(path_to_all_strain_results_init_sad,'r'))
-		all_disp = pickle.load(open(path_to_all_displacement_init_sad,'r'))
-		local_strains = [all_strains[k] for k in local_atoms_index if k in all_strains]
-		local_shear_strain = [strain[1] for strain in local_strains]
-		local_vol_strain = [strain[0] for strain in local_strains]
-		local_disp = [all_disp[k] for k in local_atoms_index if k in all_disp]
+	# init to sad
+	if local_atoms_index_init_sad == []:
+		cluster_ave_shear_strain_init_sad = np.nan
+		cluster_ave_vol_strain_init_sad = np.nan
+		cluster_ave_disp_init_sad = np.nan
 	else:
-		raise Exception("No strain and displacement results found in %s"%path_to_init_sad)
-	cluster_ave_shear_strain = np.mean(local_shear_strain)
-	cluster_ave_vol_strain = np.mean(local_vol_strain)
-	cluster_ave_disp = np.mean(local_disp)
+		path_to_init_sad = path_to_curr_event + "/init_sad"
+		path_to_all_strain_results_init_sad = path_to_init_sad + "/strain_results_dict.pkl"
+		path_to_all_displacement_init_sad = path_to_init_sad + "/displacement_results_dict.pkl"
+		
+		path_to_strain_results_init_sad = path_to_init_sad + "/local_strain_results_dict.pkl"
+		path_to_displacement_init_sad = path_to_init_sad + "/local_displacement_results_dict.pkl"
+		
+		if os.path.exists(path_to_strain_results_init_sad) and os.path.exists(path_to_displacement_init_sad):
+			strains = pickle.load(open(path_to_strain_results_init_sad,'r'))
+			disp = pickle.load(open(path_to_displacement_init_sad,'r'))
+			local_strains = strains.values()
+			local_shear_strain = [strain[1] for strain in local_strains]
+			local_vol_strain = [strain[0] for strain in local_strains]
+			local_disp = disp.values()
+		elif os.path.exists(path_to_all_strain_results_init_sad) and os.path.exists(path_to_all_displacement_init_sad):
+			all_strains = pickle.load(open(path_to_all_strain_results_init_sad,'r'))
+			all_disp = pickle.load(open(path_to_all_displacement_init_sad,'r'))
+			local_strains = [all_strains[k] for k in local_atoms_index_init_sad if k in all_strains]
+			local_shear_strain = [strain[1] for strain in local_strains]
+			local_vol_strain = [strain[0] for strain in local_strains]
+			local_disp = [all_disp[k] for k in local_atoms_index_init_sad if k in all_disp]
+		else:
+			raise Exception("No strain and displacement results found in %s"%path_to_init_sad)
+		cluster_ave_shear_strain_init_sad = np.mean(local_shear_strain)
+		cluster_ave_vol_strain_init_sad = np.mean(local_vol_strain)
+		cluster_ave_disp_init_sad = np.mean(local_disp)
 	
-	"""
-	path_to_sad_fin = path_to_curr_event + "/sad_fin"
-	path_to_all_strain_results_sad_fin = path_to_sad_fin + "/strain_results_dict.pkl"
-	path_to_all_displacement_sad_fin = path_to_sad_fin + "/displacement_results_dict.pkl"
-	
-	path_to_strain_results_sad_fin = path_to_sad_fin + "/local_strain_results_dict.pkl"
-	path_to_displacement_sad_fin = path_to_sad_fin + "/local_displacement_results_dict.pkl"
-	
-	if os.path.exists(path_to_strain_results_sad_fin) and os.path.exists(path_to_displacement_sad_fin):
-		strains_2 = pickle.load(open(path_to_strain_results_sad_fin,'r'))
-		disp_2 = pickle.load(open(path_to_displacement_sad_fin,'r'))
-		local_strains_2 = strains_2.values()
-		local_shear_strain_2 = [strain[1] for strain in local_strains_2]
-		local_vol_strain_2 = [strain[0] for strain in local_strains_2]
-		local_disp_2 = disp_2.values()
-	elif os.path.exists(path_to_all_strain_results_sad_fin) and os.path.exists(path_to_all_displacement_sad_fin):
-		all_strains_2 = pickle.load(open(path_to_all_strain_results_sad_fin,'r'))
-		all_disp_2 = pickle.load(open(path_to_all_displacement_sad_fin,'r'))
-		local_strains_2 = [all_strains_2[k] for k in local_atoms_index if k in all_strains_2]
-		local_shear_strain_2 = [strain[1] for strain in local_strains_2]
-		local_vol_strain_2 = [strain[0] for strain in local_strains_2]
-		local_disp_2 = [all_disp_2[k] for k in local_atoms_index if k in all_disp_2]
+	# sad to fin
+	if local_atoms_index_sad_fin == []:
+		cluster_ave_shear_strain_sad_fin = np.nan
+		cluster_ave_vol_strain_sad_fin = np.nan
+		cluster_ave_disp_sad_fin = np.nan
 	else:
-		raise Exception("No strain and displacement results found in %s"%path_to_sad_fin)
-	cluster_ave_shear_strain_2 = np.mean(local_shear_strain_2)
-	cluster_ave_vol_strain_2 = np.mean(local_vol_strain_2)
-	cluster_ave_disp_2 = np.mean(local_disp_2)
+		path_to_sad_fin = path_to_curr_event + "/sad_fin"
+		path_to_all_strain_results_sad_fin = path_to_sad_fin + "/strain_results_dict.pkl"
+		path_to_all_displacement_sad_fin = path_to_sad_fin + "/displacement_results_dict.pkl"
+		
+		path_to_strain_results_sad_fin = path_to_sad_fin + "/local_strain_results_dict.pkl"
+		path_to_displacement_sad_fin = path_to_sad_fin + "/local_displacement_results_dict.pkl"
+		
+		if os.path.exists(path_to_strain_results_sad_fin) and os.path.exists(path_to_displacement_sad_fin):
+			strains_2 = pickle.load(open(path_to_strain_results_sad_fin,'r'))
+			disp_2 = pickle.load(open(path_to_displacement_sad_fin,'r'))
+			local_strains_2 = strains_2.values()
+			local_shear_strain_2 = [strain[1] for strain in local_strains_2]
+			local_vol_strain_2 = [strain[0] for strain in local_strains_2]
+			local_disp_2 = disp_2.values()
+		elif os.path.exists(path_to_all_strain_results_sad_fin) and os.path.exists(path_to_all_displacement_sad_fin):
+			all_strains_2 = pickle.load(open(path_to_all_strain_results_sad_fin,'r'))
+			all_disp_2 = pickle.load(open(path_to_all_displacement_sad_fin,'r'))
+			local_strains_2 = [all_strains_2[k] for k in local_atoms_index_sad_fin if k in all_strains_2]
+			local_shear_strain_2 = [strain[1] for strain in local_strains_2]
+			local_vol_strain_2 = [strain[0] for strain in local_strains_2]
+			local_disp_2 = [all_disp_2[k] for k in local_atoms_index_sad_fin if k in all_disp_2]
+		else:
+			raise Exception("No strain and displacement results found in %s"%path_to_sad_fin)
+		cluster_ave_shear_strain_sad_fin = np.mean(local_shear_strain_2)
+		cluster_ave_vol_strain_sad_fin = np.mean(local_vol_strain_2)
+		cluster_ave_disp_sad_fin = np.mean(local_disp_2)
 	
-	path_to_init_fin = path_to_curr_event + "/init_fin"
-	path_to_all_strain_results_init_fin = path_to_init_fin + "/strain_results_dict.pkl"
-	path_to_all_displacement_init_fin = path_to_init_fin + "/displacement_results_dict.pkl"
-	
-	path_to_strain_results_init_fin = path_to_init_fin + "/local_strain_results_dict.pkl"
-	path_to_displacement_init_fin = path_to_init_fin + "/local_displacement_results_dict.pkl"
-	
-	if os.path.exists(path_to_strain_results_init_fin) and os.path.exists(path_to_displacement_init_fin):
-		strains_3 = pickle.load(open(path_to_strain_results_init_fin,'r'))
-		disp_3 = pickle.load(open(path_to_displacement_init_fin,'r'))
-		local_strains_3 = strains_3.values()
-		local_shear_strain_3 = [strain[1] for strain in local_strains_3]
-		local_vol_strain_3 = [strain[0] for strain in local_strains_3]
-		local_disp_3 = disp_3.values()
-	elif os.path.exists(path_to_all_strain_results_init_fin) and os.path.exists(path_to_all_displacement_init_fin):
-		all_strains_3 = pickle.load(open(path_to_all_strain_results_init_fin,'r'))
-		all_disp_3 = pickle.load(open(path_to_all_displacement_init_fin,'r'))
-		local_strains_3 = [all_strains_3[k] for k in local_atoms_index if k in all_strains_3]
-		local_shear_strain_3 = [strain[1] for strain in local_strains_3]
-		local_vol_strain_3 = [strain[0] for strain in local_strains_3]
-		local_disp_3 = [all_disp_3[k] for k in local_atoms_index if k in all_disp_3]
+	# init to fin
+	if local_atoms_index_init_fin == []:
+		cluster_ave_shear_strain_init_fin = np.nan
+		cluster_ave_vol_strain_init_fin = np.nan
+		cluster_ave_disp_init_fin = np.nan
 	else:
-		raise Exception("No strain and displacement results found in %s"%path_to_init_fin)
-	cluster_ave_shear_strain_3 = np.mean(local_shear_strain_3)
-	cluster_ave_vol_strain_3 = np.mean(local_vol_strain_3)
-	cluster_ave_disp_3 = np.mean(local_disp_3)
-	"""
+		path_to_init_fin = path_to_curr_event + "/init_fin"
+		path_to_all_strain_results_init_fin = path_to_init_fin + "/strain_results_dict.pkl"
+		path_to_all_displacement_init_fin = path_to_init_fin + "/displacement_results_dict.pkl"
+		
+		path_to_strain_results_init_fin = path_to_init_fin + "/local_strain_results_dict.pkl"
+		path_to_displacement_init_fin = path_to_init_fin + "/local_displacement_results_dict.pkl"
+		
+		if os.path.exists(path_to_strain_results_init_fin) and os.path.exists(path_to_displacement_init_fin):
+			strains_3 = pickle.load(open(path_to_strain_results_init_fin,'r'))
+			disp_3 = pickle.load(open(path_to_displacement_init_fin,'r'))
+			local_strains_3 = strains_3.values()
+			local_shear_strain_3 = [strain[1] for strain in local_strains_3]
+			local_vol_strain_3 = [strain[0] for strain in local_strains_3]
+			local_disp_3 = disp_3.values()
+		elif os.path.exists(path_to_all_strain_results_init_fin) and os.path.exists(path_to_all_displacement_init_fin):
+			all_strains_3 = pickle.load(open(path_to_all_strain_results_init_fin,'r'))
+			all_disp_3 = pickle.load(open(path_to_all_displacement_init_fin,'r'))
+			local_strains_3 = [all_strains_3[k] for k in local_atoms_index_init_fin if k in all_strains_3]
+			local_shear_strain_3 = [strain[1] for strain in local_strains_3]
+			local_vol_strain_3 = [strain[0] for strain in local_strains_3]
+			local_disp_3 = [all_disp_3[k] for k in local_atoms_index_init_fin if k in all_disp_3]
+		else:
+			raise Exception("No strain and displacement results found in %s"%path_to_init_fin)
+		cluster_ave_shear_strain_init_fin = np.mean(local_shear_strain_3)
+		cluster_ave_vol_strain_init_fin = np.mean(local_vol_strain_3)
+		cluster_ave_disp_init_fin = np.mean(local_disp_3)
+	
+	cluster_ave_shear_strain = [cluster_ave_shear_strain_init_sad,cluster_ave_shear_strain_sad_fin,cluster_ave_shear_strain_init_fin]
+	cluster_ave_vol_strain = [cluster_ave_vol_strain_init_sad,cluster_ave_vol_strain_sad_fin,cluster_ave_vol_strain_init_fin]
+	cluster_ave_disp = [cluster_ave_disp_init_sad, cluster_ave_disp_sad_fin, cluster_ave_disp_init_fin]
 	
 	return [cluster_ave_shear_strain, cluster_ave_vol_strain, cluster_ave_disp, event]
 
