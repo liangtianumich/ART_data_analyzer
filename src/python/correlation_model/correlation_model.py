@@ -41,10 +41,10 @@ def shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param, sa
 	
 	for result in result_list:
 		# remove np.nan in results
-		shear_strain_result = np.array(result[0])[~np.isnan(np.array(result[0]))].tolist()
-		vol_strain_result = np.array(result[1])[~np.isnan(np.array(result[1]))].tolist()
-		disp_result = np.array(result[2])[~np.isnan(np.array(result[2]))].tolist()
-				
+		shear_strain_result = result[0]
+		vol_strain_result = result[1]
+		disp_result = result[2]
+		
 		init_sad_shear_strain.append(shear_strain_result[0])
 		init_sad_vol_strain.append(vol_strain_result[0])
 		init_sad_disp.append(disp_result[0])
@@ -56,7 +56,18 @@ def shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param, sa
 		init_fin_shear_strain.append(shear_strain_result[2])
 		init_fin_vol_strain.append(vol_strain_result[2])
 		init_fin_disp.append(disp_result[2])
-
+	
+	init_sad_shear_strain = np.array(init_sad_shear_strain)[~np.isnan(np.array(init_sad_shear_strain))].tolist()
+	init_sad_vol_strain = np.array(init_sad_vol_strain)[~np.isnan(np.array(init_sad_vol_strain))].tolist()
+	init_sad_disp = np.array(init_sad_disp)[~np.isnan(np.array(init_sad_disp))].tolist()
+	
+	sad_fin_shear_strain = np.array(sad_fin_shear_strain)[~np.isnan(np.array(sad_fin_shear_strain))].tolist()
+	sad_fin_vol_strain = np.array(sad_fin_vol_strain)[~np.isnan(np.array(sad_fin_vol_strain))].tolist()
+	sad_fin_disp = np.array(sad_fin_disp)[~np.isnan(np.array(sad_fin_disp))].tolist()
+	
+	init_fin_shear_strain = np.array(init_fin_shear_strain)[~np.isnan(np.array(init_fin_shear_strain))].tolist()
+	init_fin_vol_strain = np.array(init_fin_vol_strain)[~np.isnan(np.array(init_fin_vol_strain))].tolist()
+	init_fin_disp = np.array(init_fin_disp)[~np.isnan(np.array(init_fin_disp))].tolist()
 	
 	# init_sad
 	sample_size = len(init_sad_shear_strain)
@@ -142,7 +153,7 @@ def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir):
 	print "path_to_current_event:", path_to_curr_event
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	if os.path.exists(path_to_local_atom_index):
-		local_atoms = json.load(open(path_to_local_atom_index),'r')
+		local_atoms = json.load(open(path_to_local_atom_index,'r'))
 		local_atoms_index_init_sad = [atom + 1 for atom in local_atoms["init_sad"]]
 		local_atoms_index_sad_fin = [atom + 1 for atom in local_atoms["sad_fin"]]
 		local_atoms_index_init_fin = [atom + 1 for atom in local_atoms["init_fin"]]
@@ -367,7 +378,7 @@ def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir):
 	print "path_to_current_event:", path_to_curr_event
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	if os.path.exists(path_to_local_atom_index):
-		local_atoms = json.load(open(path_to_local_atom_index),'r')
+		local_atoms = json.load(open(path_to_local_atom_index,'r'))
 		local_atoms_index_init_sad = [atom + 1 for atom in local_atoms["init_sad"]]
 		local_atoms_index_sad_fin = [atom + 1 for atom in local_atoms["sad_fin"]]
 		local_atoms_index_init_fin = [atom + 1 for atom in local_atoms["init_fin"]]
