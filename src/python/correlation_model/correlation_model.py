@@ -768,9 +768,9 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 		sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
 		init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
 	
-	init_sad = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold, return_index = True)
-	sad_fin = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold, return_index = True)
-	init_fin = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold, return_index = True)
+	init_sad = outlier_detector(path_to_init_sad,init_sad_X,init_sad_y,model,residual_threshold, return_index = True)
+	sad_fin = outlier_detector(path_to_sad_fin,sad_fin_X,sad_fin_y,model,residual_threshold, return_index = True)
+	init_fin = outlier_detector(path_to_init_fin,init_fin_X,init_fin_y,model,residual_threshold, return_index = True)
 	
 	final_results = {"init_sad":init_sad,"sad_fin":sad_fin,"init_fin":init_fin}
 	
@@ -808,9 +808,9 @@ def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residua
 		sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
 		init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
 	
-	init_sad = outlier_detector(init_sad_X,init_sad_y,model,residual_threshold)
-	sad_fin = outlier_detector(sad_fin_X,sad_fin_y,model,residual_threshold)
-	init_fin = outlier_detector(init_fin_X,init_fin_y,model,residual_threshold)
+	init_sad = outlier_detector(path_to_init_sad,init_sad_X,init_sad_y,model,residual_threshold)
+	sad_fin = outlier_detector(path_to_sad_fin,sad_fin_X,sad_fin_y,model,residual_threshold)
+	init_fin = outlier_detector(path_to_init_fin,init_fin_X,init_fin_y,model,residual_threshold)
 
 	return [init_sad, sad_fin, init_fin]
 
@@ -834,14 +834,14 @@ def get_strain_disp(path_to_test_dir):
 			
 	
 	
-def outlier_detector(feature,target,model=None,residual_threshold = 0.5,return_index = False):
+def outlier_detector(path,feature,target,model=None,residual_threshold = 0.5,return_index = False):
 	if model == "linear_model" or model == None:
-		return outlier_linear_detector(feature,target,residual_threshold,return_index)
+		return outlier_linear_detector(path,feature,target,residual_threshold,return_index)
 	if model == "LinearSVR":
 		# use SVM classification to find inliers, then count outliers
-		return outlier_linearSVR_detector(feature,target,residual_threshold,return_index)
+		return outlier_linearSVR_detector(path,feature,target,residual_threshold,return_index)
 
-def outlier_linear_detector(feature, target, residual_threshold = 0.5, return_index = False):
+def outlier_linear_detector(path,feature, target, residual_threshold = 0.5, return_index = False):
 	"""
 	Input argument:
 		model: str
@@ -895,17 +895,27 @@ def outlier_linearSVC_detector(feature,target,residual_threshold, return_index =
 	slope = regr.coef_[0]
 	return (num_of_outlier, slope)
 
-def outlier_linearSVR_detector(feature, target, residual_threshold, return_index = False):
+def outlier_linearSVR_detector(path,feature, target, residual_threshold, return_index = False, save_image = False):
 	"""
 	this function detect the outlier by using the LinearSVR with linear kernel
 	with the fitted coefficient
 	"""
 	target = (np.array(target)).flatten()
+	
 	residual_threshold = (np.max(target) -np.min(target))*residual_threshold
 	regr = LinearSVR(random_state=1, dual=True, epsilon=0.0)
 	regr.fit(feature, target)
-	
 	predict_data = regr.predict(feature)
+	if save_image is True:
+		plt.figure()
+		plt.plot(feature, target,'ro',markersize=1.5,label="training data")
+		plt.plot(feature, predict_data,'b', linewidth=3, label="predicted data by LinearSVR")
+		plt.legend()
+		plt.xlabel("Atomic displacement Angstrom",fontsize=18)
+		plt.ylabel("Atomic von Mises shear strain",fontsize=18)
+		plt.savefig(os.path.join(path,"linearSVR_disp_shear_strain.png"))
+		plt.close()
+	
 	i=0
 	num_of_outlier = 0
 	outlier_index = []
