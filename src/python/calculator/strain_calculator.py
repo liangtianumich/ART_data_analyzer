@@ -331,7 +331,15 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 	if re_calc is False:
 		if os.path.exists(path_to_strain_results) and os.path.exists(path_to_displacement):
 			print "atomic strain and displacement has already been calculated and saved in pkl file, skip"
-			return (pickle.load(open(path_to_strain_results,'r')), pickle.load(open(path_to_displacement,'r')))
+			local_strains = pickle.load(open(path_to_strain_results,'r'))
+			local_disp = pickle.load(open(path_to_displacement,'r'))
+			init_sad = event_strain_disp(local_strains, local_disp)
+			init_sad_event_result = dict()
+			init_sad_event_result['ave']=[np.mean(init_sad[0]),np.mean(init_sad[1]),np.mean(init_sad[2])]
+			init_sad_event_result['std']=[np.std(init_sad[0]),np.std(init_sad[1]),np.std(init_sad[2])]
+			init_sad_event_result['max']=[np.max(init_sad[0]),np.max(init_sad[1]),np.max(init_sad[2])]
+			return init_sad_event_result
+
 		if local is True:
 			if os.path.exists(path_to_all_strain_results) and os.path.exists(path_to_all_displacement):
 				all_strains = pickle.load(open(path_to_all_strain_results,'r'))
