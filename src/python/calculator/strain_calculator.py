@@ -338,7 +338,13 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 				all_disp = pickle.load(open(path_to_all_displacement,'r'))
 				local_strains = dict((k, all_strains[k]) for k in atom_list if k in all_strains)
 				local_disp = dict((k, all_disp[k]) for k in atom_list if k in all_disp)
-				return (local_strains, local_disp)
+				
+				init_sad = event_strain_disp(local_strains, local_disp)
+				init_sad_event_result = dict()
+				init_sad_event_result['ave']=[np.mean(init_sad[0]),np.mean(init_sad[1]),np.mean(init_sad[2])]
+				init_sad_event_result['std']=[np.std(init_sad[0]),np.std(init_sad[1]),np.std(init_sad[2])]
+				init_sad_event_result['max']=[np.max(init_sad[0]),np.max(init_sad[1]),np.max(init_sad[2])]
+				return init_sad_event_result
 
 	print "starting calculating atomic strain and displacement magnitude"
 	strain = dict()

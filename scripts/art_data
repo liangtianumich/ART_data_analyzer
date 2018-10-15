@@ -112,7 +112,7 @@ def print_input_help():
 	    default None
 		if None, calculate all atoms in the configuration
 		if local, calculate the local atoms, there must be a file called local_atoms_index.json
-		existing for each event, this local_atoms_index.json is generated automatically
+		existing for init_sad, sad_fin, init_fin of each event, this local_atoms_index.json is generated automatically
 		by the machine learning outlier detection of local atoms.
 	
 	  # keys below are used for the machine learning outlier detection of local atoms
@@ -539,7 +539,8 @@ def print_desc_help():
 	 art_data -s SETTINGS --find_local_index rel_residual_threshold,
 	 will find the local atoms indexes for all filtered events in interested 
 	 tests list_of_test_id, and save them in a file called local_atoms_index.json 
-	 inside each event directory.
+	 inside each event directory. This file save a dictionary with keys
+	 "init_sad", "sad_fin", "init_fin" that contains the list of local atoms indexes 
 	 
 	 where rel_residual_threshold is the critical relative residual threshold found in step 4. 
 	 
