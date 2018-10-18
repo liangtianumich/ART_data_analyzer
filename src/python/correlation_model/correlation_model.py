@@ -689,7 +689,86 @@ def single_event_triggered_cluster_atoms_index(event, path_to_data_dir, box_dim,
 			json.dump(cluster_atoms_id,f)
 			f.close()
 	return cluster_atoms_id
+
+def all_events_central_atom_finder(path_to_data_dir, input_param):
 	
+	list_of_test_id = input_param["list_of_test_id"]
+	num_of_proc = input_param["num_of_proc"]
+	re_calc = input_param["re_calc"]
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_central_atom_index(x, path_to_data_dir, save_results=True, re_calc=re_calc),num_of_proc)
+	print "done finding all central atom indexes for all final selected events in list_of_test_id!"
+
+def single_event_central_atom_index(event, path_to_data_dir, save_results=True, re_calc = False):
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	path_to_curr_result = path_to_test_dir + "/results"
+	init,sad,fin = event[1][0], event[1][1], event[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	
+	print "path_to_current_event:", path_to_curr_event
+	path_to_central_atom_index = path_to_curr_event + "/central_atom_index.json"
+	
+	if re_calc is False:
+		if os.path.exists(path_to_central_atom_index):
+			return json.load(open(path_to_central_atom_index,'r'))
+	print "re_calculating"
+	test_sad_central_atom_id = read_from_art_log_file(path_to_test_dir)
+	sad_id = int(sad[3:])
+	for curr_sad in test_sad_central_atom_id:
+		if curr_sad == sad_id:
+			central_atom_id = test_sad_central_atom_id[curr_sad]
+			break	
+	if save_results is True:
+		with open(path_to_central_atom_index,'w') as f:
+			json.dump([central_atom_id],f)
+			f.close()
+	return [central_atom_id]
+
+def all_events_max_disp_atom_finder(path_to_data_dir, input_param):
+	list_of_test_id = input_param["list_of_test_id"]
+	num_of_proc = input_param["num_of_proc"]
+	re_calc = input_param["re_calc"]
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_max_disp_atom_index(x, path_to_data_dir, save_results=True, re_calc=re_calc),num_of_proc)
+	print "done finding all max displacement atom indexes for all final selected events in list_of_test_id!"
+
+def single_event_max_disp_atom_index(event, path_to_data_dir, save_results=True, re_calc = False):
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
+	path_to_curr_result = path_to_test_dir + "/results"
+	init,sad,fin = event[1][0], event[1][1], event[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	
+	print "path_to_current_event:", path_to_curr_event
+	path_to_max_disp_atom_index = path_to_curr_event + "/max_disp_atom_index.json"
+	
+	if re_calc is False:
+		if os.path.exists(path_to_max_disp_atom_index):
+			return json.load(open(path_to_max_disp_atom_index,'r'))
+	
+	print "re_calculating"
+	path_to_init_sad = path_to_curr_event + "/init_sad"
+	path_to_displacement = path_to_init_sad + "/displacement_results_dict.pkl"
+	
+	if os.path.exists(path_to_displacement):
+		event_disp = pickle.load(open(path_to_displacement,'r'))
+		index_max_disp = max(event_disp.iteritems(), key=operator.itemgetter(1))[0]
+		print "max displacement atom index from init to sad:", index_max_disp
+	else:
+		raise Exception("no displacement_results_dict.pkl found in current event")
+
+	if save_results is True:
+		with open(path_to_max_disp_atom_index,'w') as f:
+			json.dump([index_max_disp],f)
+			f.close()
+	return [index_max_disp]
 	
 def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
 	"""

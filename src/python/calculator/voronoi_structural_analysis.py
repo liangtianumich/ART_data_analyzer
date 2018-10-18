@@ -20,7 +20,7 @@ ICO_LIKE = [[0,6,0,1],[0,5,2,1],[0,4,4,1],[0,3,6,1],[0,3,6,2],[0,2,8,2],[0,2,8,3
 #GUM = [[0,6,0,3], [0,5,2,3], [0,5,2,4], [0,4,4,4], [0,4,4,5], [0,3,6,5], [0,3,6,6], [0,3,6,7], [0,3,6,8], \
 #[0,6,0,4], [0,6,0,5], [0,5,2,5], [0,5,2,6], [0,4,4,6], [0,4,4,7], [0,4,4,8], [0,4,4,9]]
 
-def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
+def run_all_tests_voronoi_calculator(path_to_data_dir, input_param, return_volume = False):
 	
 	list_of_test_id = input_param["list_of_test_id"]
 	num_of_proc = input_param["num_of_proc"]
@@ -31,11 +31,11 @@ def run_all_tests_voronoi_calculator(path_to_data_dir, input_param):
 	periodic = input_param["periodic"]
 	re_calc = input_param["re_calc"]
 	
-	operation = lambda x: single_event_voronoi_calculator(x, path_to_data_dir, box_range, cut_off, atom_list = atom_list, periodic = periodic, re_calc = re_calc)
+	operation = lambda x: single_event_voronoi_calculator(x, path_to_data_dir, box_range, cut_off, atom_list = atom_list, periodic = periodic, re_calc = re_calc, return_volume = return_volume)
 	
 	result_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc = num_of_proc)
 	
-	print ("done voronoi index calculation for all interested tests!")
+	print ("done voronoi cell calculations for all interested tests!")
 
 def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 	
@@ -187,7 +187,7 @@ def single_event_voronoi_classifier(event_state, path_to_data_dir):
 	
 	return voronoi_class
 	
-def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cut_off, atom_list = None,max_edge_count=8, periodic = [True,True,True], save_results = True, re_calc = False):
+def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cut_off, atom_list = None,max_edge_count=8, periodic = [True,True,True], save_results = True, re_calc = False, return_volume=False):
 	"""
 	this function calculates the voronoi index of user specified atoms stored in atom_list
 	for all configurations (init,sad,fin) in a single event that are specified in the event state
@@ -220,9 +220,18 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 		os.makedirs(path_to_curr_event)
 	
 	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
+	path_to_volume_results = path_to_curr_event + "/voronoi_volume_results.json"
+	
 	if re_calc is False:
-		if os.path.exists(path_to_voro_results):
+		if return_volume is True:
+			if os.path.exists(path_to_voro_results) and os.path.exists(path_to_volume_results):
+				return (json.load(open(path_to_voro_results,"r")), json.load(open(path_to_volume_results,"r")))
+			else:
+				raise Exception("User specify return_volume of voronoi cell is True, however, either voronoi_index_results.json or voronoi_volume_results.json does not exists!")
+		elif os.path.exists(path_to_voro_results):
 			return json.load(open(path_to_voro_results,"r"))
+		
+			
 	print "re_calculating"
 	path_to_file_ini = path_to_test_dir + '/' + init + ".dump"
 	path_to_file_sad = path_to_test_dir + '/' + sad + ".dump"
@@ -235,6 +244,11 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	box_dim = [box_range[0][1] - box_range[0][0], box_range[1][1] - box_range[1][0], box_range[2][1] - box_range[2][0]]
 	
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
+	path_to_initial_atom_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
+	path_to_central_atom_index = path_to_curr_event + "/central_atom_index.json"
+	path_to_max_disp_atom_index = path_to_curr_event + "/max_disp_atom_index.json"
+	
+	#path_to_initial_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	
 	if atom_list is None:
 		atom_list = (initial_config_data["item"]).tolist()
@@ -249,10 +263,44 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			atom_list = [atom + 1 for atom in local_atom_list["init_sad"]]
 		else:
 			raise Exception("local_atoms_index.json does not exist in %s"%path_to_curr_event)
-
-	init_voronoi_index = single_config_voronoi_calculator(initial_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
-	sad_voronoi_index = single_config_voronoi_calculator(saddle_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
-	fin_voronoi_index = single_config_voronoi_calculator(final_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
+	elif atom_list == "initial":
+		if os.path.exists(path_to_initial_atom_index):
+			print ("\n starting initial triggered cluster atoms voronoi calculations")
+			initial_atom_list = json.load(open(path_to_initial_atom_index,"r"))
+			if initial_atom_list == []:
+				return None
+			atom_list = initial_atom_list
+		else:
+			raise Exception("initial_cluster_atoms_index.json does not exist in %s"%path_to_curr_event)
+	elif atom_list == "central":
+		if os.path.exists(path_to_central_atom_index):
+			print ("\n starting triggered central atom voronoi calculations")
+			central_atom_list = json.load(open(path_to_central_atom_index,"r"))
+			if central_atom_list == []:
+				return None
+			atom_list = central_atom_list
+		else:
+			raise Exception("central_atom_index.json does not exist in %s"%path_to_curr_event)
+	elif atom_list == "max_disp":
+		if os.path.exists(path_to_max_disp_atom_index):
+			print ("\n starting the max disp atom voronoi calculations")
+			max_disp_atom_list = json.load(open(path_to_max_disp_atom_index,"r"))
+			if max_disp_atom_list == []:
+				return None
+			atom_list = max_disp_atom_list
+		else:
+			raise Exception("max_disp_atom_index.json does not exist in %s"%path_to_curr_event)
+		
+		
+	if return_volume is True:
+		init_voronoi_index, init_volumes = single_config_voronoi_calculator(initial_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic, return_volume=True)
+		sad_voronoi_index, sad_volumes = single_config_voronoi_calculator(saddle_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic, return_volume=True)
+		fin_voronoi_index, fin_volumes = single_config_voronoi_calculator(final_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic,return_volume=True)
+		voronoi_volume = {"init":init_volumes, "sad":sad_volumes, "fin":fin_volumes}
+	else:
+		init_voronoi_index = single_config_voronoi_calculator(initial_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
+		sad_voronoi_index = single_config_voronoi_calculator(saddle_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
+		fin_voronoi_index = single_config_voronoi_calculator(final_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic)
 	
 	voronoi_index = {"init":init_voronoi_index, "sad":sad_voronoi_index, "fin":fin_voronoi_index}
 	
@@ -261,10 +309,17 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 		with open(path_to_voro_results, 'w') as f:
 			json.dump(voronoi_index,f)
 			f.close()
-	return voronoi_index
+		if return_volume is True:
+			with open(path_to_volume_results, 'w') as f:
+				json.dump(voronoi_volume,f)
+				f.close()
+	
+	if return_volume is True:
+		return (voronoi_index, voronoi_volume)
+	else:
+		return voronoi_index
 
-
-def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None, max_edge_count=8, periodic=[True,True,True]):
+def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None, max_edge_count=8, periodic=[True,True,True],return_volume=False):
 	"""
 	this function calculates the voronoi index for atoms in atom_list
 	
@@ -286,6 +341,9 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 		in voronoi index, this can be specified from user's experience for their problems
 		or calculated from the maximum of all max_edge_count for all particles
 	
+	return_volume: Boolean
+		if True, return the voronoi cell volume of each atomic particle along with their voronoi indexes
+
 	return:
 		voronoi_index: list of lists
 			voronoi_index for each atom in atom_list
@@ -303,10 +361,12 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 	all_results = pyvoro.compute_voronoi(points, box_range, dispersion, periodic=periodic)
 	
 	results = [all_results[i] for i in int_points_index]
-	
-	voronoi_index = count_faces(results, max_edge_count)
-	
-	return voronoi_index
+	if return_volume is True:
+		voronoi_index, volumes = count_faces(results, max_edge_count, True)
+		return (voronoi_index, volumes)
+	else:
+		voronoi_index = count_faces(results, max_edge_count, False)
+		return voronoi_index
 
 def classify_voronoi_index(list_of_voronoi_index):
 	"""
@@ -331,7 +391,7 @@ def classify_voronoi_index(list_of_voronoi_index):
 			list_of_voronoi_class.append(2)
 	return list_of_voronoi_class			
 		
-def count_faces(results, max_edge_count=8):
+def count_faces(results, max_edge_count=8, return_volume=False):
 	"""
 	input:
 		results: a list
@@ -349,6 +409,12 @@ def count_faces(results, max_edge_count=8):
 		the first two elements will always be zero.
 	"""
 	all_voronoi_index = []
+	
+	if return_volume is True:
+		volumes = []
+		for point in results:
+			volumes.append(point["volume"])
+		
 	for point in results:
 		voronoi_index = []
 		edges = []
@@ -362,7 +428,11 @@ def count_faces(results, max_edge_count=8):
 			else:
 				voronoi_index.append(0)
 		all_voronoi_index.append(voronoi_index)
-	return all_voronoi_index
+	
+	if return_volume is True:
+		return (all_voronoi_index, volumes)
+	else:
+		return all_voronoi_index
 			
 	
 			

@@ -471,6 +471,7 @@ def triggered_atom_is_max_disp(path_to_data_dir, event):
 	the triggered atom stored inside the bart.sh
 	"""
 	print "event:", event[0],event[1][0],event[1][1],event[1][2]
+	init, sad, fin = event[1][0],event[1][1],event[1][2]
 	
 	if 'test' in event[0]:
 		test_id = int(event[0][4:])
@@ -479,11 +480,16 @@ def triggered_atom_is_max_disp(path_to_data_dir, event):
 	
 	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
 	
-	#path_to_test_dir = path_to_data_dir + event[0]
+	test_sad_central_atom_id = read_from_art_log_file(path_to_test_dir)
+	sad_id = int(sad[3:])
+	for curr_sad in test_sad_central_atom_id:
+		if curr_sad == sad_id:
+			central_atom_id = test_sad_central_atom_id[curr_sad]
+			break
+	triggered_atom_index = [central_atom_id]
+	print "current event central atom id:", triggered_atom_index
 	
-	triggered_atom_index = read_from_art_input_file(path_to_test_dir)
-	
-	init, sad, fin = event[1][0],event[1][1],event[1][2]
+	# triggered_atom_index = read_from_art_input_file(path_to_test_dir)
 	
 	path_to_event = path_to_test_dir + "/results/event_" + init + "_" + sad + "_" + fin
 	
