@@ -108,9 +108,9 @@ def print_input_help():
 		number of processors used to run a task
 	    default, max number of cores, mp.cpu_count()		
 	  
-	  atom_list: None or 'local', 'initial','central','max_disp'
+	  atom_list: None or 'all', 'local', 'initial','central','max_disp' or a list
 	    default None
-		if None, calculate all atoms in the configuration
+		if None or 'all', calculate all atoms in the configuration
 		if 'local', calculate the local atoms, there must be a file called local_atoms_index.json
 		existing for init_sad, sad_fin, init_fin of each event, this local_atoms_index.json is generated automatically
 		by the machine learning outlier detection of local atoms.
@@ -119,7 +119,8 @@ def print_input_help():
 		if 'central', calculate the initial central atom saved in the file called central_atom_index.json
 		for each filtered event in list_of_test_id
 		if 'max_disp', calculate the max displacement atom saved in the file called max_disp_atom_index.json
-		for each filtered event in list_of_test_id		
+		for each filtered event in list_of_test_id
+		if type of atom_list is list, then the list stores the item id of atoms
 	
 	  # keys below are used for the machine learning outlier detection of local atoms
 	  

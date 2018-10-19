@@ -205,53 +205,81 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 		if not os.path.exists(path_to_sad_fin):
 			os.makedirs(path_to_sad_fin)
 		if not os.path.exists(path_to_init_fin):
-			os.makedirs(path_to_init_fin)		
+			os.makedirs(path_to_init_fin)
 		
-		if test_atom_list is None:
-			test_atom_list = (initial_config_data["item"]).tolist()
-		
-		# if atom_list is a dict,e.g. {"local":4}
-		# find the atom list of item_id of 4 local atoms around triggered atom
-		if type(test_atom_list) == dict or test_atom_list == "local":
+		if type(test_atom_list) == dict:
+			# if atom_list is a dict,e.g. {"local":4}
+			# find the atom list of item_id of 4 local atoms around triggered atom
 			print "\n starting local mode strain calculations"
-			if type(test_atom_list) == dict:
-				triggered_atom_index = read_from_art_input_file(test)
-				num_of_involved_atom = test_atom_list["local"]
-				# triggered atom is only related to initial config, for sad_fin, 
-				# also use the initial config to find the local NN index
-				atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
-				
-				atom_list_init_sad = atom_list
-				atom_list_sad_fin = atom_list
-				atom_list_init_fin = atom_list
-				print "NN item_id list (distance in increasing order including triggering atoms) of the triggering atoms"
-			elif test_atom_list == "local":
-				path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
-				if os.path.exists(path_to_local_atom_index):
-					local_atom_list = json.load(open(path_to_local_atom_index,"r"))
-					atom_list_init_sad = [atom + 1 for atom in local_atom_list["init_sad"]]
-					atom_list_sad_fin = [atom + 1 for atom in local_atom_list["sad_fin"]]
-					atom_list_init_fin = [atom + 1 for atom in local_atom_list["init_fin"]]
-				else:
-					raise Exception("local_atoms_index.json file not exists")
+			triggered_atom_index = read_from_art_input_file(test)
+			num_of_involved_atom = test_atom_list["local"]
+			# triggered atom is only related to initial config, for sad_fin, 
+			# also use the initial config to find the local NN index
+			atom_list = event_local_atom_index(initial_config_data, triggered_atom_index, num_of_involved_atom, path_to_curr_event, box_dim, re_calc=re_calc)
 			
-			print "local strain calculations, atoms will be calculated during init to sad:", atom_list_init_sad
-			print "local strain calculations, atoms will be calculated during sad to fin:", atom_list_sad_fin
-			print "local strain calculations, atoms will be calculated during init to fin:", atom_list_init_fin
-			
-			print "\n initial to saddle: \n"
-			init_sad_event_result = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list_init_sad,local=True,re_calc = re_calc)
-			print "\n saddle to final: \n"
-			sad_fin_event_result = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list_sad_fin,local=True,re_calc = re_calc)
-			print "\n initial to final: \n"
-			init_fin_event_result = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list_init_fin,local=True,re_calc = re_calc)
+			atom_list_init_sad = atom_list
+			atom_list_sad_fin = atom_list
+			atom_list_init_fin = atom_list
+			print "NN item_id list (distance in increasing order including triggering atoms) of the triggering atoms"
+		elif test_atom_list == "local":
+			print "\n starting local mode strain calculations"
+			path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
+			if os.path.exists(path_to_local_atom_index):
+				local_atom_list = json.load(open(path_to_local_atom_index,"r"))
+				atom_list_init_sad = [atom + 1 for atom in local_atom_list["init_sad"]]
+				atom_list_sad_fin = [atom + 1 for atom in local_atom_list["sad_fin"]]
+				atom_list_init_fin = [atom + 1 for atom in local_atom_list["init_fin"]]
+			else:
+				raise Exception("local_atoms_index.json file not exists")	
+		elif test_atom_list == "initial":
+			path_to_initial_atom_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
+			if os.path.exists(path_to_initial_atom_index):
+				initial_atoms = json.load(open(path_to_initial_atom_index,'r'))
+				atom_list_init_sad = initial_atoms
+				atom_list_sad_fin = initial_atoms
+				atom_list_init_fin = initial_atoms
+			else:
+				raise Exception("indexes of initial cluster atoms has not been determined, please find the initial cluster atoms first by --find_triggered_cluster_atoms_index")
+		elif test_atom_list == "central":
+			path_to_central_atom_index = path_to_curr_event + "/central_atom_index.json"
+			if os.path.exists(path_to_central_atom_index):
+				central_atoms = json.load(open(path_to_central_atom_index,'r'))
+				atom_list_init_sad = central_atoms
+				atom_list_sad_fin = central_atoms
+				atom_list_init_fin = central_atoms
+			else:
+				raise Exception("indexes of central atom has not been determined, please find the central atom first by --find_central_index")
+		elif test_atom_list == "max_disp":
+			path_to_max_disp_atom_index = path_to_curr_event + "/max_disp_atom_index.json"
+			if os.path.exists(path_to_max_disp_atom_index):
+				max_disp_atoms = json.load(open(path_to_max_disp_atom_index,'r'))
+				atom_list_init_sad = max_disp_atoms
+				atom_list_sad_fin = max_disp_atoms
+				atom_list_init_fin = max_disp_atoms
+			else:
+				raise Exception("indexes of max displaced atom during init to sad has not been determined, please find the max_disp atom first by --find_max_disp_index")		
+		elif (test_atom_list is None) or (test_atom_list == 'all'):
+			test_atom_list = (initial_config_data["item"]).tolist()
+			atom_list_init_sad = test_atom_list
+			atom_list_sad_fin = test_atom_list
+			atom_list_init_fin = test_atom_list
+		elif type(test_atom_list) == list:
+			atom_list_init_sad = test_atom_list
+			atom_list_sad_fin = test_atom_list
+			atom_list_init_fin = test_atom_list
 		else:
-			print "\n initial to saddle: \n"
-			init_sad_event_result = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list_init_sad, re_calc = re_calc)
-			print "\n saddle to final: \n"
-			sad_fin_event_result = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list_sad_fin, re_calc = re_calc)
-			print "\n initial to final: \n"
-			init_fin_event_result = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list_init_fin, re_calc = re_calc)
+			raise Exception("user specified atom_list is not recognized, please try a new atom_list")
+		
+		print "strain calculations, selected atoms during init to sad:", atom_list_init_sad
+		print "strain calculations, selected atoms during sad to fin:", atom_list_sad_fin
+		print "strain calculations, selected atoms during init to fin:", atom_list_init_fin
+		
+		print "\n initial to saddle: \n"
+		init_sad_event_result = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list_init_sad,re_calc = re_calc)
+		print "\n saddle to final: \n"
+		sad_fin_event_result = local_strain_calculator_orth(saddle_config_data, final_config_data, cut_off_distance, box_dim, path_to_sad_fin, atom_list = atom_list_sad_fin,re_calc = re_calc)
+		print "\n initial to final: \n"
+		init_fin_event_result = local_strain_calculator_orth(initial_config_data, final_config_data, cut_off_distance, box_dim, path_to_init_fin, atom_list = atom_list_init_fin,re_calc = re_calc)
 		
 		event_state = [test_id,[init,sad,fin]]
 		
@@ -264,7 +292,7 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 			f.close()
 	return test_results
 
-def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, local=False, save_results = True, re_calc = False):
+def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_test_dir, atom_list = None, save_results = True, re_calc = False):
 	"""
 	this function calculate various local atomic strain quantities for atoms whose item id stored inside
 	the atom_list under periodic boundary condition for orthogonal simulation box
@@ -299,7 +327,10 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 	
 	save_results: boolean, default True
 		if True, save calculated local strains results into a pkl file
-		
+	
+	re_calc: boolean, default False
+		if True, re-do the calculations
+
 	returns:
 		strain: dict()
 			a dictionary with key being the item id number of the interested atom
@@ -316,43 +347,25 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 	if atom_list == []:
 		return {"ave":[np.nan,np.nan,np.nan],"std":[np.nan,np.nan,np.nan],"max":[np.nan,np.nan,np.nan]}
 	# check if the strain_results_dict.pkl nn_results_dict.pkl file exists or not
-	if local is False:
-		path_to_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
-		path_to_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
-	elif local is True:
-		path_to_all_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
-		path_to_all_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
-		
-		path_to_strain_results = path_to_test_dir + "/local_strain_results_dict.pkl"
-		path_to_displacement = path_to_test_dir + "/local_displacement_results_dict.pkl"
-	else:
-		raise Exception("local mode is either True or False")
+	path_to_all_strain_results = path_to_test_dir + "/strain_results_dict.pkl"
+	path_to_all_displacement = path_to_test_dir + "/displacement_results_dict.pkl"
 	
 	if re_calc is False:
-		if os.path.exists(path_to_strain_results) and os.path.exists(path_to_displacement):
-			print "atomic strain and displacement has already been calculated and saved in pkl file, skip"
-			local_strains = pickle.load(open(path_to_strain_results,'r'))
-			local_disp = pickle.load(open(path_to_displacement,'r'))
+		if os.path.exists(path_to_all_strain_results) and os.path.exists(path_to_all_displacement):
+			print "atomic strain and displacement has already been calculated for all atoms and saved in pkl file, skip"
+			all_strains = pickle.load(open(path_to_all_strain_results,'r'))
+			all_disp = pickle.load(open(path_to_all_displacement,'r'))
+			local_strains = dict((k, all_strains[k]) for k in atom_list if k in all_strains)
+			local_disp = dict((k, all_disp[k]) for k in atom_list if k in all_disp)
+			
 			init_sad = event_strain_disp(local_strains, local_disp)
 			init_sad_event_result = dict()
 			init_sad_event_result['ave']=[np.mean(init_sad[0]),np.mean(init_sad[1]),np.mean(init_sad[2])]
 			init_sad_event_result['std']=[np.std(init_sad[0]),np.std(init_sad[1]),np.std(init_sad[2])]
 			init_sad_event_result['max']=[np.max(init_sad[0]),np.max(init_sad[1]),np.max(init_sad[2])]
 			return init_sad_event_result
-
-		if local is True:
-			if os.path.exists(path_to_all_strain_results) and os.path.exists(path_to_all_displacement):
-				all_strains = pickle.load(open(path_to_all_strain_results,'r'))
-				all_disp = pickle.load(open(path_to_all_displacement,'r'))
-				local_strains = dict((k, all_strains[k]) for k in atom_list if k in all_strains)
-				local_disp = dict((k, all_disp[k]) for k in atom_list if k in all_disp)
-				
-				init_sad = event_strain_disp(local_strains, local_disp)
-				init_sad_event_result = dict()
-				init_sad_event_result['ave']=[np.mean(init_sad[0]),np.mean(init_sad[1]),np.mean(init_sad[2])]
-				init_sad_event_result['std']=[np.std(init_sad[0]),np.std(init_sad[1]),np.std(init_sad[2])]
-				init_sad_event_result['max']=[np.max(init_sad[0]),np.max(init_sad[1]),np.max(init_sad[2])]
-				return init_sad_event_result
+		else:
+			raise Exception("either strain_results_dict.pkl or displacement_results_dict.pkl does not exists in %s"%path_to_test_dir)
 
 	print "starting calculating atomic strain and displacement magnitude"
 	strain = dict()
@@ -391,14 +404,13 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 		# or a list
 		local_strains = local_strain_calculator_atom_orth(NN_initial, NN_saddle, item, box_dim)
 		strain[item] = local_strains
-			
 	
 	if save_results is True:
 		print "begin saving atomic strain and displacement dict results into pkl file"
-		with open(path_to_strain_results, 'w') as f:
+		with open(path_to_all_strain_results, 'w') as f:
 			pickle.dump(strain,f)
 			f.close()
-		with open(path_to_displacement, 'w') as f:
+		with open(path_to_all_displacement, 'w') as f:
 			pickle.dump(disp_results,f)
 			f.close()
 		print "atomic strain and displacement results saved into pkl file as dictionary"
