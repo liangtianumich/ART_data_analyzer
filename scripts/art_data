@@ -11,9 +11,9 @@ from calculator.event_energy_calculator import *
 from calculator.strain_calculator import strain_calculator_run_all_tests_mp
 from calculator.voronoi_structural_analysis import run_all_tests_voronoi_calculator, run_all_tests_voronoi_classifier
 from visualizer.strain_visualizer import events_strain_visualization,strain_events_stats_visualization
-from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp, all_events_triggered_cluster_atoms_finder, shear_strain_vol_strain_cluster_all_events,shear_strain_vol_strain_local_atom_all_events
+from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp, shear_strain_vol_strain_cluster_all_events,shear_strain_vol_strain_local_atom_all_events
 from data_reader import *
-from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no
+from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no,all_events_triggered_cluster_atoms_finder,all_events_central_atom_finder, all_events_max_disp_atom_finder
 #from lammps.run import run_lammps
 from ART_wrapper.run import run_art_mp, set_up_input_files, delete_art_tests_files, delete_art_tests, check_tests_status
 
@@ -108,12 +108,18 @@ def print_input_help():
 		number of processors used to run a task
 	    default, max number of cores, mp.cpu_count()		
 	  
-	  atom_list: None or 'local'
+	  atom_list: None or 'local', 'initial','central','max_disp'
 	    default None
 		if None, calculate all atoms in the configuration
-		if local, calculate the local atoms, there must be a file called local_atoms_index.json
+		if 'local', calculate the local atoms, there must be a file called local_atoms_index.json
 		existing for init_sad, sad_fin, init_fin of each event, this local_atoms_index.json is generated automatically
 		by the machine learning outlier detection of local atoms.
+		if 'initial', calculate the initial triggered cluster atoms saved in the file called initial_cluster_atoms_index.json
+		for each filtered event in list_of_test_id
+		if 'central', calculate the initial central atom saved in the file called central_atom_index.json
+		for each filtered event in list_of_test_id
+		if 'max_disp', calculate the max displacement atom saved in the file called max_disp_atom_index.json
+		for each filtered event in list_of_test_id		
 	
 	  # keys below are used for the machine learning outlier detection of local atoms
 	  
@@ -751,8 +757,15 @@ if __name__ == "__main__":
   
   parser.add_argument('--find_residual', help='find the relative residual threshold for outlier detection in atomic displacement vs strain for all events in specified tests', action = "store_true")
   parser.add_argument('--find_local_index', nargs=1,metavar=('rel_residual_threshold'), type=float, help='find the local atom index in all events in specified tests, where rel_residual_threshold is the user specified relative threshold residual')
-  parser.add_argument('--find_triggered_cluster_atoms_index', help='find the initial triggered cluster atoms index in all filtered events in list_of_test_id tests, saving cluster atom indexes into file in each event directory', action = "store_true")
+  parser.add_argument('--find_triggered_cluster_atoms_index', help='find the initial triggered cluster atoms indexes for all filtered events in list_of_test_id tests, saving cluster atom indexes under each event directory', action = "store_true")
+  parser.add_argument('--find_central_index', help='find the central atom index for all filtered events in list_of_test_id tests, saving central atom index under each event directory', action = "store_true")
+  parser.add_argument('--find_max_disp_index', help='find the max displaced atom index during the initial to saddle process for all filtered events in list_of_test_id tests, saving max_disp atom index under each event directory',action = "store_true")
+  
   parser.add_argument('--local', help='invoke calculations on local atoms that are determined by --find_local_index', action="store_true")
+  parser.add_argument('--initial', help='invoke calculations on initial triggered cluster atoms that are determined by --find_triggered_cluster_atoms_index', action="store_true")
+  parser.add_argument('--central', help='invoke calculations on central atom that are determined by --find_central_index', action="store_true")
+  parser.add_argument('--max_disp', help='invoke calculations on max displaced atoms during init to sad that are determined by --find_max_disp_index', action="store_true")
+ 
   parser.add_argument('--cluster_shear_vol', help='combine with --strain --local to plot the local event cluster averaged shear strain vs cluster averaged volumetric strain for all filtered events in list_of_test_id', action="store_true")
   parser.add_argument('--atom_shear_vol', help='combine with --strain --local to plot the shear strain vs volumetric strain of all local atoms for all filtered events in list_of_test_id', action="store_true")
   parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all filtered events in specified tests', action = "store_true")
@@ -937,14 +950,23 @@ if __name__ == "__main__":
 			exit()
 	
 	if args.strain:
+		if sum([args.local, args.initial, args.central, args.max_disp])>=2:
+			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp")
 		if args.local:
 			input_param["atom_list"] = "local"
-			if args.cluster_shear_vol:
-				shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param)
-				exit()
-			if args.atom_shear_vol:
-				shear_strain_vol_strain_local_atom_all_events(path_to_data_dir, input_param)
-				exit()
+		elif args.initial:
+			input_param["atom_list"] = "initial"
+		elif args.central:
+			input_param["atom_list"] = "central"
+		elif args.max_disp:
+			input_param["atom_list"] = "max_disp"
+		
+		if args.cluster_shear_vol:
+			shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param)
+			exit()
+		if args.atom_shear_vol:
+			shear_strain_vol_strain_local_atom_all_events(path_to_data_dir, input_param)
+			exit()
 		if (args.calc and args.v) or (args.calc and args.stats) or (args.stats and args.v):
 			raise Exception("operations on strain can not be more than 1 at one time")
 		if args.calc:
@@ -977,6 +999,14 @@ if __name__ == "__main__":
 	if args.find_triggered_cluster_atoms_index:
 		all_events_triggered_cluster_atoms_finder(path_to_data_dir, input_param)
 		exit()
+	
+	if args.find_central_index:
+		all_events_central_atom_finder(path_to_data_dir, input_param)
+		exit()
+	if args.find_max_disp_index:
+		all_events_max_disp_atom_finder(path_to_data_dir, input_param)
+		exit()
+	
 	if args.events_local_atoms:		
 		events_local_atoms(path_to_data_dir, input_param)
 		exit()
@@ -986,8 +1016,17 @@ if __name__ == "__main__":
 		exit()
 	
 	if args.voro:
+		if sum([args.local, args.initial, args.central, args.max_disp])>=2:
+			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp")
 		if args.local:
 			input_param["atom_list"] = "local"
+		elif args.initial:
+			input_param["atom_list"] = "initial"
+		elif args.central:
+			input_param["atom_list"] = "central"
+		elif args.max_disp:
+			input_param["atom_list"] = "max_disp"
+
 		if args.calc:
 			input_param['cut_off'] = input_param['voro_cut_off']
 			start_time = time.time()
