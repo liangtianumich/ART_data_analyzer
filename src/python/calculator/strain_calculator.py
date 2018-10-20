@@ -5,7 +5,7 @@ import multiprocessing as mp
 import pickle
 import json
 from functools import partial
-from util import Atom, NN_finder_all, event_strain_disp,event_local_atom_index,read_from_art_input_file, data_dir_to_test_dir
+from util import Atom, NN_finder_all, event_strain_disp,event_local_atom_index,read_from_art_input_file, data_dir_to_test_dir,get_list_of_atoms_from_atom_list
 from event_selector import event_selection
 from data_reader import *
 from visualizer.strain_visualizer import *
@@ -210,7 +210,7 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 		if type(test_atom_list) == dict:
 			# if atom_list is a dict,e.g. {"local":4}
 			# find the atom list of item_id of 4 local atoms around triggered atom
-			print "\n starting local mode strain calculations"
+			print "\n starting calculating strain for %s atoms around the triggered central atom"%test_atom_list["local"]
 			triggered_atom_index = read_from_art_input_file(test)
 			num_of_involved_atom = test_atom_list["local"]
 			# triggered atom is only related to initial config, for sad_fin, 
@@ -221,58 +221,11 @@ def strain_calculator_run_single_test(test, cut_off_distance, box_dim, atom_list
 			atom_list_sad_fin = atom_list
 			atom_list_init_fin = atom_list
 			print "NN item_id list (distance in increasing order including triggering atoms) of the triggering atoms"
-		elif test_atom_list == "local":
-			print "\n starting local mode strain calculations"
-			path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
-			if os.path.exists(path_to_local_atom_index):
-				local_atom_list = json.load(open(path_to_local_atom_index,"r"))
-				atom_list_init_sad = [atom + 1 for atom in local_atom_list["init_sad"]]
-				atom_list_sad_fin = [atom + 1 for atom in local_atom_list["sad_fin"]]
-				atom_list_init_fin = [atom + 1 for atom in local_atom_list["init_fin"]]
-			else:
-				raise Exception("local_atoms_index.json file not exists")	
-		elif test_atom_list == "initial":
-			path_to_initial_atom_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
-			if os.path.exists(path_to_initial_atom_index):
-				initial_atoms = json.load(open(path_to_initial_atom_index,'r'))
-				atom_list_init_sad = initial_atoms
-				atom_list_sad_fin = initial_atoms
-				atom_list_init_fin = initial_atoms
-			else:
-				raise Exception("indexes of initial cluster atoms has not been determined, please find the initial cluster atoms first by --find_triggered_cluster_atoms_index")
-		elif test_atom_list == "central":
-			path_to_central_atom_index = path_to_curr_event + "/central_atom_index.json"
-			if os.path.exists(path_to_central_atom_index):
-				central_atoms = json.load(open(path_to_central_atom_index,'r'))
-				atom_list_init_sad = central_atoms
-				atom_list_sad_fin = central_atoms
-				atom_list_init_fin = central_atoms
-			else:
-				raise Exception("indexes of central atom has not been determined, please find the central atom first by --find_central_index")
-		elif test_atom_list == "max_disp":
-			path_to_max_disp_atom_index = path_to_curr_event + "/max_disp_atom_index.json"
-			if os.path.exists(path_to_max_disp_atom_index):
-				max_disp_atoms = json.load(open(path_to_max_disp_atom_index,'r'))
-				atom_list_init_sad = max_disp_atoms
-				atom_list_sad_fin = max_disp_atoms
-				atom_list_init_fin = max_disp_atoms
-			else:
-				raise Exception("indexes of max displaced atom during init to sad has not been determined, please find the max_disp atom first by --find_max_disp_index")		
-		elif (test_atom_list is None) or (test_atom_list == 'all'):
-			test_atom_list = (initial_config_data["item"]).tolist()
-			atom_list_init_sad = test_atom_list
-			atom_list_sad_fin = test_atom_list
-			atom_list_init_fin = test_atom_list
-		elif type(test_atom_list) == list:
-			atom_list_init_sad = test_atom_list
-			atom_list_sad_fin = test_atom_list
-			atom_list_init_fin = test_atom_list
+			print "selected atoms during init to sad:", atom_list_init_sad
+			print "selected atoms during sad to fin:", atom_list_sad_fin
+			print "selected atoms during init to fin:", atom_list_init_fin
 		else:
-			raise Exception("user specified atom_list is not recognized, please try a new atom_list")
-		
-		print "strain calculations, selected atoms during init to sad:", atom_list_init_sad
-		print "strain calculations, selected atoms during sad to fin:", atom_list_sad_fin
-		print "strain calculations, selected atoms during init to fin:", atom_list_init_fin
+			atom_list_init_sad, atom_list_sad_fin, atom_list_init_fin = get_list_of_atoms_from_atom_list(path_to_curr_event, initial_config_data, test_atom_list)
 		
 		print "\n initial to saddle: \n"
 		init_sad_event_result = local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_off_distance, box_dim, path_to_init_sad, atom_list = atom_list_init_sad,re_calc = re_calc)

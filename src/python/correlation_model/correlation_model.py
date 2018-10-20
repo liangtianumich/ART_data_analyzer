@@ -14,7 +14,7 @@ from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import NearestNeighbors
 from visualizer.general_visualizer import plot_histogram_3, plot_2d, plot_2d_train_fit
-from util import operation_on_events, Configuration, state_energy_barrier, data_dir_to_test_dir, read_from_art_log_file, read_cluster_radius_from_bart
+from util import operation_on_events, Configuration, state_energy_barrier, data_dir_to_test_dir, read_from_art_log_file, read_cluster_radius_from_bart, get_list_of_atoms_from_atom_list
 from data_reader import read_data_from_file
 from periodic_kdtree import PeriodicCKDTree
 
@@ -153,54 +153,10 @@ def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir, atom
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	
 	print "path_to_current_event:", path_to_curr_event
-	if atom_list == "local":
-		path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
-		if os.path.exists(path_to_local_atom_index):
-			local_atoms = json.load(open(path_to_local_atom_index,'r'))
-			select_atoms_index_init_sad = [atom + 1 for atom in local_atoms["init_sad"]]
-			select_atoms_index_sad_fin = [atom + 1 for atom in local_atoms["sad_fin"]]
-			select_atoms_index_init_fin = [atom + 1 for atom in local_atoms["init_fin"]]
-		else:
-			raise Exception("indexes of cluster local atoms has not been determined, please find the cluster local atoms first by --find_local_index")
-	elif atom_list == "initial":
-		path_to_initial_atom_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
-		if os.path.exists(path_to_initial_atom_index):
-			initial_atoms = json.load(open(path_to_initial_atom_index,'r'))
-			select_atoms_index_init_sad = initial_atoms
-			select_atoms_index_sad_fin = initial_atoms
-			select_atoms_index_init_fin = initial_atoms
-		else:
-			raise Exception("indexes of initial cluster atoms has not been determined, please find the initial cluster atoms first by --find_triggered_cluster_atoms_index")
-	elif atom_list == "central":
-		path_to_central_atom_index = path_to_curr_event + "/central_atom_index.json"
-		if os.path.exists(path_to_central_atom_index):
-			central_atoms = json.load(open(path_to_central_atom_index,'r'))
-			select_atoms_index_init_sad = central_atoms
-			select_atoms_index_sad_fin = central_atoms
-			select_atoms_index_init_fin = central_atoms
-		else:
-			raise Exception("indexes of central atom has not been determined, please find the central atom first by --find_central_index")
-	elif atom_list == "max_disp":
-		path_to_max_disp_atom_index = path_to_curr_event + "/max_disp_atom_index.json"
-		if os.path.exists(path_to_max_disp_atom_index):
-			max_disp_atoms = json.load(open(path_to_max_disp_atom_index,'r'))
-			select_atoms_index_init_sad = max_disp_atoms
-			select_atoms_index_sad_fin = max_disp_atoms
-			select_atoms_index_init_fin = max_disp_atoms
-		else:
-			raise Exception("indexes of max displaced atom during init to sad has not been determined, please find the max_disp atom first by --find_max_disp_index")		
-	elif atom_list is None:
-		path_to_file_ini = path_to_test_dir + '/' + init + ".dump"
-		initial_config_data = read_data_from_file(path_to_file_ini)
-		all_atoms = initial_config_data['item'].tolist()
-		select_atoms_index_init_sad = all_atoms
-		select_atoms_index_sad_fin = all_atoms
-		select_atoms_index_init_fin = all_atoms
-	elif type(atom_list) == list:
-		select_atoms_index_init_sad = atom_list
-		select_atoms_index_sad_fin = atom_list
-		select_atoms_index_init_fin = atom_list
-		
+	path_to_file_ini = path_to_test_dir + '/' + init + ".dump"
+	initial_config_data = read_data_from_file(path_to_file_ini)
+	
+	(select_atoms_index_init_sad, select_atoms_index_sad_fin, select_atoms_index_init_fin) = get_list_of_atoms_from_atom_list(path_to_curr_event, initial_config_data, atom_list)
 	# init to sad
 	if select_atoms_index_init_sad == []:
 		cluster_ave_shear_strain_init_sad = np.nan
@@ -210,16 +166,6 @@ def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir, atom
 		path_to_init_sad = path_to_curr_event + "/init_sad"
 		path_to_all_strain_results_init_sad = path_to_init_sad + "/strain_results_dict.pkl"
 		path_to_all_displacement_init_sad = path_to_init_sad + "/displacement_results_dict.pkl"
-		#path_to_strain_results_init_sad = path_to_init_sad + "/local_strain_results_dict.pkl"
-		#path_to_displacement_init_sad = path_to_init_sad + "/local_displacement_results_dict.pkl"
-		
-		#if os.path.exists(path_to_strain_results_init_sad) and os.path.exists(path_to_displacement_init_sad):
-		#	strains = pickle.load(open(path_to_strain_results_init_sad,'r'))
-		#	disp = pickle.load(open(path_to_displacement_init_sad,'r'))
-		#	local_strains = strains.values()
-		#	local_shear_strain = [strain[1] for strain in local_strains]
-		#	local_vol_strain = [strain[0] for strain in local_strains]
-		#	local_disp = disp.values()
 		
 		if os.path.exists(path_to_all_strain_results_init_sad) and os.path.exists(path_to_all_displacement_init_sad):
 			all_strains = pickle.load(open(path_to_all_strain_results_init_sad,'r'))
@@ -244,16 +190,6 @@ def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir, atom
 		path_to_all_strain_results_sad_fin = path_to_sad_fin + "/strain_results_dict.pkl"
 		path_to_all_displacement_sad_fin = path_to_sad_fin + "/displacement_results_dict.pkl"
 		
-		#path_to_strain_results_sad_fin = path_to_sad_fin + "/local_strain_results_dict.pkl"
-		#path_to_displacement_sad_fin = path_to_sad_fin + "/local_displacement_results_dict.pkl"
-		
-		#if os.path.exists(path_to_strain_results_sad_fin) and os.path.exists(path_to_displacement_sad_fin):
-		#	strains_2 = pickle.load(open(path_to_strain_results_sad_fin,'r'))
-		#	disp_2 = pickle.load(open(path_to_displacement_sad_fin,'r'))
-		#	local_strains_2 = strains_2.values()
-		#	local_shear_strain_2 = [strain[1] for strain in local_strains_2]
-		#	local_vol_strain_2 = [strain[0] for strain in local_strains_2]
-		#	local_disp_2 = disp_2.values()
 		if os.path.exists(path_to_all_strain_results_sad_fin) and os.path.exists(path_to_all_displacement_sad_fin):
 			all_strains_2 = pickle.load(open(path_to_all_strain_results_sad_fin,'r'))
 			all_disp_2 = pickle.load(open(path_to_all_displacement_sad_fin,'r'))
@@ -277,16 +213,6 @@ def	single_event_cluster_averaged_shear_vol_strain(event, path_to_data_dir, atom
 		path_to_all_strain_results_init_fin = path_to_init_fin + "/strain_results_dict.pkl"
 		path_to_all_displacement_init_fin = path_to_init_fin + "/displacement_results_dict.pkl"
 		
-		#path_to_strain_results_init_fin = path_to_init_fin + "/local_strain_results_dict.pkl"
-		#path_to_displacement_init_fin = path_to_init_fin + "/local_displacement_results_dict.pkl"
-		
-		#if os.path.exists(path_to_strain_results_init_fin) and os.path.exists(path_to_displacement_init_fin):
-		#	strains_3 = pickle.load(open(path_to_strain_results_init_fin,'r'))
-		#	disp_3 = pickle.load(open(path_to_displacement_init_fin,'r'))
-		#	local_strains_3 = strains_3.values()
-		#	local_shear_strain_3 = [strain[1] for strain in local_strains_3]
-		#	local_vol_strain_3 = [strain[0] for strain in local_strains_3]
-		#	local_disp_3 = disp_3.values()
 		if os.path.exists(path_to_all_strain_results_init_fin) and os.path.exists(path_to_all_displacement_init_fin):
 			all_strains_3 = pickle.load(open(path_to_all_strain_results_init_fin,'r'))
 			all_disp_3 = pickle.load(open(path_to_all_displacement_init_fin,'r'))
@@ -319,7 +245,8 @@ def shear_strain_vol_strain_local_atom_all_events(path_to_data_dir, input_param,
 	
 	list_of_test_id = input_param["list_of_test_id"]
 	num_of_proc = input_param["num_of_proc"]
-	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atom_shear_vol_strain(x, path_to_data_dir),num_of_proc)
+	atom_list = input_param["atom_list"]
+	result_list = operation_on_events(path_to_data_dir, list_of_test_id, lambda x: single_event_local_atom_shear_vol_strain(x, path_to_data_dir, atom_list),num_of_proc)
 	
 	atom_shear_strain_init_sad, atom_shear_strain_sad_fin, atom_shear_strain_init_fin = [], [], []
 	atom_vol_strain_init_sad, atom_vol_strain_sad_fin, atom_vol_strain_init_fin = [], [], []
@@ -405,7 +332,7 @@ def shear_strain_vol_strain_local_atom_all_events(path_to_data_dir, input_param,
 	#		f.close()
 	print "done finding shear strain vs volumetric strain for all individual local atoms of all final selected events in list_of_test_id!"
 
-def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir):
+def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir,atom_list=None):
 	if 'test' in event[0]:
 		test_id = int(event[0][4:])
 	else:
@@ -417,14 +344,9 @@ def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir):
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	
 	print "path_to_current_event:", path_to_curr_event
-	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
-	if os.path.exists(path_to_local_atom_index):
-		local_atoms = json.load(open(path_to_local_atom_index,'r'))
-		local_atoms_index_init_sad = [atom + 1 for atom in local_atoms["init_sad"]]
-		local_atoms_index_sad_fin = [atom + 1 for atom in local_atoms["sad_fin"]]
-		local_atoms_index_init_fin = [atom + 1 for atom in local_atoms["init_fin"]]
-	else:
-		raise Exception("indexes of cluster local atoms has not been determined, please find the cluster local atoms first")
+	path_to_file_ini = path_to_test_dir + '/' + init + ".dump"
+	initial_config_data = read_data_from_file(path_to_file_ini)
+	(local_atoms_index_init_sad, local_atoms_index_sad_fin, local_atoms_index_init_fin) = get_list_of_atoms_from_atom_list(path_to_curr_event, initial_config_data, atom_list)
 	
 	# init to sad
 	if local_atoms_index_init_sad == []:
@@ -436,17 +358,7 @@ def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir):
 		path_to_all_strain_results_init_sad = path_to_init_sad + "/strain_results_dict.pkl"
 		path_to_all_displacement_init_sad = path_to_init_sad + "/displacement_results_dict.pkl"
 		
-		path_to_strain_results_init_sad = path_to_init_sad + "/local_strain_results_dict.pkl"
-		path_to_displacement_init_sad = path_to_init_sad + "/local_displacement_results_dict.pkl"
-		
-		if os.path.exists(path_to_strain_results_init_sad) and os.path.exists(path_to_displacement_init_sad):
-			strains = pickle.load(open(path_to_strain_results_init_sad,'r'))
-			disp = pickle.load(open(path_to_displacement_init_sad,'r'))
-			local_strains = strains.values()
-			local_shear_strain_init_sad = [strain[1] for strain in local_strains]
-			local_vol_strain_init_sad = [strain[0] for strain in local_strains]
-			local_disp_init_sad = disp.values()
-		elif os.path.exists(path_to_all_strain_results_init_sad) and os.path.exists(path_to_all_displacement_init_sad):
+		if os.path.exists(path_to_all_strain_results_init_sad) and os.path.exists(path_to_all_displacement_init_sad):
 			all_strains = pickle.load(open(path_to_all_strain_results_init_sad,'r'))
 			all_disp = pickle.load(open(path_to_all_displacement_init_sad,'r'))
 			local_strains = [all_strains[k] for k in local_atoms_index_init_sad if k in all_strains]
@@ -465,18 +377,7 @@ def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir):
 		path_to_sad_fin = path_to_curr_event + "/sad_fin"
 		path_to_all_strain_results_sad_fin = path_to_sad_fin + "/strain_results_dict.pkl"
 		path_to_all_displacement_sad_fin = path_to_sad_fin + "/displacement_results_dict.pkl"
-		
-		path_to_strain_results_sad_fin = path_to_sad_fin + "/local_strain_results_dict.pkl"
-		path_to_displacement_sad_fin = path_to_sad_fin + "/local_displacement_results_dict.pkl"
-		
-		if os.path.exists(path_to_strain_results_sad_fin) and os.path.exists(path_to_displacement_sad_fin):
-			strains = pickle.load(open(path_to_strain_results_sad_fin,'r'))
-			disp = pickle.load(open(path_to_displacement_sad_fin,'r'))
-			local_strains = strains.values()
-			local_shear_strain_sad_fin = [strain[1] for strain in local_strains]
-			local_vol_strain_sad_fin = [strain[0] for strain in local_strains]
-			local_disp_sad_fin = disp.values()
-		elif os.path.exists(path_to_all_strain_results_sad_fin) and os.path.exists(path_to_all_displacement_sad_fin):
+		if os.path.exists(path_to_all_strain_results_sad_fin) and os.path.exists(path_to_all_displacement_sad_fin):
 			all_strains = pickle.load(open(path_to_all_strain_results_sad_fin,'r'))
 			all_disp = pickle.load(open(path_to_all_displacement_sad_fin,'r'))
 			local_strains = [all_strains[k] for k in local_atoms_index_sad_fin if k in all_strains]
@@ -496,17 +397,7 @@ def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir):
 		path_to_all_strain_results_init_fin = path_to_init_fin + "/strain_results_dict.pkl"
 		path_to_all_displacement_init_fin = path_to_init_fin + "/displacement_results_dict.pkl"
 		
-		path_to_strain_results_init_fin = path_to_init_fin + "/local_strain_results_dict.pkl"
-		path_to_displacement_init_fin = path_to_init_fin + "/local_displacement_results_dict.pkl"
-		
-		if os.path.exists(path_to_strain_results_init_fin) and os.path.exists(path_to_displacement_init_fin):
-			strains = pickle.load(open(path_to_strain_results_init_fin,'r'))
-			disp = pickle.load(open(path_to_displacement_init_fin,'r'))
-			local_strains = strains.values()
-			local_shear_strain_init_fin = [strain[1] for strain in local_strains]
-			local_vol_strain_init_fin = [strain[0] for strain in local_strains]
-			local_disp_init_fin = disp.values()
-		elif os.path.exists(path_to_all_strain_results_init_fin) and os.path.exists(path_to_all_displacement_init_fin):
+		if os.path.exists(path_to_all_strain_results_init_fin) and os.path.exists(path_to_all_displacement_init_fin):
 			all_strains = pickle.load(open(path_to_all_strain_results_init_fin,'r'))
 			all_disp = pickle.load(open(path_to_all_displacement_init_fin,'r'))
 			local_strains = [all_strains[k] for k in local_atoms_index_init_fin if k in all_strains]

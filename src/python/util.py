@@ -510,10 +510,70 @@ def triggered_atom_is_max_disp(path_to_data_dir, event):
 				print "False"
 				return False
 		else:
-			print "multiple triggering atoms exists!"	
+			print "multiple triggering atoms exists!"
 	else:
 		print("no displacement data has been calculated in current event")
+
+def get_list_of_atoms_from_atom_list(path_to_curr_event, initial_config_data, atom_list=None):
+	"""
+	take the key word saved in atom_list, and get the actual list of atoms
+	for init to sad, sad to fin, init to fin
+	"""
+	if atom_list == "local":
+		print "\n starting local mode strain calculations"
+		path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
+		if os.path.exists(path_to_local_atom_index):
+			local_atom_list = json.load(open(path_to_local_atom_index,"r"))
+			atom_list_init_sad = [atom + 1 for atom in local_atom_list["init_sad"]]
+			atom_list_sad_fin = [atom + 1 for atom in local_atom_list["sad_fin"]]
+			atom_list_init_fin = [atom + 1 for atom in local_atom_list["init_fin"]]
+		else:
+			raise Exception("local_atoms_index.json file not exists in %s"%path_to_curr_event)
+	elif atom_list == "initial":
+		path_to_initial_atom_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
+		if os.path.exists(path_to_initial_atom_index):
+			initial_atoms = json.load(open(path_to_initial_atom_index,'r'))
+			atom_list_init_sad = initial_atoms
+			atom_list_sad_fin = initial_atoms
+			atom_list_init_fin = initial_atoms
+		else:
+			raise Exception("indexes of initial cluster atoms has not been determined, please find the initial cluster atoms first by --find_triggered_cluster_atoms_index")
+	elif atom_list == "central":
+		path_to_central_atom_index = path_to_curr_event + "/central_atom_index.json"
+		if os.path.exists(path_to_central_atom_index):
+			central_atoms = json.load(open(path_to_central_atom_index,'r'))
+			atom_list_init_sad = central_atoms
+			atom_list_sad_fin = central_atoms
+			atom_list_init_fin = central_atoms
+		else:
+			raise Exception("indexes of central atom has not been determined, please find the central atom first by --find_central_index")
+	elif atom_list == "max_disp":
+		path_to_max_disp_atom_index = path_to_curr_event + "/max_disp_atom_index.json"
+		if os.path.exists(path_to_max_disp_atom_index):
+			max_disp_atoms = json.load(open(path_to_max_disp_atom_index,'r'))
+			atom_list_init_sad = max_disp_atoms
+			atom_list_sad_fin = max_disp_atoms
+			atom_list_init_fin = max_disp_atoms
+		else:
+			raise Exception("indexes of max displaced atom during init to sad has not been determined, please find the max_disp atom first by --find_max_disp_index")		
+	elif (atom_list is None) or (atom_list == 'all'):
+		atom_list = (initial_config_data["item"]).tolist()
+		atom_list_init_sad = atom_list
+		atom_list_sad_fin = atom_list
+		atom_list_init_fin = atom_list
+		return (atom_list_init_sad, atom_list_sad_fin, atom_list_init_fin)
+	elif type(atom_list) == list:
+		atom_list_init_sad = atom_list
+		atom_list_sad_fin = atom_list
+		atom_list_init_fin = atom_list
+	else:
+		raise Exception("user specified atom_list is not recognized, please try a new atom_list!")
 	
+	print "item ids of selected atoms during init to sad:", atom_list_init_sad
+	print "item ids of selected atoms during sad to fin:", atom_list_sad_fin
+	print "item ids of selected atoms during init to fin:", atom_list_init_fin
+	
+	return (atom_list_init_sad, atom_list_sad_fin, atom_list_init_fin)
 	
 def operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc=1):
 	"""
