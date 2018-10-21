@@ -611,18 +611,23 @@ def print_desc_help():
 	 other type of atom_list
 	 
 	 > voronoi index calculation:
-	 if voronoi_index_results.json exists and re_calc is False,
+	 if voronoi_index_results.json exists in the event directory and re_calc is False,
 	 it will just read this file
+	 
+	 If --return_volume is used and re_calc is False, both voronoi_index_results.json 
+	 and voronoi_volume_results.json must exist in the event directory.
 	 
 	 If we want to re_calc for different atom_list (--central, --initial, --max_disp),
 	 use this arguments with --re_calc, e.g.
-	 
-	 art_data -s SETTINGS --local --voro --calc will read
+	 art_data -s SETTINGS --initial --voro --calc --re_calc will read
 	 local_atoms_index.json and calculate local atoms voronoi index for all filtered events
 	 in interested tests list_of_test_id, save the voronoi results in voronoi_index_results.json
 	 
 	 by invoking calculator.voronoi_structural_analysis.run_all_tests_voronoi_calculator
 	 with atom_list ='local' when --local is invoked.
+	 
+	 if --return_volume is invoked, it will also save the voronoi cell volumes into voronoi_volume_results.json
+	 in each event directory
 	 
 	 Note: voronoi index calculation is done by using pyvoro package to provide 
 	 a python interface to voro++ C++ library developed by Chris Rycroft at Harvard
@@ -783,6 +788,7 @@ if __name__ == "__main__":
   parser.add_argument('--eng', help='perform operations on activation and relaxation energy', action="store_true")
   parser.add_argument('--strain', help='perform operations on atomic strain and displacement', action="store_true")
   parser.add_argument('--voro', help='perform operations on voronoi cell analysis', action="store_true")
+  parser.add_argument('--return_volume', help='combine with --voro --calc to output the voronoi cell volumes', action="store_true")
   
   parser.add_argument('-c','--calc', help='perform calculations', action="store_true")
   parser.add_argument('-v', help='plot results', action="store_true")
@@ -1066,7 +1072,7 @@ if __name__ == "__main__":
 		if args.calc:
 			input_param['cut_off'] = input_param['voro_cut_off']
 			start_time = time.time()
-			run_all_tests_voronoi_calculator(path_to_data_dir,input_param)
+			run_all_tests_voronoi_calculator(path_to_data_dir,input_param,return_volume = args.return_volume)
 			print "total run time:", time.time() - start_time, "seconds"
 			exit()
 		elif args.classify:
