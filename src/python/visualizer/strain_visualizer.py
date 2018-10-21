@@ -126,7 +126,6 @@ def single_event_strain_visualization(path_to_data_dir, event):
 	
 	print "done plotting for the current event:"+ event[0] + "/event_" + init + "_" + sad + "_" + fin
 			
-			
 def strain_events_stats_visualization(path_to_data_dir, input_param):
 	"""
 	use this new version of strain_events_stats_visualization need to reran the

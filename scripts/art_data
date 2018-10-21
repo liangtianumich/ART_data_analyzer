@@ -493,14 +493,19 @@ def print_desc_help():
 	  
 	 3) run calculations and visualizations:
 	 
-	 "art_data -s SETTINGS --strain --calc" will invoke the strain and displacement calculations
+	 "art_data -s SETTINGS --strain --calc" will invoke the strain and displacement calculations on specified atom_list
 	 and automatically plots results for individual event and statistics
 	 for all filtered events in tests stored in list_of_test_id, 
 	 implemented in function calculator.strain_calculator.strain_calculator_run_all_tests_mp
 	 
-	 "art_data -s SETTINGS --strain -v" will plot the event level quantities after strain calculation
+	 --strain --calc can be combined with any of --local, --central, --initial, --max_disp
+	 to select desired list of atoms to calculate strain and displacements. However,
+	 usage of --local, --central, --initial, --max_disp need to run --find_local_index,
+	 --find_central_index, --find_triggered_cluster_atoms_index, --find_max_disp_index first
 	 
-	 "art_data -s input.json --strain --stats" will plot the statists of all events after strain calculation
+	 "art_data -s SETTINGS --strain -v" will plot the event level quantities after strain calculation on the selected atom_list
+	 
+	 "art_data -s input.json --strain --stats" will plot the statists of all events after strain calculation on the selected atom_list
 	 
 	 Note: 
 	 In the above commands,
@@ -541,7 +546,8 @@ def print_desc_help():
 	 
 	 -p or --path option applied, -np and --re_calc does not apply
 	 
-	 5) find all local atom indexes for each of filtered events
+	 5) find all interested atoms indexes (e.g. local atoms, central atom, initial triggered cluster atoms, max_disp atom) 
+	 for each of filtered events
 	 
 	 art_data -s SETTINGS --find_local_index rel_residual_threshold,
 	 will find the local atoms indexes for all filtered events in interested 
@@ -553,20 +559,44 @@ def print_desc_help():
 	 
 	 Function used: correlation_model.correlation_model.all_events_local_atoms_finder
 	 
+	 art_data -s SETTINGS --find_central_index will find the central atom index 
+	 for each of all filtered events in interested tests list_of_test_id, 
+	 and save them in a file called central_atom_index.json
+	 
+	 art_data -s SETTINGS --find_triggered_cluster_atoms_index will find the initial 
+	 triggered cluster atoms indexes for each of all filtered events in interested tests list_of_test_id, 
+	 and save them in a file called initial_cluster_atoms_index.json
+	 
+	 art_data -s SETTINGS --find_max_disp_index will find the max_disp atom index from
+	 the initial to saddle process for each of all filtered events in interested tests list_of_test_id, 
+	 and save them in a file called max_disp_atom_index.json
+	 
 	 -p/--path, -np, --re_calc option applied
 
-	 6) run calculations for local atoms only:
+	 6) if --strain --calc run on all atoms before,
+	 now only run calculations for selected atoms (e.g, local atoms):
+	 
+	 Either manually edit the atom_list key in input SETTINGS file for once
+	 or use the command line argument to overwrite
 	 
 	 > atomic strain and displacement:
 	 
 	 art_data -s SETTINGS --local --strain --calc will invoke the strain and displacement
 	 calculations for local atoms only for all filtered events in interested tests stored in list_of_test_id.
+	 If re_calc is False, it will just read the results file and extract the local atoms for strain and displacement statistics
+	 If re_calc is True, it will re calculate the strains and displacements only on local atoms and overwritten the strain and displacement results file
+	 of pre-existing calculations for all atoms strain and displacement
 	 
-	 Pre-existing calculations for all atoms strain and displacement will be overwritten
-	 
-	 It will rerun calculator.strain_calculator.strain_calculator_run_all_tests_mp 
+	 It will rerun calculator.strain_calculator.strain_calculator_run_all_tests_mp
 	 with atom_list = 'local',
 	 which will read all local atom indexs saved in local_atoms_index.json
+	 
+	 Similar to --local, --central, --initial, --max_disp also apply here
+	 
+	 7) correlation analysis
+	 
+	 Either manually edit the atom_list key in input SETTINGS file for once
+	 or use the command line argument to overwrite
 	 
 	 After getting local_atoms_index.json, user can plot the local event cluster averaged
 	 shear strain vs cluster averaged volumetric strain for all filtered events
@@ -577,23 +607,30 @@ def print_desc_help():
 	 to shear strain data, print out the slope as the beta parameter, i.e. 
 	 the ratio of dilation to shear strain.
 	 
-	 > voronoi index calculation:
+	 Similar to --local, --central, --initial, --max_disp also apply here for
+	 other type of atom_list
 	 
-	 art_data -s SETTINGS --local --voro --calc will read 
-	 local_atoms_index.json and calculate local atoms voronoi index for all filtered events 
-	 in interested tests list_of_test_id, 
+	 > voronoi index calculation:
+	 if voronoi_index_results.json exists and re_calc is False,
+	 it will just read this file
+	 
+	 If we want to re_calc for different atom_list (--central, --initial, --max_disp),
+	 use this arguments with --re_calc, e.g.
+	 
+	 art_data -s SETTINGS --local --voro --calc will read
+	 local_atoms_index.json and calculate local atoms voronoi index for all filtered events
+	 in interested tests list_of_test_id, save the voronoi results in voronoi_index_results.json
+	 
 	 by invoking calculator.voronoi_structural_analysis.run_all_tests_voronoi_calculator
 	 with atom_list ='local' when --local is invoked.
 	 
-	 If local_atoms_index.json not exists, it will calculate all atoms voronoi index
-	 
-	 Note: voronio index calculation is done by using pyvoro package to provide 
+	 Note: voronoi index calculation is done by using pyvoro package to provide 
 	 a python interface to voro++ C++ library developed by Chris Rycroft at Harvard
 	 "Voro++: A three-dimensional Voronoi cell library in C++"
 	 
 	 > voronoi index classification and visualization:
 	 
-	 art_data -s SETTINGS --voro --classify will classify voronoi index 
+	 art_data -s SETTINGS --voro --classify will classify voronoi index of previous calculations on selected atoms
 	 and plot the results in voronoi_index_results.json for all filtered events 
 	 in interested tests list_of_test_id, 
 	 and calculate and plot the dynamic transition correlation matrix
@@ -771,7 +808,7 @@ if __name__ == "__main__":
   parser.add_argument('--atom_shear_vol', help='combine with --strain --local to plot the shear strain vs volumetric strain of all local atoms for all filtered events in list_of_test_id', action="store_true")
   parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all filtered events in specified tests', action = "store_true")
   parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for all filtered events in specified tests', action = "store_true")
-  parser.add_argument('--max_disp_eng', help='plot max displacement vs activiation and relaxation energy', action = "store_true")
+  parser.add_argument('--max_disp_eng', help='plot max displacement vs activation energy and relaxation energy', action = "store_true")
   
   #parser.add_argument('--strain_calc', help='perform atomic strain and displacement calculations', action="store_true")
   #parser.add_argument('--strain_v', help='perform atomic strain and displacement calculations', action="store_true")
@@ -823,8 +860,6 @@ if __name__ == "__main__":
 	  if args.run:
 		  run_lammps(args.run[0])
 		  exit()
-  
-  
 		  
   if args.settings:
 	if args.verbose:
