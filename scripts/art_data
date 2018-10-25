@@ -16,6 +16,7 @@ from data_reader import *
 from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no,all_events_triggered_cluster_atoms_finder,all_events_central_atom_finder, all_events_max_disp_atom_finder
 #from lammps.run import run_lammps
 from ART_wrapper.run import run_art_mp, set_up_input_files, delete_art_tests_files, delete_art_tests, check_tests_status
+from archive import archive_project
 
 def print_input_help():
 	"""
@@ -777,6 +778,7 @@ if __name__ == "__main__":
   parser.add_argument('--settings-format', help='Print input file description', action="store_true")
   # when --example argument is missing in command line, the default created by store_true is False
   parser.add_argument('--example', nargs=1, help='Print example input file, need one input integer arguments',type=int, metavar=('num of each central atom tests to be created'))
+  parser.add_argument('--archive', help='archive an art data project that has already been filtered', action="store_true")
   
   
   parser.add_argument('-s', '--settings', nargs=1, help='Settings input filename, where SETTINGS is the input file name', type=str)
@@ -1056,7 +1058,9 @@ if __name__ == "__main__":
 	if args.central_atom_max_disp:
 		run_tests_triggered_atom_is_max_disp(path_to_data_dir, input_param)
 		exit()
-	
+	if args.archive:
+		archive_project(path_to_data_dir)
+		exit()
 	if args.voro:
 		if sum([args.local, args.initial, args.central, args.max_disp])>=2:
 			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp")
