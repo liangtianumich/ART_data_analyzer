@@ -1,22 +1,29 @@
 import zipfile
 import os
 import json
-import multiprocessing as mp
-from functools import partial
 from util import data_dir_to_test_dir
 
 def archive_project(path_to_data_dir):
+	"""
+	this function archive the most necessary data inside each test of an art data project
+	for researchers to share data between each other
 	
+	First, it will archive the final_selected_events.json, which specifies the
+	related events data to be saved
+	
+	Second, it will archive all configuration files that are related to the final filtered events
+	saved in the final_selected_events.json
+	
+	Finally, it will also archive the log.file.1, events.list, bart.sh or mod_bart.sh file
+	that are needed for many other functions
+	"""
 	print 'creating archive art_data_project.zip in %s'%path_to_data_dir
 	path_to_zip = os.path.join(path_to_data_dir,'art_data_project.zip')
-	zf = zipfile.ZipFile(path_to_zip, mode='w')
+	# compress the file size
+	zf = zipfile.ZipFile(path_to_zip,'w',zipfile.ZIP_DEFLATED)
 	
 	print "changing directory to %s"%path_to_data_dir
 	os.chdir(path_to_data_dir)
-	
-	#num_of_proc = input_param["num_of_proc"]
-	
-	#pool = mp.Pool(processes = num_of_proc)
 	
 	list_of_files = archived_file_names(path_to_data_dir)
 	#operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc)
@@ -31,8 +38,10 @@ def archived_file_names(path_to_data_dir):
 	print "reading final_selected_events.json"
 	final_selected_events = json.load(open(path_to_final_selected_events,"r"))
 	list_of_file_names = [["final_selected_events.json",path_to_final_selected_events]]
+	all_tests_id = []
 	for event in final_selected_events:
 		test_id = int(event[0][4:])
+		all_tests_id.append(test_id)
 		path_to_test_dir = data_dir_to_test_dir(path_to_data_dir,test_id)
 		init, sad, fin = event[1][0],event[1][1],event[1][2]
 		#path_to_init = os.path.join(path_to_test_dir,init)
@@ -44,6 +53,12 @@ def archived_file_names(path_to_data_dir):
 		list_of_file_names.append(init_file)
 		list_of_file_names.append(sad_file)
 		list_of_file_names.append(fin_file)
+	
+	final_tests_id = list(set(all_tests_id))
+	for test in final_tests_id:
+		path_to_test_dir = data_dir_to_test_dir(path_to_data_dir,test)
+		test_file = return_test_results_file_name(path_to_test_dir)
+		list_of_file_names.extend(test_file)
 	return list_of_file_names		
 		
 def return_file_names(path_to_test_dir, init):
@@ -56,6 +71,17 @@ def return_file_names(path_to_test_dir, init):
 		return [file_name,path_to_init+".dump"]
 	else:
 		raise Exception("in %s, has no file named %s or %s.dump"%(path_to_test_dir,init,init))	
+
+def return_test_results_file_name(path_to_test_dir):
+	list_of_results_files = ["log.file.1","events.list","bart.sh","mod_bart.sh"]
+	file_name_path = []
+	for curr_file in list_of_results_files:
+		path_to_file = os.path.join(path_to_test_dir,curr_file)
+		if os.path.isfile(path_to_file):
+			file_name = "/%s/%s"%(os.path.basename(path_to_test_dir),curr_file)
+			file_name_path.append([file_name,path_to_file])
+		#raise Exception("in %s, file %s does not exist"%(path_to_test_dir,curr_file))
+	return file_name_path
 	
 def add_file_name(file_names,zf):
 	file_name,path_to_file = file_names[0],file_names[1]
