@@ -5,7 +5,6 @@ import time
 import random
 import multiprocessing as mp
 import argparse
-import io
 from event_selector import filter_events_all_tests_stage_1,filter_events_all_tests_stage_2
 from calculator.event_energy_calculator import *
 from calculator.strain_calculator import strain_calculator_run_all_tests_mp
@@ -330,6 +329,16 @@ def print_desc_help():
 	which specify the number of cores to run in parallel. Default using all cores
 	in the local machine. This command will automatically set up the input files 
 	for running art by running ./mod_bart.sh inside each test dir.
+	
+	After finishing running art, it may be necessary to archive all necessary
+	raw art data into a zip file for the purpose of sharing raw research data
+	between researchers.  This can be done easily through --archive command,
+	e.g. art_data -s SETTINGS --archive
+	will archive 
+	1) final_selected_events.json
+	2) all necessary configuration files related to the final
+	filtered events saved in final_selected_events.json
+	3) log.file.1, events.list, bart.sh or mod_bart.sh in final events' test dir
 	
 	Note: if running art in parallel quit unexpectedly due to either machine failure or human error,
 	it is good practice to check the status of all tests by using

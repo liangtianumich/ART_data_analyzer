@@ -14,6 +14,7 @@ from periodic_kdtree import PeriodicCKDTree
 from functools import wraps
 import time
 import sys
+import io
 import contextlib
 
 @contextlib.contextmanager
