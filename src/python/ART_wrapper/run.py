@@ -284,7 +284,7 @@ def delete_unused_events_data(path_to_data_dir,input_param):
 	"""
 	path_to_final_selected_events = os.path.join(path_to_data_dir,"final_selected_events.json")
 	if os.path.isfile(path_to_final_selected_events):
-		print "reading final_selected_events.json"
+		print "reading final_selected_events.json, ensure that you always get most updated final_selected_events.json by --filter --re_calc if you have calculated more tests"
 		final_selected_events = json.load(open(path_to_final_selected_events,"r"))
 	else:
 		raise Exception("final_selected_events.json does not exist in %s"%path_to_data_dir)

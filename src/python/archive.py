@@ -20,7 +20,7 @@ def archive_project(path_to_data_dir):
 	print 'creating archive art_data_project.zip in %s'%path_to_data_dir
 	path_to_zip = os.path.join(path_to_data_dir,'art_data_project.zip')
 	# compress the file size
-	zf = zipfile.ZipFile(path_to_zip,'w',zipfile.ZIP_DEFLATED)
+	zf = zipfile.ZipFile(path_to_zip,'w',zipfile.ZIP_DEFLATED,allowZip64 = True)
 	
 	print "changing directory to %s"%path_to_data_dir
 	os.chdir(path_to_data_dir)
@@ -40,7 +40,7 @@ def archived_file_names(path_to_data_dir):
 	
 	print "reading final_selected_events.json"
 	if os.path.exists(path_to_final_selected_events):
-		print "reading final_selected_events.json"
+		print "loading final_selected_events.json, ensure that you always get most updated final_selected_events.json by --filter --re_calc if you have calculated more tests"
 		final_selected_events = json.load(open(path_to_final_selected_events,"r"))
 	else:
 		raise Exception("final_selected_events.json does not exist in %s"%path_to_data_dir)
@@ -58,7 +58,7 @@ def archived_file_names(path_to_data_dir):
 	#	list_of_file_names.append(int_file)
 	file_dirs = os.listdir(path_to_data_dir)
 	for f in file_dirs:
-		if f == "final_selected_events.json":
+		if f == "final_selected_events.json" or f == "art_data_project.zip":
 			continue
 		path_to_file = os.path.join(path_to_data_dir,f)
 		if os.path.isfile(path_to_file):
