@@ -14,7 +14,7 @@ from correlation_model.correlation_model import residual_threshold_finder, all_e
 from data_reader import *
 from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no,all_events_triggered_cluster_atoms_finder,all_events_central_atom_finder, all_events_max_disp_atom_finder
 #from lammps.run import run_lammps
-from ART_wrapper.run import run_art_mp, set_up_input_files, delete_art_tests_files, delete_art_tests, check_tests_status
+from ART_wrapper.run import run_art_mp, set_up_input_files, delete_art_tests_files, delete_art_tests, check_tests_status, delete_unused_events_data
 from archive import archive_project
 
 def print_input_help():
@@ -500,7 +500,13 @@ def print_desc_help():
 	  and then re-do ttest by the same command above 
 	  "art_data -s SETTINGS --eng --ttest_kfold OPTION k n". 
 	  
-	  
+	 Notes:
+	 If user confirmed that their final filtered events statistics are converged,
+	 all following calculations will be performed on the final filtered events,
+	 there is no need to keep the unsuccessful events data to occupy disk space.
+	 In this case, if user want to delete unused events data, they can do it by
+	 art_data -s input_settings.json --art --delete_unused_events
+	 
 	 3) run calculations and visualizations:
 	 
 	 "art_data -s SETTINGS --strain --calc" will invoke the strain and displacement calculations on specified atom_list
@@ -850,6 +856,7 @@ if __name__ == "__main__":
   parser.add_argument('--run_more', nargs=1, metavar=('NUM_OF_TESTS'), help='running more ART simulations if ART data is not converged', type=int)
   
   parser.add_argument('--delete_tests', help='combine with --art to delete all test directories whose test id stored in central_atom_list of input SETTINGS file', action="store_true")
+  parser.add_argument('--delete_unused_events', help='combine with --art to delete all unused events configuration files that are not saved in final_selected_events.json', action="store_true")
   parser.add_argument('--check_tests_status', help='combine with --art to check the status of all tests whose test id stored in central_atom_list of input SETTINGs file', action="store_true")
   
   #parser.add_argument('-v','--verbose', help='verbose output', action="store_true", default=False)
@@ -936,6 +943,9 @@ if __name__ == "__main__":
 		  central_atom_list = input_param["central_atom_list"]
 		  print "deleting tests:",central_atom_list, "in %s"%path_to_data_dir
 		  delete_art_tests(path_to_data_dir,central_atom_list)
+		  exit()
+		if args.delete_unused_events:
+		  delete_unused_events_data(path_to_data_dir,input_param)
 		  exit()
 		if args.check_tests_status:
 		  print "begin checking status of tests in central_atom_list of current input SETTINGS file"

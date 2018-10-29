@@ -269,4 +269,74 @@ def delete_art_tests(path_to_data_dir, central_atom_list):
 				print "test %s"%test, "does not exist in %s"%path_to_data_dir
 	else:
 		print "Not deleting!"
-	print "done deleting all tests in central_atom_list (key of current input SETTINGS file) in %s"%path_to_data_dir
+	print "done deleting all tests in specified list of tests in %s"%path_to_data_dir
+
+def delete_unused_events_data(path_to_data_dir,input_param):
+	"""
+	this function delete the configuration files of un-used events data
+	inside each test of an art data project to save disk space, especially
+	when users has not used WRITE_REJECTED_EVENTS = .False. option in bart.sh
+	
+	First, it will read the final_selected_events.json, which stores all useful events.
+	
+	Second, it will delete all configuration files that are not saved
+	in the final_selected_events.json
+	"""
+	path_to_final_selected_events = os.path.join(path_to_data_dir,"final_selected_events.json")
+	if os.path.isfile(path_to_final_selected_events):
+		print "reading final_selected_events.json"
+		final_selected_events = json.load(open(path_to_final_selected_events,"r"))
+	else:
+		raise Exception("final_selected_events.json does not exist in %s"%path_to_data_dir)
+
+	all_tests_events = dict()
+	for event in final_selected_events:
+		test_id = int(event[0][4:])
+		init, sad, fin = event[1][0],event[1][1],event[1][2]
+		if test_id in all_tests_events:
+			all_tests_events[test_id].extend([init,sad,fin])
+		else:
+			all_tests_events[test_id] = [init,sad,fin]
+			#all_tests_id.append(test_id)
+	
+	print "confirm deleting (y/n):"
+	if prompt_yes_no() is False:
+		print "response received, not deleting"
+		return None
+	else:
+		print "response received, begin deleting"
+	
+	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
+	if os.path.isfile(path_to_central_atom_list) or "central_atom_list" in input_param:
+		if os.path.isfile(path_to_central_atom_list):
+			print "reading central_atom_list.json, ensure central_atom_list.json is updated by --update_input if using --art --run_more"
+			central_atom_list = json.load(open(path_to_central_atom_list, 'r'))	
+		elif "central_atom_list" in input_param:
+			print "reading central_atom_list from input SETTINGs file"
+			central_atom_list = input_param['central_atom_list']
+		delete_tests_list = []
+		for test_id in central_atom_list:
+			if test_id not in all_tests_events:
+				delete_tests_list.append(test_id)
+		delete_art_tests(path_to_data_dir,delete_tests_list)
+	else:
+		print "central_atom_list.json does not exist in %s"%path_to_data_dir
+		print "central_atom_list key does not exist in input SETTING file"
+		print ">>> only deleting unused events for all tests stored in final_selected_events.json"
+	
+	print "\n Now begin deleting unused events configuration files for all tests stored in final_selected_events.json"
+	for test_id in all_tests_events:
+		path_to_test_dir = data_dir_to_test_dir(path_to_data_dir,test_id)
+		for f in os.listdir(path_to_test_dir):
+			is_match_config = re.match(r"min[0-9]+", f) or re.match(r"sad[0-9]+", f) or re.match(r"min[0-9]+.dump", f) or re.match(r"sad[0-9]+.dump", f)
+			path_to_file = os.path.join(path_to_test_dir, f)
+			is_file = os.path.isfile(path_to_file)
+			if is_match_config and is_file:
+				if f.endswith('.dump'):
+					config_id = f[:-5]
+				else:
+					config_id = f
+				if config_id not in all_tests_events[test_id]:
+					print "deleting the file %s"%path_to_file
+					os.remove(path_to_file)
+	print "done deleting unused events data!"
