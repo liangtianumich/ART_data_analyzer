@@ -35,9 +35,35 @@ def archive_project(path_to_data_dir):
 
 def archived_file_names(path_to_data_dir):
 	path_to_final_selected_events = os.path.join(path_to_data_dir,"final_selected_events.json")
+	#path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
+	#path_to_int_atom_list = os.path.join(path_to_data_dir, "interested_atom_list.json")
+	
 	print "reading final_selected_events.json"
-	final_selected_events = json.load(open(path_to_final_selected_events,"r"))
+	if os.path.exists(path_to_final_selected_events):
+		print "reading final_selected_events.json"
+		final_selected_events = json.load(open(path_to_final_selected_events,"r"))
+	else:
+		raise Exception("final_selected_events.json does not exist in %s"%path_to_data_dir)
+
 	list_of_file_names = [["final_selected_events.json",path_to_final_selected_events]]
+	
+	#if os.path.exists(path_to_central_atom_list):
+	#	print "archiving central_atom_list.json, ensure central_atom_list.json is updated by --update_input if using --art --run_more"
+	#	central_file = ["central_atom_list.json",path_to_central_atom_list]
+	#	list_of_file_names.append(central_file)
+	
+	#if os.path.exists(path_to_int_atom_list):
+	#	print "archiving interested_atom_list.json"
+	#	int_file = ["interested_atom_list.json",path_to_int_atom_list]
+	#	list_of_file_names.append(int_file)
+	file_dirs = os.listdir(path_to_data_dir)
+	for f in file_dirs:
+		if f == "final_selected_events.json":
+			continue
+		path_to_file = os.path.join(path_to_data_dir,f)
+		if os.path.isfile(path_to_file):
+			list_of_file_names.append([f,path_to_file])
+			
 	all_tests_id = []
 	for event in final_selected_events:
 		test_id = int(event[0][4:])
