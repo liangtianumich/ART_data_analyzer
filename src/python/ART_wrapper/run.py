@@ -261,11 +261,14 @@ def delete_art_tests(path_to_data_dir, central_atom_list):
 	print "confirm deleting (y/n):"
 	if prompt_yes_no() is True:
 		for test in central_atom_list:
-			path_to_test = data_dir_to_test_dir(path_to_data_dir, test)
-			if os.path.isdir(path_to_test):
-				print "deleting the test %s"%path_to_test
-				shutil.rmtree(path_to_test)
-			else:
+			try:
+				path_to_test = data_dir_to_test_dir(path_to_data_dir, test)
+				if os.path.isdir(path_to_test):
+					print "deleting the test %s"%path_to_test
+					shutil.rmtree(path_to_test)
+				else:
+					print "test %s"%test, "does not exist in %s"%path_to_data_dir
+			except Exception:
 				print "test %s"%test, "does not exist in %s"%path_to_data_dir
 	else:
 		print "Not deleting!"
