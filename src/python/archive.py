@@ -1,7 +1,7 @@
 import zipfile
 import os
 import json
-from util import data_dir_to_test_dir
+from util import data_dir_to_test_dir,update_central_atom_list
 
 def archive_project(path_to_data_dir):
 	"""
@@ -58,7 +58,7 @@ def archived_file_names(path_to_data_dir):
 	#	list_of_file_names.append(int_file)
 	file_dirs = os.listdir(path_to_data_dir)
 	for f in file_dirs:
-		if f == "final_selected_events.json" or f == "art_data_project.zip":
+		if f == "final_selected_events.json" or f == "art_data_project.zip" or f == "central_atom_list.json":
 			continue
 		path_to_file = os.path.join(path_to_data_dir,f)
 		if os.path.isfile(path_to_file):
@@ -81,11 +81,16 @@ def archived_file_names(path_to_data_dir):
 		list_of_file_names.append(fin_file)
 	
 	final_tests_id = list(set(all_tests_id))
+	# update the central_atom_list.json
+	print "update the central_atom_list.json to be all test id saved in final_selected_events.json"
+	update_central_atom_list(path_to_data_dir,final_tests_id)
+	list_of_file_names.append(["central_atom_list.json", os.path.join(path_to_data_dir, "central_atom_list.json")])
+	
 	for test in final_tests_id:
 		path_to_test_dir = data_dir_to_test_dir(path_to_data_dir,test)
 		test_file = return_test_results_file_name(path_to_test_dir)
 		list_of_file_names.extend(test_file)
-	return list_of_file_names		
+	return list_of_file_names
 		
 def return_file_names(path_to_test_dir, init):
 	path_to_init = os.path.join(path_to_test_dir,init)

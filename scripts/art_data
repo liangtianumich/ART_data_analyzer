@@ -730,6 +730,7 @@ def get_more_central_atoms(path_to_data_dir, n_tests):
 	return new_central_atom_list
 
 def update_input(input_param):
+	print "\n >>> updating central_atom_list and list_of_test_id key in input SETTINGS file to be those saved in central_atom_list.json \n"
 	path_to_central_atom_list = os.path.join(input_param["path_to_data_dir"],"central_atom_list.json")
 	input_param["central_atom_list"] = json.load(open(path_to_central_atom_list, 'r'))
 	input_param["list_of_test_id"] = input_param["central_atom_list"]
@@ -933,6 +934,8 @@ if __name__ == "__main__":
 		  print ">>>starting running art for new central_atom_list in parallel!"
 		  run_art_mp(path_to_data_dir, input_param)
 		  #run_art_mp(args.run[0])
+		  updated_input_param = update_input(input_param)
+		  json.dump(updated_input_param, open(args.settings[0], 'w'), indent=2)
 		  exit()
 		if args.delete_tests_files:
 		  file_names = args.delete_tests_files

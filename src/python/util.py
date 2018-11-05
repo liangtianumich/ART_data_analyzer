@@ -663,6 +663,15 @@ def single_event_triggered_cluster_atoms_index(event, path_to_data_dir, box_dim,
 			f.close()
 	return cluster_atoms_id
 
+def update_central_atom_list(path_to_data_dir,new_central_atom_list):
+	print "updating central_atom_list.json in %s"%path_to_data_dir
+	print "\n"
+	print ">>> User should update the central_atom_list key in input SETTINGS file by --update_input"
+	print "\n"
+	path_to_central_atom_list = os.path.join(path_to_data_dir, "central_atom_list.json")
+	with open(path_to_central_atom_list, 'w') as f:
+		json.dump(new_central_atom_list,f)
+
 def all_events_central_atom_finder(path_to_data_dir, input_param):
 	
 	list_of_test_id = input_param["list_of_test_id"]

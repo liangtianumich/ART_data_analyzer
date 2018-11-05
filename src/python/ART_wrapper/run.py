@@ -12,7 +12,7 @@ import shutil
 import copy
 import multiprocessing as mp
 from data_reader import *
-from util import data_dir_to_test_dir, prompt_yes_no
+from util import data_dir_to_test_dir, prompt_yes_no, update_central_atom_list
 
 
 def run_art_mp(path_to_data_dir, input_param, pbs=False):
@@ -315,10 +315,14 @@ def delete_unused_events_data(path_to_data_dir,input_param):
 			print "reading central_atom_list from input SETTINGs file"
 			central_atom_list = input_param['central_atom_list']
 		delete_tests_list = []
+		saved_tests_list = []
 		for test_id in central_atom_list:
 			if test_id not in all_tests_events:
 				delete_tests_list.append(test_id)
+			else:
+				saved_tests_list.append(test_id)
 		delete_art_tests(path_to_data_dir,delete_tests_list)
+		update_central_atom_list(path_to_data_dir,saved_tests_list)
 	else:
 		print "central_atom_list.json does not exist in %s"%path_to_data_dir
 		print "central_atom_list key does not exist in input SETTING file"
@@ -340,3 +344,4 @@ def delete_unused_events_data(path_to_data_dir,input_param):
 					print "deleting the file %s"%path_to_file
 					os.remove(path_to_file)
 	print "done deleting unused events data!"
+
