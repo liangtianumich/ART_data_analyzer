@@ -1,7 +1,7 @@
 import zipfile
 import os
 import json
-from util import data_dir_to_test_dir,update_central_atom_list
+from util import data_dir_to_test_dir,update_central_atom_list,prompt_yes_no
 
 def archive_project(path_to_data_dir):
 	"""
@@ -83,7 +83,12 @@ def archived_file_names(path_to_data_dir):
 	final_tests_id = list(set(all_tests_id))
 	# update the central_atom_list.json
 	print "update the central_atom_list.json to be all test id saved in final_selected_events.json"
-	update_central_atom_list(path_to_data_dir,final_tests_id)
+	print ">>> confirm updating central_atom_list.json file (y/n): save original central_atom_list.json if necessary"
+	if prompt_yes_no() is True:
+		print "response received, updating!"
+		update_central_atom_list(path_to_data_dir,final_tests_id)
+	else:
+		print "response received, not updating"
 	list_of_file_names.append(["central_atom_list.json", os.path.join(path_to_data_dir, "central_atom_list.json")])
 	
 	for test in final_tests_id:

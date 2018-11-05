@@ -312,7 +312,7 @@ def delete_unused_events_data(path_to_data_dir,input_param):
 	path_to_central_atom_list = os.path.join(path_to_data_dir,"central_atom_list.json")
 	if os.path.isfile(path_to_central_atom_list) or "central_atom_list" in input_param:
 		if os.path.isfile(path_to_central_atom_list):
-			print "reading central_atom_list.json, ensure central_atom_list.json is updated by --update_input if using --art --run_more"
+			print "reading central_atom_list.json"
 			central_atom_list = json.load(open(path_to_central_atom_list, 'r'))	
 		elif "central_atom_list" in input_param:
 			print "reading central_atom_list from input SETTINGs file"
@@ -325,7 +325,12 @@ def delete_unused_events_data(path_to_data_dir,input_param):
 			else:
 				saved_tests_list.append(test_id)
 		delete_art_tests(path_to_data_dir,delete_tests_list)
-		update_central_atom_list(path_to_data_dir,saved_tests_list)
+		print ">>> confirm updating central_atom_list.json file (y/n): save original central_atom_list.json if necessary"
+		if prompt_yes_no() is True:
+			print "response received, updating!"
+			update_central_atom_list(path_to_data_dir,saved_tests_list)
+		else:
+			print "response received, not updating"
 	else:
 		print "central_atom_list.json does not exist in %s"%path_to_data_dir
 		print "central_atom_list key does not exist in input SETTING file"
