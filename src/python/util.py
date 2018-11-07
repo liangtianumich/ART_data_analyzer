@@ -672,6 +672,24 @@ def update_central_atom_list(path_to_data_dir,new_central_atom_list):
 	with open(path_to_central_atom_list, 'w') as f:
 		json.dump(new_central_atom_list,f)
 
+def update_central_atom_list_from_final_filtered_events(path_to_data_dir):
+	"""
+	this function update the central_atom_list.json file to be the tests id saved in final_selected_events.json
+	"""
+	path_to_final_selected_events = os.path.join(path_to_data_dir,"final_selected_events.json")
+	if os.path.isfile(path_to_final_selected_events):
+		print "reading final_selected_events.json, ensure that you always get most updated final_selected_events.json by --filter --re_calc if you have calculated more tests"
+		final_selected_events = json.load(open(path_to_final_selected_events,"r"))
+	else:
+		raise Exception("final_selected_events.json does not exist in %s"%path_to_data_dir)
+	
+	all_tests_id = []
+	for event in final_selected_events:
+		test_id = int(event[0][4:])
+		all_tests_id.append(test_id)
+	final_tests_id = list(set(all_tests_id))
+	update_central_atom_list(path_to_data_dir,final_tests_id)
+	
 def all_events_central_atom_finder(path_to_data_dir, input_param):
 	
 	list_of_test_id = input_param["list_of_test_id"]
