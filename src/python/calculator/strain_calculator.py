@@ -317,8 +317,6 @@ def local_strain_calculator_orth(initial_config_data, saddle_config_data, cut_of
 			init_sad_event_result['std']=[np.std(init_sad[0]),np.std(init_sad[1]),np.std(init_sad[2])]
 			init_sad_event_result['max']=[np.max(init_sad[0]),np.max(init_sad[1]),np.max(init_sad[2])]
 			return init_sad_event_result
-		else:
-			raise Exception("either strain_results_dict.pkl or displacement_results_dict.pkl does not exists in %s"%path_to_test_dir)
 
 	print "starting calculating atomic strain and displacement magnitude"
 	strain = dict()
