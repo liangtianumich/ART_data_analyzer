@@ -442,7 +442,12 @@ def event_max_disp(path_to_data_dir, event_state):
 	get the maximum displacement values for init to sad, sad to fin for
 	a single event in data directory
 	"""
-	path_to_test_dir = os.path.join(path_to_data_dir, event_state[0])
+	if 'test' in event_state[0]:
+		test_id = int(event_state[0][4:])
+	else:
+		test_id = int(event_state[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	
 	init, sad, fin = event_state[1][0],event_state[1][1],event_state[1][2]
 	path_to_event = path_to_test_dir + "/results/event_" + init + "_" + sad + "_" + fin
 	
