@@ -432,6 +432,9 @@ def eng_max_disp(path_to_data_dir, input_param):
 			all_max_disp_B.append(curr_max_disp[1])
 			all_act_eng.append(result[1])
 			all_relax_eng.append(result[2])
+			print "current event:", event_state
+			print "activation energy:", result[1]
+			print "relaxation energy:", result[2]
 		plot_2d(path_to_act_eng_disp, all_max_disp_A, all_act_eng, "Max disp /A", "Activation energy /eV")
 		plot_2d(path_to_relax_eng_disp, all_max_disp_B, all_relax_eng, "Max disp /A", "Relaxation energy /eV")
 	else:
