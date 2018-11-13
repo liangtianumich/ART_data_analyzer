@@ -16,6 +16,7 @@ from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no,all
 #from lammps.run import run_lammps
 from ART_wrapper.run import run_art_mp, set_up_input_files, delete_art_tests_files, delete_art_tests, check_tests_status, delete_unused_events_data
 from archive import archive_project
+from file_converter import refconfig_to_lammps_data
 
 def print_input_help():
 	"""
@@ -858,6 +859,7 @@ if __name__ == "__main__":
   parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all filtered events in specified tests', action = "store_true")
   parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for all filtered events in specified tests', action = "store_true")
   parser.add_argument('--max_disp_eng', help='plot max displacement vs activation energy and relaxation energy', action = "store_true")
+  parser.add_argument('--convert_to_ovito', help='convert a single event configuration files from refconfig type into lammps data type for Ovito visualization', nargs=4, metavar=('test_id', 'init', 'sad','fin'))
   
   #parser.add_argument('--strain_calc', help='perform atomic strain and displacement calculations', action="store_true")
   #parser.add_argument('--strain_v', help='perform atomic strain and displacement calculations', action="store_true")
@@ -1076,7 +1078,10 @@ if __name__ == "__main__":
 	if args.max_disp_eng:
 		eng_max_disp(path_to_data_dir, input_param)
 		exit()
-	
+	if args.convert_to_ovito:
+		event_state = [args.convert_to_ovito[0], [args.convert_to_ovito[1],args.convert_to_ovito[2],args.convert_to_ovito[3]]]
+		refconfig_to_lammps_data(path_to_data_dir, event_state, input_param)
+		exit()
 	if args.find_residual:
 		print "start finding relative residual threshold for outlier detection"
 		residual_threshold_finder(path_to_data_dir, input_param)
