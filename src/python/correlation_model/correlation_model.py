@@ -13,7 +13,7 @@ from sklearn import linear_model
 from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import NearestNeighbors
-from visualizer.general_visualizer import plot_histogram_3, plot_2d, plot_2d_train_fit
+from visualizer.general_visualizer import plot_histogram_3, plot_2d, plot_2d_train_fit, plot_histogram
 from util import operation_on_events, Configuration, state_energy_barrier, data_dir_to_test_dir, read_from_art_log_file, read_cluster_radius_from_bart, get_list_of_atoms_from_atom_list
 from data_reader import read_data_from_file
 from periodic_kdtree import PeriodicCKDTree
@@ -420,11 +420,13 @@ def eng_max_disp(path_to_data_dir, input_param):
 	"""
 	path_to_act_eng_disp = os.path.join(path_to_data_dir, "act_eng_max_disp.png")
 	path_to_relax_eng_disp = os.path.join(path_to_data_dir, "relax_eng_max_disp.png")
+	path_to_act_max_disp_hist = os.path.join(path_to_data_dir, "max_disp_hist_init_sad.png")
+	path_to_rel_max_disp_hist = os.path.join(path_to_data_dir, "max_disp_hist_sad_fin.png")
 	
 	path_to_all_act_relax_eng = os.path.join(path_to_data_dir,"act_relax_eng_filtered_events.json")
 	if os.path.exists(path_to_all_act_relax_eng):
 		saved_results = json.load(open(path_to_all_act_relax_eng, 'r'))
-		all_max_disp_A, all_max_disp_B, all_act_eng, all_relax_eng = [],[], [], []
+		all_max_disp_A, all_max_disp_B, all_act_eng, all_relax_eng = [], [], [], []
 		for result in saved_results:
 			event_state = result[0]
 			curr_max_disp = event_max_disp(path_to_data_dir, event_state)
@@ -437,6 +439,13 @@ def eng_max_disp(path_to_data_dir, input_param):
 			print "max_disp during sad to fin:", curr_max_disp[1]
 			print "activation energy:", result[1]
 			print "relaxation energy:", result[2]
+		print "current data project: %s"%path_to_data_dir
+		print "average of max_disp during init to sad for all events:", np.mean(all_max_disp_A)
+		print "average of max_disp during sad to fin for all events:", np.mean(all_max_disp_B)
+		
+		plot_histogram(path_to_act_max_disp_hist, all_max_disp_A)
+		plot_histogram(path_to_rel_max_disp_hist, all_max_disp_B)
+		
 		plot_2d(path_to_act_eng_disp, all_max_disp_A, all_act_eng, "Max disp /A", "Activation energy /eV")
 		plot_2d(path_to_relax_eng_disp, all_max_disp_B, all_relax_eng, "Max disp /A", "Relaxation energy /eV")
 	else:
