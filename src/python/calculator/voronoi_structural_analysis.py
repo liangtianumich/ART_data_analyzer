@@ -231,9 +231,9 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 		elif os.path.exists(path_to_voro_results):
 			return json.load(open(path_to_voro_results,"r"))
 		else:
-			raise Exception("voronoi_index_results.json does not exist in %s!"%path_to_curr_event)
-
-	print "re_calculating"
+			print "begin calculating voronoi index"
+	else:
+		print "re_calculating"
 	path_to_file_ini = path_to_test_dir + '/' + init + ".dump"
 	path_to_file_sad = path_to_test_dir + '/' + sad + ".dump"
 	path_to_file_fin = path_to_test_dir + '/' + fin + ".dump"

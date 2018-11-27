@@ -633,12 +633,17 @@ def single_event_triggered_cluster_atoms_index(event, path_to_data_dir, box_dim,
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	
 	print "path_to_current_event:", path_to_curr_event
+	if not os.path.exists(path_to_curr_event):
+		os.makedirs(path_to_curr_event)
 	path_to_triggered_atoms_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
 	
 	if re_calc is False:
 		if os.path.exists(path_to_triggered_atoms_index):
 			return json.load(open(path_to_triggered_atoms_index,'r'))
-	print "re_calculating"
+		else:
+			print "calculating initial cluster atoms index"
+	else:
+		print "re_calculating"
 	test_sad_central_atom_id = read_from_art_log_file(path_to_test_dir)
 	sad_id = int(sad[3:])
 	for curr_sad in test_sad_central_atom_id:
@@ -710,12 +715,18 @@ def single_event_central_atom_index(event, path_to_data_dir, save_results=True, 
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	
 	print "path_to_current_event:", path_to_curr_event
+	if not os.path.exists(path_to_curr_event):
+		os.makedirs(path_to_curr_event)
+
 	path_to_central_atom_index = path_to_curr_event + "/central_atom_index.json"
 	
 	if re_calc is False:
 		if os.path.exists(path_to_central_atom_index):
 			return json.load(open(path_to_central_atom_index,'r'))
-	print "re_calculating"
+		else:
+			print "begin calculating central atom index"
+	else:
+		print "re_calculating"
 	test_sad_central_atom_id = read_from_art_log_file(path_to_test_dir)
 	sad_id = int(sad[3:])
 	for curr_sad in test_sad_central_atom_id:
@@ -747,13 +758,17 @@ def single_event_max_disp_atom_index(event, path_to_data_dir, save_results=True,
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	
 	print "path_to_current_event:", path_to_curr_event
+	if not os.path.exists(path_to_curr_event):
+		os.makedirs(path_to_curr_event)
 	path_to_max_disp_atom_index = path_to_curr_event + "/max_disp_atom_index.json"
 	
 	if re_calc is False:
 		if os.path.exists(path_to_max_disp_atom_index):
 			return json.load(open(path_to_max_disp_atom_index,'r'))
-	
-	print "re_calculating"
+		else:
+			print "begin calculating max displacement atom index"
+	else:
+		print "re_calculating"
 	path_to_init_sad = path_to_curr_event + "/init_sad"
 	path_to_displacement = path_to_init_sad + "/displacement_results_dict.pkl"
 	

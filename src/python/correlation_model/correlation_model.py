@@ -658,10 +658,23 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 	
 	path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 	print "path_to_current_event:", path_to_curr_event
+	if not os.path.exists(path_to_curr_event):
+		os.makedirs(path_to_curr_event)
+	if not os.path.exists(path_to_init_sad):
+		os.makedirs(path_to_init_sad)
+	if not os.path.exists(path_to_sad_fin):
+		os.makedirs(path_to_sad_fin)
+	if not os.path.exists(path_to_init_fin):
+		os.makedirs(path_to_init_fin)
+
 	if re_calc is False:
 		if os.path.exists(path_to_local_atom_index):
 			return json.load(open(path_to_local_atom_index,'r'))
-	print "re_calculating"
+		else:
+			print "begin calculating local atoms indexes"
+	else:
+		print "re_calculating"
+
 	if feature == "displacement" and target == "shear_strain":
 		init_sad_X,init_sad_y = get_strain_disp(path_to_init_sad)
 		sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
