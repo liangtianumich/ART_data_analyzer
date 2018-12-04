@@ -11,8 +11,11 @@ def read_data_from_file(path_to_file=None, quiet = False):
 	try:
 		return read_data_from_dump(path_to_file, quiet)
 	except IOError:
-		path_to_file = path_to_file[:-5]
-		return read_data_from_non_dump(path_to_file, quiet)
+		try:
+			path_to_file = path_to_file[:-5]
+			return read_data_from_non_dump(path_to_file, quiet)
+		except IOError:
+			return read_data_from_lammps_data(path_to_file, quiet)
 		
 def read_data_from_dump(path_to_file=None, quiet = False):
 	"""

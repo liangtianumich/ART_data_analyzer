@@ -258,6 +258,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			print ("\n starting local mode voronoi calculations for local atoms during init to sad process")
 			local_atom_list = json.load(open(path_to_local_atom_index,"r"))
 			if local_atom_list["init_sad"] == []:
+				print "No local atoms during init to sad, return None"
 				return None
 			atom_list = [atom + 1 for atom in local_atom_list["init_sad"]]
 		else:
