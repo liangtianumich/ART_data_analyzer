@@ -15,6 +15,7 @@ from data_reader import *
 from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no,all_events_triggered_cluster_atoms_finder,all_events_central_atom_finder, all_events_max_disp_atom_finder
 #from lammps.run import run_lammps
 from ART_wrapper.run import run_art_mp, set_up_input_files, delete_art_tests_files, delete_art_tests, check_tests_status, delete_unused_events_data
+from ART_wrapper.run_slurm import run_art_cluster_slurm
 from archive import archive_project
 from file_converter import refconfig_to_lammps_data
 
@@ -875,6 +876,7 @@ if __name__ == "__main__":
   # to be implemented in the future
   # integration with running art
   parser.add_argument('--art', help='setting up ART input files, and running art in parallel with np specified in SETTINGS file', action='store_true')
+  parser.add_argument('--slurm', help='running simulations by submitting jobs in slurm cluster', action='store_true')
   
   # integration with lammps
   parser.add_argument('--lammps',help='begin lammps mode for generating initial ART samples, to be implemented',action="store_true")
@@ -948,7 +950,10 @@ if __name__ == "__main__":
 		  print "being setting up the ART input files!"
 		  set_up_input_files(path_to_data_dir, input_param)
 		  print "starting running art in parallel"
-		  run_art_mp(path_to_data_dir, input_param)
+		  if args.slurm:
+			  run_art_cluster_slurm(path_to_data_dir, input_param)
+		  else:
+			  run_art_mp(path_to_data_dir, input_param)
 		  #run_art_mp(args.run[0])
 		  exit()
 		if args.run_more:
@@ -959,7 +964,10 @@ if __name__ == "__main__":
 		  print ">>>setting up the ART input files for new central atom list!"
 		  set_up_input_files(path_to_data_dir, input_param)
 		  print ">>>starting running art for new central_atom_list in parallel!"
-		  run_art_mp(path_to_data_dir, input_param)
+		  if args.slurm:
+			  run_art_cluster_slurm(path_to_data_dir, input_param)
+		  else:
+			  run_art_mp(path_to_data_dir, input_param)
 		  #run_art_mp(args.run[0])
 		  updated_input_param = update_input(input_param)
 		  json.dump(updated_input_param, open(args.settings[0], 'w'), indent=2)
