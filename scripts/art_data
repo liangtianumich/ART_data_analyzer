@@ -332,6 +332,16 @@ def print_desc_help():
 	in the local machine. This command will automatically set up the input files 
 	for running art by running ./mod_bart.sh inside each test dir.
 	
+	art_data -s input_sample_id.json --art --run now also support running in slurm cluster environment.
+	However, user need to coordinate with the slurm admistrator to set up the necessary environment
+	for running artn before running in slurm environment.
+	This can be done by art_data -s input_sample_id.json --art --run --slurm
+	Now the num_of_proc key in input_sample_id.json means the number of compute nodes
+	user requested to submit their jobs to. This will split all central atoms in central_atom_list key
+	into num_of_proc folds. Each fold will be allocated to one compute node 
+	as a single submitted sbatch job to use its all available cores to 
+	perform parallel computation using python multiprocesssing on this single compute node. 
+	
 	After finishing running art, it may be necessary to archive all necessary
 	raw art data into a zip file for the purpose of sharing raw research data
 	between researchers.  This can be done easily through --archive command,

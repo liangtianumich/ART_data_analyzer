@@ -25,7 +25,7 @@ def run_art_cluster_slurm(path_to_data_dir, input_param):
 	path_to_submit_slurm = os.path.join(os.environ["MY_ART"], "src/python/ART_wrapper/submit_slurm.sh")
 	path_to_job_slurm = os.path.join(os.environ["MY_ART"], "src/python/ART_wrapper/job_slurm.py")
 	path_to_slurm_output = os.path.join(path_to_data_dir, "slurm")
-	if not os.path_isdir(path_to_slurm_output):
+	if not os.path.isdir(path_to_slurm_output):
 		os.makedirs(path_to_slurm_output)
 	
 	for full_file_name in [path_to_submit_slurm, path_to_job_slurm]:
@@ -33,13 +33,14 @@ def run_art_cluster_slurm(path_to_data_dir, input_param):
 			shutil.copy(full_file_name,path_to_slurm_output)
 	
 	path_to_sh_file = os.path.join(path_to_slurm_output,"submit_slurm.sh")
+	path_to_job_file = os.path.join(path_to_slurm_output,"job_slurm.py")
 	# split the central_atom_list into the num_of_proc folds
 	all_tests_folds = list(split(central_atom_list, num_of_proc))
 	for test_fold in all_tests_folds:
 		print "current job central atoms list:", test_fold
 		test_fold = str(test_fold).replace(",", "")
 		test_fold = "'%s'"%test_fold		
-		subprocess.check_call("export ATOM_LIST=%s;sbatch %s"%(test_fold,path_to_sh_file), shell=True)
+		subprocess.check_call("export ATOM_LIST=%s;export PATH_TO_JOB=%s;sbatch %s"%(test_fold,path_to_job_file,path_to_sh_file), shell=True)
 		#run_bart_node(list_of_run_dir)
 	print "done submitting jobs of running ART simulations using %s of compute nodes!"%num_of_proc
 	

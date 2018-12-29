@@ -3,4 +3,4 @@
 #SBATCH -N 1
 #SBATCH -p main
 #SBATCH --qos main
-srun --exclusive -n 1 python job_slurm.py
+srun --exclusive -n 1 python $PATH_TO_JOB

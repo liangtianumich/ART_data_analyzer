@@ -3,7 +3,7 @@ This ART data analyzer package is a python package containing a easy-to-use comm
 1) parallel computation of running Activation and Relaxation Techniques (ART) simulation jobs to generate ART data wrapped by python
 2) post-processing ART data by filtering, calculating, visualizing, correlating various physical quantities change for large amount of event searches.
 
-Currently, version 1.0 supports the automation of parallel ART simulations running and post-processing of ART data. Future versions should implement the automation of integrating with LAMMPS, Ovito, pymatgen.
+Currently, version 1.1 supports the automation of parallel ART simulations running and post-processing of ART data, archive and clean ART data for researchers to share data. Future versions should implement the automation of integrating with LAMMPS, Ovito, pymatgen.
 
 This python package is originally developed by Dr Lin Li group at University of Alabama and now has been integrated into part of artn project in gitlab.
 Lead developer: Dr Liang Tian.
@@ -93,6 +93,27 @@ input_sample_id.json is an example input SETTINGS file
 automate running ART in parallel:
 	art_data -s input_sample_id.json --art --run
 
+Now support running ART simulations in slurm cluster environment by art_data -s input_sample_id.json --art --run —slurm
+However, user need to coordinate with the slurm admistrator to set up the necessary environment for running artn before running in slurm environment.
+In this case, the num_of_proc key in input_sample_id.json means the number of compute nodes
+user requested to submit their sbatch jobs to. This will split all central atoms in central_atom_list key
+into num_of_proc folds. Each fold will be allocated to one compute node as a single submitted sbatch job to use its all available cores to 
+perform parallel computation using python multiprocesssing on this single compute node.
+
+If ART simulations are interrupted due to either human intervention or machine failure, user can check the current status of all tests
+by —-check_tests_status, such as art_data -s input_sample_id.json --art --check_tests_status
+This will create two input SETTINGS files called input_tests_done.json storing the id of finished tests and 
+input_tests_undone.json storing the id of unfinished tests
+	
+For finished tests:
+user can check the results of only finished tests as described in the
+following post-processing section by e.g.
+art_data -s input_tests_done.json --filter, art_data -s input_tests_done.json --eng --calc
+	
+For unfinished tests:
+user can choose to delete these unfinished tests completely by art_data -s input_tests_undone.json --art --delete_tests
+Then user can continue to run these unfinished tests from the beginning by art_data -s input_tests_undone.json --art --run
+
 ART simulations are performed under constant volume so that the simulation box size does not change.
 
 For ubuntu machine with small RAM (e.g.8GB), when running art in parallel in ubuntu box, some I/O error issues could occur during the writing of a single large configuration file (>20MB, >300,000 atoms) to obtain an incomplete/corrupted configuration file due to the insufficient RAM memory and swap space. 
@@ -118,8 +139,11 @@ events.list file will always contain all accepted/rejected events so that you ca
 
 
 Post-processing tasks in a user workflow:
+
+The following demonstrates the main workflow though more functionalities are available
 1)filtering events:
 	art_data -s input_sample_id.json --filter
+
 2)perform activation and relaxation energy convergence statistical t tests:
 	art_data -s input_sample_id.json --eng --calc
 	
@@ -130,6 +154,12 @@ Post-processing tasks in a user workflow:
 	art_data -s input_sample_id.json --art --run_more N_TESTS
 	
 	art_data -s input_sample_id.json --update_input
+
+After filtering and energy convergence tests, user can choose to delete unused ART data by
+art_data -s input_sample_id.json —-art —-delete_unused_events
+This will also update central_atom_list.json file automatically, save an original copy if necessary
+art_data -s input_sample_id.json —-update_input
+This will update the input_sample_id.json file automatically, save an original copy if necessary
 
 3)run calculations and visualizations:
 	 
@@ -142,7 +172,13 @@ by a machine learning outlier detection algorithm
 
 5)find all local atom indexes for each of filtered events
 
-6)run calculations for local atoms only
+6)run calculations for various user specified atom list 
+
+For user’s convenience, it currently support local atoms by —-local, central atom by —-central, initial cluster atoms by —-initial,
+max displaced atom by —-max_disp. 
+Before using these arguments, user first need to find these various types of atoms by --find_local_index,--find_central_index,--find_triggered_cluster_atoms_index,--find_max_disp_index
+
+For generality, it supports passing a list of atoms such as [1,6,8] as the value of atom_list key in input settings file
 
 
 Speed demo:
