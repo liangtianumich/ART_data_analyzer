@@ -760,7 +760,7 @@ def get_more_central_atoms(path_to_data_dir, n_tests):
 	else:
 		new_central_atom_list = left_central_atom_list
 		final_central_atom_list = interested_atom_list
-
+	print ">>> updating the central_atom_list.json!!! It will contain both the added new_central_atom_list and previous existing central_atom_list!"
 	with open(path_to_central_atom_list, 'w+') as f:
 		json.dump(final_central_atom_list,f)
 
@@ -968,6 +968,8 @@ if __name__ == "__main__":
 		  exit()
 		if args.run_more:
 		  print ">>>ART_data is not converged, running more ART data!"
+		  # it will update the central_atom_list.json with both added new_central_atom_list and old_central_atom_list
+		  # it only return new_central_atom_list for artn calculations
 		  new_central_atom_list = get_more_central_atoms(path_to_data_dir, args.run_more[0])
 		  print ">>>get new central atom list"
 		  input_param["central_atom_list"] = new_central_atom_list
@@ -979,8 +981,15 @@ if __name__ == "__main__":
 		  else:
 			  run_art_mp(path_to_data_dir, input_param)
 		  #run_art_mp(args.run[0])
-		  updated_input_param = update_input(input_param)
-		  json.dump(updated_input_param, open(args.settings[0], 'w'), indent=2)
+		  
+		  input_param = update_input(input_param)
+		  		  
+		  new_cut_off_dict = dict()
+		  for k,v in input_param['cut_off'].items():
+			new_cut_off_dict[str(k)] = v
+		  input_param['cut_off'] = new_cut_off_dict
+		  
+		  json.dump(input_param, open(args.settings[0], 'w'), indent=2)
 		  exit()
 		if args.delete_tests_files:
 		  file_names = args.delete_tests_files
