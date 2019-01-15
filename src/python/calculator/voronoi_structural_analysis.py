@@ -227,7 +227,8 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			if os.path.exists(path_to_voro_results) and os.path.exists(path_to_volume_results):
 				return (json.load(open(path_to_voro_results,"r")), json.load(open(path_to_volume_results,"r")))
 			else:
-				raise Exception("User specify return_volume of voronoi cell is True, however, either voronoi_index_results.json or voronoi_volume_results.json does not exists!")
+				print "return volume is True, no existing calculations, begin new calculations!"
+				#raise Exception("User specify return_volume of voronoi cell is True, however, either voronoi_index_results.json or voronoi_volume_results.json does not exists!")
 		elif os.path.exists(path_to_voro_results):
 			return json.load(open(path_to_voro_results,"r"))
 		else:

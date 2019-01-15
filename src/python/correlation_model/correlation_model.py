@@ -676,15 +676,19 @@ def single_event_local_atoms_index(event,path_to_data_dir,model,feature,target,r
 		print "re_calculating"
 
 	if feature == "displacement" and target == "shear_strain":
-		init_sad_X,init_sad_y = get_strain_disp(path_to_init_sad)
-		sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
-		init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
+		init_sad_X, init_sad_y, init_sad_key = get_strain_disp(path_to_init_sad)
+		sad_fin_X, sad_fin_y, sad_fin_key = get_strain_disp(path_to_sad_fin)
+		init_fin_X, init_fin_y, init_fin_key = get_strain_disp(path_to_init_fin)
 	
 	init_sad = outlier_detector(path_to_init_sad,init_sad_X,init_sad_y,model,residual_threshold, return_index = True)
 	sad_fin = outlier_detector(path_to_sad_fin,sad_fin_X,sad_fin_y,model,residual_threshold, return_index = True)
 	init_fin = outlier_detector(path_to_init_fin,init_fin_X,init_fin_y,model,residual_threshold, return_index = True)
 	
-	final_results = {"init_sad":init_sad,"sad_fin":sad_fin,"init_fin":init_fin}
+	final_init_sad = [init_sad_key[i] for i in init_sad]
+	final_sad_fin = [sad_fin_key[i] for i in sad_fin]
+	final_init_fin = [init_fin_key[i] for i in init_fin]
+		
+	final_results = {"init_sad":final_init_sad,"sad_fin":final_sad_fin,"init_fin":final_init_fin}
 	
 	if save_results is True:
 		with open(path_to_local_atom_index, 'w') as f:
@@ -716,9 +720,9 @@ def single_event_local_atoms(event,path_to_data_dir,model,feature,target,residua
 	path_to_sad_fin = path_to_curr_event + "/sad_fin"
 	path_to_init_fin = path_to_curr_event + "/init_fin"
 	if feature == "displacement" and target == "shear_strain":
-		init_sad_X,init_sad_y = get_strain_disp(path_to_init_sad)
-		sad_fin_X,sad_fin_y = get_strain_disp(path_to_sad_fin)
-		init_fin_X,init_fin_y = get_strain_disp(path_to_init_fin)
+		init_sad_X,init_sad_y,init_sad_key = get_strain_disp(path_to_init_sad)
+		sad_fin_X,sad_fin_y,sad_fin_key = get_strain_disp(path_to_sad_fin)
+		init_fin_X,init_fin_y,init_fin_key = get_strain_disp(path_to_init_fin)
 	
 	init_sad = outlier_detector(path_to_init_sad,init_sad_X,init_sad_y,model,residual_threshold)
 	sad_fin = outlier_detector(path_to_sad_fin,sad_fin_X,sad_fin_y,model,residual_threshold)
@@ -735,12 +739,14 @@ def get_strain_disp(path_to_test_dir):
 		sample_size = len(strain)
 		X =[]
 		y =[]
+		z =[]
 		for key,value in strain.items():
 			X.append(displacement[key])
 			y.append(value[1])
+			z.append(int(key))
 		X= np.array(X).reshape(sample_size,1)
 		y= np.array(y).reshape(sample_size,1)
-		return (X,y)
+		return (X,y,z)
 	else:
 		raise Exception("strain and displacement data results has not been calculated in %s, can not perform correlation analysis"%path_to_test_dir)
 			

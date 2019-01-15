@@ -525,9 +525,12 @@ def get_list_of_atoms_from_atom_list(path_to_curr_event, initial_config_data, at
 		path_to_local_atom_index = path_to_curr_event + "/local_atoms_index.json"
 		if os.path.exists(path_to_local_atom_index):
 			local_atom_list = json.load(open(path_to_local_atom_index,"r"))
-			atom_list_init_sad = [atom + 1 for atom in local_atom_list["init_sad"]]
-			atom_list_sad_fin = [atom + 1 for atom in local_atom_list["sad_fin"]]
-			atom_list_init_fin = [atom + 1 for atom in local_atom_list["init_fin"]]
+			#atom_list_init_sad = [atom + 1 for atom in local_atom_list["init_sad"]]
+			#atom_list_sad_fin = [atom + 1 for atom in local_atom_list["sad_fin"]]
+			#atom_list_init_fin = [atom + 1 for atom in local_atom_list["init_fin"]]
+			atom_list_init_sad = local_atom_list["init_sad"]
+			atom_list_sad_fin = local_atom_list["sad_fin"]
+			atom_list_init_fin = local_atom_list["init_fin"]
 		else:
 			raise Exception("local_atoms_index.json file not exists in %s"%path_to_curr_event)
 	elif atom_list == "initial":
