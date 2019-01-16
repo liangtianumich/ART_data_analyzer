@@ -1,4 +1,5 @@
 """voronoi analysis module under periodic boudnary condition https://github.com/joe-jordan/pyvoro"""
+import tess
 import pyvoro
 import os
 import numpy as np
@@ -261,7 +262,8 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			if local_atom_list["init_sad"] == []:
 				print "No local atoms during init to sad, return None"
 				return None
-			atom_list = [atom + 1 for atom in local_atom_list["init_sad"]]
+			#atom_list = [atom + 1 for atom in local_atom_list["init_sad"]]
+			atom_list = local_atom_list["init_sad"]
 		else:
 			raise Exception("local_atoms_index.json does not exist in %s"%path_to_curr_event)
 	elif atom_list == "initial":
@@ -319,7 +321,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	else:
 		return voronoi_index
 
-def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None, max_edge_count=8, periodic=[True,True,True],return_volume=False):
+def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None, max_edge_count=8, periodic=[True,True,True],return_volume=False, tool="tess"):
 	"""
 	this function calculates the voronoi index for atoms in atom_list
 	
@@ -357,15 +359,18 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 	int_points_index = [atom-1 for atom in atom_list]
 	
 	dispersion = cut_off
-	
-	all_results = pyvoro.compute_voronoi(points, box_range, dispersion, periodic=periodic)
+	if tool == "tess":
+		limits = (box_range[0][0],box_range[1][0],box_range[2][0]),(box_range[0][1],box_range[1][1], box_range[2][1])
+		all_results = tess.Container(points, limits, periodic=tuple(periodic))
+	else:
+		all_results = pyvoro.compute_voronoi(points, box_range, dispersion, periodic=periodic)
 	
 	results = [all_results[i] for i in int_points_index]
 	if return_volume is True:
-		voronoi_index, volumes = count_faces(results, max_edge_count, True)
+		voronoi_index, volumes = count_faces(results, max_edge_count, True, tool=tool)
 		return (voronoi_index, volumes)
 	else:
-		voronoi_index = count_faces(results, max_edge_count, False)
+		voronoi_index = count_faces(results, max_edge_count, False,tool=tool)
 		return voronoi_index
 
 def classify_voronoi_index(list_of_voronoi_index):
@@ -390,8 +395,58 @@ def classify_voronoi_index(list_of_voronoi_index):
 			#list_of_voronoi_class.append('GUM')
 			list_of_voronoi_class.append(2)
 	return list_of_voronoi_class			
+
+def count_faces(results, max_edge_count=8, return_volume=False, tool="tess"):
+	if tool == "tess":
+		return tess_count_faces(results, max_edge_count=max_edge_count, return_volume=return_volume)
+	else:
+		return pyvoro_count_faces(results, max_edge_count=max_edge_count, return_volume=return_volume)
 		
-def count_faces(results, max_edge_count=8, return_volume=False):
+def tess_count_faces(results, max_edge_count=8, return_volume=False):
+	"""
+	input:
+		results: a list
+			a list contains the voronoi cell information for each particle in the box
+		max_edge_count: int
+			an integer that specify the maximum number of edges that will be trucated
+			in voronoi index, this can be specified from user's experience for their problems
+			or calculated from the maximum of all max_edge_count for all particles
+	return:
+		all_voronoi_index: list
+			a list contains the voronoi index vector for each particle.
+			the voronoi index vector will be truncated at max_edge_count
+	Note:
+		the voronoi index vector here have a full representation, with
+		the first two elements will always be zero.
+	"""
+	all_voronoi_index = []
+	
+	if return_volume is True:
+		volumes = []
+		for point in results:
+			volumes.append(point.volume())
+
+	for point in results:
+		face_vertices = point.face_vertices()
+		voronoi_index = []
+		edges = []
+		for face in face_vertices:
+			edges.append(len(face))
+		edges_count = Counter(edges)
+		
+		for i in xrange(max_edge_count):
+			if i+1 in edges_count:
+				voronoi_index.append(edges_count[i+1])
+			else:
+				voronoi_index.append(0)
+		all_voronoi_index.append(voronoi_index)
+	
+	if return_volume is True:
+		return (all_voronoi_index, volumes)
+	else:
+		return all_voronoi_index
+
+def pyvoro_count_faces(results, max_edge_count=8, return_volume=False):
 	"""
 	input:
 		results: a list

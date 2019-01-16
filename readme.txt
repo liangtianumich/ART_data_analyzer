@@ -75,6 +75,8 @@ This package can be put in any directory. Currently, for the convenience of inte
 	the ART_SAMPLE to the dump file name (e.g.conf.dump),  SAMPLE_TYPE=dump
 	export ART_SAMPLE=conf.dump
 	export SAMPLE_TYPE=dump
+	
+	Based on my test, The sample size should be less than 225,000 atoms for pyvoro to calculate voronoi indexes without being killed
 
 2) source the /ART_data_analyzer/environment.sh before using this package. The purpose is to create the necessary environmental variables PYTHONPATH/PATH/ for current bash sessions to find the python packages/exe scripts.
 
@@ -99,6 +101,19 @@ In this case, the num_of_proc key in input_sample_id.json means the number of co
 user requested to submit their sbatch jobs to. This will split all central atoms in central_atom_list key
 into num_of_proc folds. Each fold will be allocated to one compute node as a single submitted sbatch job to use its all available cores to 
 perform parallel computation using python multiprocesssing on this single compute node.
+
+Some other errors may occur due to the usage of subprocess module to invoke sbatch job to run python multiprocessing module by multiprocessing.Pool class:
+“””
+"/share/apps/python/2.7/lib/python2.7/multiprocessing/pool.py", line 347, in _handle_results
+    task = get()
+TypeError: ('__init__() takes at least 3 arguments (1 given)', <class 'subprocess.CalledProcessError'>, ())
+“””
+This error is a python development bug according to this python issue post:
+https://bugs.python.org/review/9400/diff/159/Lib/subprocess.py
+
+User may request system administrator to modify the subprocess.py file /share/apps/python/2.7/lib/python2.7/subprocess.py by adding the following line
+super(CalledProcessError, self).__init__(returncode, cmd, output)
+ 
 
 If ART simulations are interrupted due to either human intervention or machine failure, user can check the current status of all tests
 by —-check_tests_status, such as art_data -s input_sample_id.json --art --check_tests_status
