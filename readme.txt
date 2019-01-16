@@ -31,14 +31,14 @@ and various Makefiles for compiling lammps and artn.
 
 Using the ART_data_analyzer package and its command line tool art_data need to correctly set up the python environment for your Operating system (though no need to compile and build python code).
 
-This python package depends on some python packages such as numpy, pandas, matplotlib, python-tk,scipy, mpl_toolkits, scikit-learn, pathos, pyvoro. 
+This python package depends on some python packages such as numpy, pandas, matplotlib, python-tk,scipy, mpl_toolkits, scikit-learn, pathos, pyvoro, tess. 
 First, user need to set up the python development environment for your OS, such as install python setuptools to get easy_install, pip. pip is the best way to handle additional python packages installation.
 
 For Linux Ubuntu OS,
 Install easy_install and pip by >>> sudo apt-get install python-pip python-dev build-essential
 For Mac, install pip by >>> sudo easy_install pip
 
-install previous mentioned python package by >>> python -m pip install --user numpy scipy matplotlib jupyter pandas scikit-learn pyvoro pathos. 
+install previous mentioned python package by >>> python -m pip install --user numpy scipy matplotlib jupyter pandas scikit-learn pyvoro pathos tess. 
 
 After installation of these dependencies, if there is no issue using art_data command line tool later, then it is good to go.
 
@@ -76,7 +76,7 @@ This package can be put in any directory. Currently, for the convenience of inte
 	export ART_SAMPLE=conf.dump
 	export SAMPLE_TYPE=dump
 	
-	Based on my test, The sample size should be less than 225,000 atoms for pyvoro to calculate voronoi indexes without being killed
+	Based on my test, The sample size should be less than 225,000 atoms for pyvoro and tess to calculate voronoi indexes without being killed
 
 2) source the /ART_data_analyzer/environment.sh before using this package. The purpose is to create the necessary environmental variables PYTHONPATH/PATH/ for current bash sessions to find the python packages/exe scripts.
 

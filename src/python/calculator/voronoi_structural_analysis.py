@@ -321,7 +321,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	else:
 		return voronoi_index
 
-def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None, max_edge_count=8, periodic=[True,True,True],return_volume=False, tool="tess"):
+def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None, max_edge_count=8, periodic=[True,True,True],return_volume=False, tool="pyvoro"):
 	"""
 	this function calculates the voronoi index for atoms in atom_list
 	
