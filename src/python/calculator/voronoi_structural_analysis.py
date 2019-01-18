@@ -10,7 +10,7 @@ from collections import Counter
 from data_reader import *
 from util import operation_on_events, event_local_atom_index, read_from_art_input_file, data_dir_to_test_dir
 from visualizer.voronoi_visualizer import plot_voronoi_histogram_3, plot_dynamic_transition_matrix
-
+from periodic_kdtree import PeriodicCKDTree
 # voronoi index classification from Evan Ma paper "Tuning order in disorder"
 global ICO
 ICO = [[0,6,0,0],[0,5,2,0],[0,4,4,0],[0,3,6,0],[0,2,8,0],[0,2,8,1],[0,0,12,0],[0,1,10,2],[0,0,12,2],[0,0,12,3],[0,0,12,4],[0,0,12,5]]
@@ -352,25 +352,51 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 	"""
 	
 	# read the configuration data
-	points = (config[['x','y','z']].values).tolist()
+	# points = (config[['x','y','z']].values).tolist()
 	
 	if atom_list is None:
 		atom_list = (config["item"].values).tolist()
-	int_points_index = [atom-1 for atom in atom_list]
+	
+	int_points = config.loc[config['item'].isin(atom_list)]
+	
+	# order int_points based on the appearance of atom in atom_list
+	df = pd.DataFrame()
+	for atom in atom_list:
+		df = df.append(int_points.loc[int_points['item'] == atom])
+	int_points = df 
+		
+	#int_points_item_id = (int_points["item"].values).tolist()
+	#int_points_index = [atom-1 for atom in atom_list]
 	
 	dispersion = cut_off
-	if tool == "tess":
-		limits = (box_range[0][0],box_range[1][0],box_range[2][0]),(box_range[0][1],box_range[1][1], box_range[2][1])
-		all_results = tess.Container(points, limits, periodic=tuple(periodic))
-	else:
-		all_results = pyvoro.compute_voronoi(points, box_range, dispersion, periodic=periodic)
 	
-	results = [all_results[i] for i in int_points_index]
+	box_dim = [box_range[0][1] - box_range[0][0], box_range[1][1] - box_range[1][0], box_range[2][1] - box_range[2][0]]
+	
+	result_tree = PeriodicCKDTree(box_dim, config[['x','y','z']].values)
+	
+	int_voro_results = []
+	for index,point in int_points.iterrows():
+		# calculate NN of this point
+		result_group = result_tree.query_ball_point(point[['x','y','z']].values, cut_off * 2.0)
+		NN_df = config.iloc[result_group]
+		all_df = NN_df.append(point,ignore_index=True)
+		all_points = all_df[['x','y','z']].values		
+		# let this NN with this point to calculate voronoi indexes results
+		if tool == "tess":
+			limits = (box_range[0][0],box_range[1][0],box_range[2][0]),(box_range[0][1],box_range[1][1], box_range[2][1])
+			results = tess.Container(all_points, limits, periodic=tuple(periodic))
+		else:
+			results = pyvoro.compute_voronoi(all_points, box_range, dispersion, periodic=periodic)
+		
+		# append the voronoi index of only this point
+		curr_voro = results[-1]
+		int_voro_results.append(curr_voro)
+
 	if return_volume is True:
-		voronoi_index, volumes = count_faces(results, max_edge_count, True, tool=tool)
+		voronoi_index, volumes = count_faces(int_voro_results, max_edge_count, True, tool=tool)
 		return (voronoi_index, volumes)
 	else:
-		voronoi_index = count_faces(results, max_edge_count, False,tool=tool)
+		voronoi_index = count_faces(int_voro_results, max_edge_count, False,tool=tool)
 		return voronoi_index
 
 def classify_voronoi_index(list_of_voronoi_index):
