@@ -372,13 +372,19 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 	
 	box_dim = [box_range[0][1] - box_range[0][0], box_range[1][1] - box_range[1][0], box_range[2][1] - box_range[2][0]]
 	
-	result_tree = PeriodicCKDTree(box_dim, config[['x','y','z']].values)
+	#result_tree = PeriodicCKDTree(box_dim, config[['x','y','z']].values)
 	
 	int_voro_results = []
 	for index,point in int_points.iterrows():
 		# calculate NN of this point
-		result_group = result_tree.query_ball_point(point[['x','y','z']].values, cut_off * 2.0)
-		NN_df = config.iloc[result_group]
+		# result_group = result_tree.query_ball_point(point[['x','y','z']].values, cut_off * 2.0)
+		[x_c, y_c, z_c] = point[['x','y','z']].values
+				
+		config_corr = config[config.item != point['item']]
+		
+		NN_df = NN_cube_pbc(config_corr,[x_c, y_c, z_c], box_range, cut_off)
+		
+		#NN_df = config.iloc[result_group]
 		all_df = NN_df.append(point,ignore_index=True)
 		all_points = all_df[['x','y','z']].values		
 		# let this NN with this point to calculate voronoi indexes results
@@ -398,6 +404,32 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 	else:
 		voronoi_index = count_faces(int_voro_results, max_edge_count, False,tool=tool)
 		return voronoi_index
+
+def NN_cube_pbc(config, [x,y,z], box_range, cut_off):
+	x_range = [x - cut_off * 1.1, x + cut_off * 1.1]
+	y_range = [y - cut_off * 1.1, y + cut_off * 1.1]
+	z_range = [z - cut_off * 1.1, z + cut_off * 1.1]
+	[box_range_x, box_range_y, box_range_z] = [box_range[0],box_range[1],box_range[2]]
+	config_x = df_range_pbc('x',x_range, box_range_x, config)
+	config_y = df_range_pbc('y',y_range, box_range_y, config_x)
+	config_z = df_range_pbc('z',z_range, box_range_z, config_y)
+	return config_z
+	#NN_df = config_corr.loc[(config_corr['x'] >= x_range[0]) & (config_corr['x'] <= x_range[1]) & (config_corr['y'] >= y_range[0]) & (config_corr['y'] <= y_range[1]) & (config_corr['z'] >= z_range[0]) & (config_corr['z'] <= z_range[1])]
+
+def df_range_pbc(axis,raw_range, dim_range, config):
+	"""
+	axis: str,
+	e.g. 'x'
+	"""
+	if raw_range[0] >= dim_range[0] and raw_range[1] <= dim_range[1]:
+		# raw_range
+		return config.loc[(config[axis] >= raw_range[0]) & (config[axis] <= raw_range[1])]
+	elif raw_range[0] <= dim_range[0] and raw_range[1] <= dim_range[1]:
+		#([dim_range[0], raw_range[1]], [raw_range[0] + dim_range[1] - dim_range[0],dim_range[1]])
+		return config.loc[((config[axis] >= dim_range[0]) & (config[axis] <= raw_range[1])) | ((config[axis] >= raw_range[0] + dim_range[1] - dim_range[0]) & (config[axis] <= dim_range[1]))]
+	elif raw_range[0] <= dim_range[1] and raw_range[1] >= dim_range[1]:
+		#return ([raw_range[0], dim_range[1]], [dim_range[0], raw_range[1] - dim_range[1] + dim_range[0]])
+		return config.loc[((config[axis] >= raw_range[0]) & (config[axis] <= dim_range[1])) | ((config[axis] >= dim_range[0]) & (config[axis] <= raw_range[1] - dim_range[1] + dim_range[0]))]
 
 def classify_voronoi_index(list_of_voronoi_index):
 	"""
