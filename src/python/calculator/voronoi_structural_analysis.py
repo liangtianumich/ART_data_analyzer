@@ -405,7 +405,8 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 		voronoi_index = count_faces(int_voro_results, max_edge_count, False,tool=tool)
 		return voronoi_index
 
-def NN_cube_pbc(config, [x,y,z], box_range, cut_off):
+def NN_cube_pbc(config,point_range, box_range, cut_off):
+	[x,y,z] = point_range
 	x_range = [x - cut_off * 1.1, x + cut_off * 1.1]
 	y_range = [y - cut_off * 1.1, y + cut_off * 1.1]
 	z_range = [z - cut_off * 1.1, z + cut_off * 1.1]
