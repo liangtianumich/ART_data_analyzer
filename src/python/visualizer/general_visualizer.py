@@ -63,9 +63,10 @@ def plot_histogram_3(path_to_image, x):
 	plt.savefig(path_to_image)
 	plt.close()
 
-def plot_histogram(path_to_image, x):
+def plot_histogram(path_to_image, x, color='b'):
 	plt.figure()
-	plt.hist(x,bins='auto')
+	weights = np.ones_like(x)/float(len(x))
+	plt.hist(x, bins=30, weights=weights, color=color)
 	plt.savefig(path_to_image)
 	plt.close()
 
