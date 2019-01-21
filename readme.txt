@@ -76,7 +76,11 @@ This package can be put in any directory. Currently, for the convenience of inte
 	export ART_SAMPLE=conf.dump
 	export SAMPLE_TYPE=dump
 	
-	Based on my test, The sample size should be less than 225,000 atoms for pyvoro and tess to calculate voronoi indexes without being killed
+	Based on my test, the sample size should be less than 225,000 atoms for pyvoro and tess to calculate voronoi indexes without being killed. However, I have successfully circumvent this intrinsic limitation of pyvoro and tess by avoiding calculating voronoi indexes for the whole sample. I take each of the interested points and find its neighbors in terms of a cube surrounding this point considering periodic boundary condition. Then I calculate the voronoi indexes of this small sample and only output the voronoi index of this point. This approach not only avoid the large sample memory error, but also improve the voronoi calculation speed for all states substantially. However, the regular nearest neighboring points surround the point in terms of sphere would not work due to the fact that spherical shape will cause the missing cell error as referred here:
+https://github.com/joe-jordan/pyvoro/issues/18
+
+Though sample size limitation has been addressed, it is still suggested that user should try their best to reduce the sample size since a large amount of events data with large sample size will occupy a large amount of disk space. For example, each configuration file of 310,000 atoms sample will take more than 20MB. A few thousand events will occupy 50-100 GB disk space.
+
 
 2) source the /ART_data_analyzer/environment.sh before using this package. The purpose is to create the necessary environmental variables PYTHONPATH/PATH/ for current bash sessions to find the python packages/exe scripts.
 

@@ -405,8 +405,26 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 		voronoi_index = count_faces(int_voro_results, max_edge_count, False,tool=tool)
 		return voronoi_index
 
-def NN_cube_pbc(config,point_range, box_range, cut_off):
-	[x,y,z] = point_range
+def NN_cube_pbc(config,point, box_range, cut_off):
+	"""
+	this function finds the nearest neighbor points in terms of cube around point
+	within a cut_off in each dimension x,y,z direction
+	
+	Input:
+		config: pandas.DataFrame
+			all data points to search for NN
+		point: a list
+			a list contains coordinates in x,y,z direction
+		box_range: a list of 3 lists
+			e.g. [[x_low, x_high],[y_low, y_high], [z_low, z_high]]
+		cuf_off: float
+			the cut-off perpendicular distance from center to cube edge
+	Return:
+		config_z: pandas.DataFrame
+			all NN data points within the cube considering periodic boundary
+			condition
+	"""
+	[x,y,z] = point
 	x_range = [x - cut_off * 1.1, x + cut_off * 1.1]
 	y_range = [y - cut_off * 1.1, y + cut_off * 1.1]
 	z_range = [z - cut_off * 1.1, z + cut_off * 1.1]
@@ -415,12 +433,28 @@ def NN_cube_pbc(config,point_range, box_range, cut_off):
 	config_y = df_range_pbc('y',y_range, box_range_y, config_x)
 	config_z = df_range_pbc('z',z_range, box_range_z, config_y)
 	return config_z
-	#NN_df = config_corr.loc[(config_corr['x'] >= x_range[0]) & (config_corr['x'] <= x_range[1]) & (config_corr['y'] >= y_range[0]) & (config_corr['y'] <= y_range[1]) & (config_corr['z'] >= z_range[0]) & (config_corr['z'] <= z_range[1])]
 
 def df_range_pbc(axis,raw_range, dim_range, config):
 	"""
-	axis: str,
-	e.g. 'x'
+	this function select a subset of data points in config based on the
+	required range specified in raw_range in specified axis considering
+	the periodic boundary condition.
+	Input: 
+		axis: str,
+			e.g. 'x'
+		
+		raw_range: list
+			e.g. [1.234, 3.769]
+		
+		dim_range: list
+			e.g. [0.234, 35.978]
+		
+		config: pandas.DataFrame
+			all data points
+	
+	Return:
+		a pandas.DataFrame whose data points are within the range along specified axis
+		considering pbc
 	"""
 	if raw_range[0] >= dim_range[0] and raw_range[1] <= dim_range[1]:
 		# raw_range
@@ -431,6 +465,8 @@ def df_range_pbc(axis,raw_range, dim_range, config):
 	elif raw_range[0] <= dim_range[1] and raw_range[1] >= dim_range[1]:
 		#return ([raw_range[0], dim_range[1]], [dim_range[0], raw_range[1] - dim_range[1] + dim_range[0]])
 		return config.loc[((config[axis] >= raw_range[0]) & (config[axis] <= dim_range[1])) | ((config[axis] >= dim_range[0]) & (config[axis] <= raw_range[1] - dim_range[1] + dim_range[0]))]
+	else:
+		raise Exception("either specified data range or simulation box range is wrong!")
 
 def classify_voronoi_index(list_of_voronoi_index):
 	"""
