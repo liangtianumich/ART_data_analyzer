@@ -15,6 +15,7 @@ This package is under GNU General Public License v3.0
 Acknowledgement:
 
 The author acknowledge many valuable discussions with Prof Mousseau and the financial support of U.S. DOE grant DOE: DE-SC0016164
+The author acknowledge the feedback and suggestions from early stage users, e.g.Keshab Bashyal. 
 
 Application and impact:
 1) Calculate the activation energy barrier distribution for kinetics studies for a wide range of materials, 

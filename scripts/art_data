@@ -467,6 +467,11 @@ def print_desc_help():
 	  the activation energy and relaxation energy for all filtered events in
 	  list_of_test_id under path_to_data_dir.
 	  
+	  If users want to get the activation and relaxation energy statistics from a subset of
+	  all tests data (mainly because this subset of tests corresponds to triggered atoms within a specific category having a physical meaning),
+	  they can copy the input SETTINGS file and modify the key "list_of_test_id" in the copied input SETTINGS file to be the list of the subset.
+	  Then they can use this modified input file for --eng --calc for updated plots and print-out data statistics.
+	  
 	  User can choose to run either one SET or a few SET of ART data with different paramters to 
 	  ensure post-filtering activation energy distribution indeed converge by a
 	  statistical test. 

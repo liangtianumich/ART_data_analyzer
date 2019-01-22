@@ -10,7 +10,6 @@ from collections import Counter
 from data_reader import *
 from util import operation_on_events, event_local_atom_index, read_from_art_input_file, data_dir_to_test_dir
 from visualizer.voronoi_visualizer import plot_voronoi_histogram_3, plot_dynamic_transition_matrix
-from periodic_kdtree import PeriodicCKDTree
 # voronoi index classification from Evan Ma paper "Tuning order in disorder"
 global ICO
 ICO = [[0,6,0,0],[0,5,2,0],[0,4,4,0],[0,3,6,0],[0,2,8,0],[0,2,8,1],[0,0,12,0],[0,1,10,2],[0,0,12,2],[0,0,12,3],[0,0,12,4],[0,0,12,5]]
@@ -108,13 +107,29 @@ def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 		total_fin_GUM = total_fin_GUM + fin_count[2]
 		# work on more statistics if necessary
 		
-	# begin calculate the probability for dynamic transition from init to sad
+	
 	init_total = total_init_ICO + total_init_ICO_LIKE + total_init_GUM
 	sad_total = total_sad_ICO + total_sad_ICO_LIKE + total_sad_GUM
+	fin_total = total_fin_ICO + total_fin_ICO_LIKE + total_fin_GUM
+	
 	init_ICO_pt = float(total_init_ICO)/init_total
 	init_ICO_LIKE_pt = float(total_init_ICO_LIKE)/init_total
 	init_GUM_pt = float(total_init_GUM)/init_total
+	init_pt = [init_ICO_pt, init_ICO_LIKE_pt, init_GUM_pt]
 	
+	sad_ICO_pt = float(total_sad_ICO)/sad_total
+	sad_ICO_LIKE_pt = float(total_sad_ICO_LIKE)/sad_total
+	sad_GUM_pt = float(total_sad_GUM)/sad_total
+	sad_pt = [sad_ICO_pt, sad_ICO_LIKE_pt, sad_GUM_pt]
+	
+	fin_ICO_pt = float(total_fin_ICO)/fin_total
+	fin_ICO_LIKE_pt = float(total_fin_ICO_LIKE)/fin_total
+	fin_GUM_pt = float(total_fin_GUM)/fin_total
+	fin_pt = [fin_ICO_pt, fin_ICO_LIKE_pt, fin_GUM_pt]
+	path_to_voro_class_pt = path_to_data_dir + "/voronoi_class_fraction_all_events.png"
+	plot_voronoi_histogram_3(path_to_voro_class_pt, [init_pt,sad_pt,fin_pt])
+	
+	# begin calculate the probability for dynamic transition from init to sad
 	p11_0 = 1.0/3 
 	p12_0 = p11_0
 	p13_0 = p11_0
@@ -139,11 +154,11 @@ def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 	p_0 = np.array([[p11_0,p12_0,p13_0],[p21_0,p22_0,p23_0],[p31_0,p32_0,p33_0]])
 	
 	c_matrix = p/p_0 - 1
-	print p
-	print c_matrix
+	print "Probability matrix:", p
+	print "Normalized probability matrix:", c_matrix
 	
-	path_to_image = path_to_data_dir + "/dynamic_transition_matrix_all_events.png"
-	plot_dynamic_transition_matrix(path_to_image, c_matrix)
+	path_to_image = path_to_data_dir + "/dynamic_transition_probability_matrix_all_events.png"
+	plot_dynamic_transition_matrix(path_to_image, p)
 	
 	print ("done voronoi index classification for all interested tests!")
 	
@@ -371,8 +386,6 @@ def single_config_voronoi_calculator(config, box_range, cut_off, atom_list=None,
 	dispersion = cut_off
 	
 	box_dim = [box_range[0][1] - box_range[0][0], box_range[1][1] - box_range[1][0], box_range[2][1] - box_range[2][0]]
-	
-	#result_tree = PeriodicCKDTree(box_dim, config[['x','y','z']].values)
 	
 	int_voro_results = []
 	for index,point in int_points.iterrows():

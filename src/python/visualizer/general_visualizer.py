@@ -58,7 +58,7 @@ def plot_histogram_3(path_to_image, x):
 	x=new_x
 	
 	weights = [np.ones_like(x[0])/float(len(x[0])), np.ones_like(x[1])/float(len(x[1])), np.ones_like(x[2])/float(len(x[2]))]
-	plt.hist(x, bins=10, weights=weights, color=['r','b','black'], label=["initial-saddle","saddle-final","initial-final"])
+	plt.hist(x, bins=10, weights=weights, color=['r','b','black'], label=["initial-saddle","saddle-final","initial-final"], edgecolor='black', linewidth=1.2)
 	plt.legend(loc='best')
 	plt.savefig(path_to_image)
 	plt.close()
@@ -66,7 +66,7 @@ def plot_histogram_3(path_to_image, x):
 def plot_histogram(path_to_image, x, color='b'):
 	plt.figure()
 	weights = np.ones_like(x)/float(len(x))
-	plt.hist(x, bins=30, weights=weights, color=color)
+	plt.hist(x, bins=30, weights=weights, color=color, edgecolor='black', linewidth=1.2)
 	plt.savefig(path_to_image)
 	plt.close()
 
