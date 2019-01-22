@@ -148,6 +148,13 @@ def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 	p32_0 = p31_0
 	p33_0 = p31_0
 	
+	if total_init_ICO == 0 or total_init_ICO_LIKE == 0 or total_init_GUM == 0:
+		print "total number of ICO is:", total_init_ICO
+		print "total number of ICO-LIKE is:", total_init_ICO_LIKE
+		print "total number of GUM is:", total_init_GUM
+		print "Can not calculate the dynamic transition probability matrix since either total number of ICO or ICO-LIKE or GUM is zero!"
+		return
+	
 	p11 = float(ICO_to_ICO)/total_init_ICO
 	p12 = float(ICO_to_ICO_LIKE)/total_init_ICO
 	p13 = float(ICO_to_GUM)/total_init_ICO
