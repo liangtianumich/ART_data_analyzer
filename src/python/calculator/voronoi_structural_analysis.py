@@ -58,14 +58,18 @@ def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 	GUM_to_ICO = 0
 	GUM_to_ICO_LIKE = 0
 	GUM_to_GUM = 0
-	
+	init_voronoi_class_tol, sad_voronoi_class_tol, fin_voronoi_class_tol = [], [], []
 	for event_result in result_list:
 		if event_result is None:
 			continue
 		init_voronoi_class, sad_voronoi_class,fin_voronoi_class = event_result["init"], event_result["sad"], event_result["fin"]
+		
+		init_voronoi_class_tol.extend(init_voronoi_class)
+		sad_voronoi_class_tol.extend(sad_voronoi_class)
+		fin_voronoi_class_tol.extend(fin_voronoi_class)
+		
 		atom_index = range(len(init_voronoi_class))
 		for atom_id in atom_index:
-			
 			if init_voronoi_class[atom_id] == 0:
 				if sad_voronoi_class[atom_id] == 0:
 					ICO_to_ICO = ICO_to_ICO + 1
@@ -127,7 +131,11 @@ def run_all_tests_voronoi_classifier(path_to_data_dir, input_param):
 	fin_GUM_pt = float(total_fin_GUM)/fin_total
 	fin_pt = [fin_ICO_pt, fin_ICO_LIKE_pt, fin_GUM_pt]
 	path_to_voro_class_pt = path_to_data_dir + "/voronoi_class_fraction_all_events.png"
-	plot_voronoi_histogram_3(path_to_voro_class_pt, [init_pt,sad_pt,fin_pt])
+	print "All filtered events in list_of_test_id:"
+	print "initial state ICO, ICO-like, GUM fraction is:", init_pt
+	print "sadlle state ICO, ICO-like, GUM fraction is:", sad_pt
+	print "final state ICO, ICO-like, GUM fraction is:", fin_pt
+	plot_voronoi_histogram_3(path_to_voro_class_pt, [init_voronoi_class_tol, sad_voronoi_class_tol, fin_voronoi_class_tol])
 	
 	# begin calculate the probability for dynamic transition from init to sad
 	p11_0 = 1.0/3 
