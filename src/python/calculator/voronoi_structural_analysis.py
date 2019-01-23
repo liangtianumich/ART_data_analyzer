@@ -493,6 +493,10 @@ def df_range_pbc(axis,raw_range, dim_range, config):
 	elif raw_range[0] <= dim_range[1] and raw_range[1] >= dim_range[1]:
 		#return ([raw_range[0], dim_range[1]], [dim_range[0], raw_range[1] - dim_range[1] + dim_range[0]])
 		return config.loc[((config[axis] >= raw_range[0]) & (config[axis] <= dim_range[1])) | ((config[axis] >= dim_range[0]) & (config[axis] <= raw_range[1] - dim_range[1] + dim_range[0]))]
+	elif raw_range[0] >= dim_range[1]:
+		return config.loc[(config[axis] >= raw_range[0] - dim_range[1] + dim_range[0]) & (config[axis] <= raw_range[1] - dim_range[1] + dim_range[0])]
+	elif raw_range[1] <= dim_range[0]:
+		return config.loc[(config[axis] >= raw_range[0] + dim_range[1] - dim_range[0]) & (config[axis] <= raw_range[1] + dim_range[1] - dim_range[0])]
 	else:
 		raise Exception("either specified data range or simulation box range is wrong!")
 
