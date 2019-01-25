@@ -425,20 +425,25 @@ def eng_max_disp(path_to_data_dir, input_param):
 	
 	path_to_all_act_relax_eng = os.path.join(path_to_data_dir,"act_relax_eng_filtered_events.json")
 	if os.path.exists(path_to_all_act_relax_eng):
+		list_of_test_id = input_param['list_of_test_id']
 		saved_results = json.load(open(path_to_all_act_relax_eng, 'r'))
 		all_max_disp_A, all_max_disp_B, all_act_eng, all_relax_eng = [], [], [], []
 		for result in saved_results:
-			event_state = result[0]
-			curr_max_disp = event_max_disp(path_to_data_dir, event_state)
-			all_max_disp_A.append(curr_max_disp[0])
-			all_max_disp_B.append(curr_max_disp[1])
-			all_act_eng.append(result[1])
-			all_relax_eng.append(result[2])
-			print "current event:", event_state
-			print "max_disp during init to sad:", curr_max_disp[0]
-			print "max_disp during sad to fin:", curr_max_disp[1]
-			print "activation energy:", result[1]
-			print "relaxation energy:", result[2]
+			test_id = result[0][0][4:]
+			if 'test' not in result[0][0]:
+				raise Exception('check if test id in act_relax_eng_filtered_events.json starts with string test!')
+			if int(test_id) in list_of_test_id:
+				event_state = result[0]
+				curr_max_disp = event_max_disp(path_to_data_dir, event_state)
+				all_max_disp_A.append(curr_max_disp[0])
+				all_max_disp_B.append(curr_max_disp[1])
+				all_act_eng.append(result[1])
+				all_relax_eng.append(result[2])
+				print "current event:", event_state
+				print "max_disp during init to sad:", curr_max_disp[0]
+				print "max_disp during sad to fin:", curr_max_disp[1]
+				print "activation energy:", result[1]
+				print "relaxation energy:", result[2]
 		print "current data project: %s"%path_to_data_dir
 		print "average of max_disp during init to sad for all events:", np.mean(all_max_disp_A)
 		print "average of max_disp during sad to fin for all events:", np.mean(all_max_disp_B)
