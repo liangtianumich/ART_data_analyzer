@@ -10,7 +10,7 @@ import os, json
 from functools import partial
 from scipy.stats import ttest_ind, ttest_rel
 from visualizer.event_energy_visualizer import plot_act_relax_histogram
-from visualizer.general_visualizer import plot_histogram
+from visualizer.general_visualizer import plot_histogram, plot_2d
 from sklearn.model_selection import KFold
 
 def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_results = True, re_calc = False):
@@ -33,6 +33,7 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 			path_to_eng_plot = os.path.join(path_to_data_dir, "act_relax_eng_filtered_events.png")
 			path_to_act_eng = os.path.join(path_to_data_dir,"act_eng_histogram.png")
 			path_to_relax_eng = os.path.join(path_to_data_dir,"relax_eng_histogram.png")
+			path_to_act_vs_relax = os.path.join(path_to_data_dir,"act_vs_relax_scatter_plot.png")
 			for result in saved_results:
 				test_id = result[0][0][4:]
 				if 'test' not in result[0][0]:
@@ -45,6 +46,7 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 			plot_act_relax_histogram(path_to_eng_plot, [all_act_eng, all_relax_eng])
 			plot_histogram(path_to_act_eng, all_act_eng,'r')
 			plot_histogram(path_to_relax_eng, all_relax_eng)
+			plot_2d(path_to_act_vs_relax, all_act_eng, all_relax_eng, "activiation energy /eV", "relaxation energy /eV")
 			return [all_act_eng, all_relax_eng]
 	
 	list_event_str = get_list_of_final_filtered_events_str(path_to_data_dir)
@@ -67,10 +69,12 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	path_to_eng_plot = os.path.join(path_to_data_dir, "act_relax_eng_filtered_events.png")
 	path_to_act_eng = os.path.join(path_to_data_dir,"act_eng_histogram.png")
 	path_to_relax_eng = os.path.join(path_to_data_dir,"relax_eng_histogram.png")
+	path_to_act_vs_relax = os.path.join(path_to_data_dir,"act_vs_relax_scatter_plot.png")
 	
 	plot_act_relax_histogram(path_to_eng_plot, [all_act_eng, all_relax_eng])
 	plot_histogram(path_to_act_eng, all_act_eng, 'r')
 	plot_histogram(path_to_relax_eng, all_relax_eng)
+	plot_2d(path_to_act_vs_relax, all_act_eng, all_relax_eng, "activiation energy /eV", "relaxation energy /eV")
 	print "done finding all activation energy and relaxation energy for all filtered events in list_of_test_id!"
 	
 	if save_results is True:
