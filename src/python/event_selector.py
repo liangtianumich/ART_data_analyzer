@@ -364,10 +364,25 @@ def single_event_2_criteria(list_of_path, list_of_energy, box_dim):
 	if distance < 1 and abs(list_of_energy[2] - list_of_energy[0]) < 0.02:
 		return False
 	else:
-		return True	
+		return True
 		
 	
+def find_act_relax_equal_events(path_to_data_dir, input_param, save_results = True):
 	
+	path_to_eng_file = os.path.join(path_to_data_dir,'act_relax_eng_filtered_events.json')
+	with open(path_to_eng_file,'r') as f:
+		saved_results = json.load(f)
+	event_list = []
+	for result in saved_results:
+		act_eng = result[1]
+		relax_eng = result[2]
+		if abs(act_eng-relax_eng) < 0.01:
+			event_list.append(result[0])
+	
+	if save_results is True:
+		path_to_event_file = os.path.join(path_to_data_dir,'subset_events.json')
+		json.dump(event_list, open(path_to_event_file,'w'))
+	print "done finding all events whose act_eng and relax_eng is equal!"
 	
 	
 	

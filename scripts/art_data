@@ -844,6 +844,8 @@ if __name__ == "__main__":
   parser.add_argument('--delete_tests_files', nargs='+', help='delete multiple files specified in command line for all ART tests directory', type=str)
   
   parser.add_argument('--filter', help='filter events to remove unsuccessful and redudant event', action="store_true")
+  parser.add_argument('--find_interested_events', nargs=1, help='find all events satisfying a criteria, current default is to find all events whose act_eng and relax_eng is equal up to its precision', default=True)
+  parser.add_argument('--subset', help='use this after finding the interested subset of all filtered events', action = "store_true")
   
   parser.add_argument('--eng', help='perform operations on activation and relaxation energy', action="store_true")
   parser.add_argument('--strain', help='perform operations on atomic strain and displacement', action="store_true")
@@ -1108,6 +1110,8 @@ if __name__ == "__main__":
 			exit()
 	
 	if args.max_disp_eng:
+		if args.subset:
+			
 		eng_max_disp(path_to_data_dir, input_param)
 		exit()
 	if args.convert_to_ovito:
@@ -1118,7 +1122,9 @@ if __name__ == "__main__":
 		print "start finding relative residual threshold for outlier detection"
 		residual_threshold_finder(path_to_data_dir, input_param)
 		exit()
-	
+	if args.find_interested_events:
+		find_act_relax_equal_events(path_to_data_dir, input_param)
+		exit()
 	if args.find_local_index:
 		# if --find_local_index was set a default =0.54, then args.find_local_index is a float, not a list
 		residual_threshold = args.find_local_index[0]

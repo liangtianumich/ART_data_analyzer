@@ -413,7 +413,7 @@ def	single_event_local_atom_shear_vol_strain(event, path_to_data_dir,atom_list=N
 	
 	return [local_shear_strain, local_vol_strain, local_disp, event]	
 	
-def eng_max_disp(path_to_data_dir, input_param):
+def eng_max_disp(path_to_data_dir, input_param, subset=False):
 	"""
 	plot the max displacement vs activiation energy or relaxation energy 
 	of all filtered events
@@ -434,16 +434,33 @@ def eng_max_disp(path_to_data_dir, input_param):
 				raise Exception('check if test id in act_relax_eng_filtered_events.json starts with string test!')
 			if int(test_id) in list_of_test_id:
 				event_state = result[0]
-				curr_max_disp = event_max_disp(path_to_data_dir, event_state)
-				all_max_disp_A.append(curr_max_disp[0])
-				all_max_disp_B.append(curr_max_disp[1])
-				all_act_eng.append(result[1])
-				all_relax_eng.append(result[2])
-				print "current event:", event_state
-				print "max_disp during init to sad:", curr_max_disp[0]
-				print "max_disp during sad to fin:", curr_max_disp[1]
-				print "activation energy:", result[1]
-				print "relaxation energy:", result[2]
+				if subset == True:
+					print ">>> reading subset_events.json"
+					path_to_event_file = os.path.join(path_to_data_dir,'subset_events.json')
+					subset_events = json.load(open(path_to_event_file,'r'))
+					if event_state in subset_events:
+						curr_max_disp = event_max_disp(path_to_data_dir, event_state)
+						all_max_disp_A.append(curr_max_disp[0])
+						all_max_disp_B.append(curr_max_disp[1])
+						all_act_eng.append(result[1])
+						all_relax_eng.append(result[2])
+						print "current event:", event_state
+						print "max_disp during init to sad:", curr_max_disp[0]
+						print "max_disp during sad to fin:", curr_max_disp[1]
+						print "activation energy:", result[1]
+						print "relaxation energy:", result[2]
+				else:
+					curr_max_disp = event_max_disp(path_to_data_dir, event_state)
+					all_max_disp_A.append(curr_max_disp[0])
+					all_max_disp_B.append(curr_max_disp[1])
+					all_act_eng.append(result[1])
+					all_relax_eng.append(result[2])
+					print "current event:", event_state
+					print "max_disp during init to sad:", curr_max_disp[0]
+					print "max_disp during sad to fin:", curr_max_disp[1]
+					print "activation energy:", result[1]
+					print "relaxation energy:", result[2]
+				
 		print "current data project: %s"%path_to_data_dir
 		print "average of max_disp during init to sad for all events:", np.mean(all_max_disp_A)
 		print "average of max_disp during sad to fin for all events:", np.mean(all_max_disp_B)
