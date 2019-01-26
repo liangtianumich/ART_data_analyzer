@@ -5,7 +5,7 @@ import time
 import random
 import multiprocessing as mp
 import argparse
-from event_selector import filter_events_all_tests_stage_1,filter_events_all_tests_stage_2
+from event_selector import filter_events_all_tests_stage_1,filter_events_all_tests_stage_2,find_act_relax_equal_events
 from calculator.event_energy_calculator import *
 from calculator.strain_calculator import strain_calculator_run_all_tests_mp
 from calculator.voronoi_structural_analysis import run_all_tests_voronoi_calculator, run_all_tests_voronoi_classifier
@@ -663,10 +663,13 @@ def print_desc_help():
 	 all filtered events by art_data -s SETTINGS --strain --local --atom_shear_vol
 	 It will also fit a LinearRegression model on volumetric strain
 	 to shear strain data, print out the slope as the beta parameter, i.e. 
-	 the ratio of dilation to shear strain.
-	 
+	 the ratio of dilation to shear strain. 
 	 Similar to --local, --central, --initial, --max_disp also apply here for
 	 other type of atom_list
+	 
+	 art_data -s SETTINGS --max_disp_eng will plot the activation energy vs max_disp
+	 for all filtered events that are in list_of_test_id, if --subset exists,
+	 also check if this event in subset_events.json
 	 
 	 > voronoi index calculation:
 	 if voronoi_index_results.json exists in the event directory and re_calc is False,
@@ -712,6 +715,8 @@ def print_desc_help():
 	 art_data -s SETTINGS --central_atom_max_disp will
 	 check if the triggered central atom is the max displacement atom in all 
 	 filtered events in list_of_test_id
+	 
+	 
 	"""
 def get_central_atom_list(path_to_data_dir, path_to_input_files, sample_name, sample_type, n_tests):
 	path_to_interested_atom_list = os.path.join(path_to_data_dir,"interested_atom_list.json")
@@ -844,8 +849,8 @@ if __name__ == "__main__":
   parser.add_argument('--delete_tests_files', nargs='+', help='delete multiple files specified in command line for all ART tests directory', type=str)
   
   parser.add_argument('--filter', help='filter events to remove unsuccessful and redudant event', action="store_true")
-  parser.add_argument('--find_interested_events', nargs=1, help='find all events satisfying a criteria, current default is to find all events whose act_eng and relax_eng is equal up to its precision', default=True)
-  parser.add_argument('--subset', help='use this after finding the interested subset of all filtered events', action = "store_true")
+  parser.add_argument('--find_interested_events', help='find all events satisfying a criteria, current default is to find all events whose act_eng and relax_eng is equal up to its precision', action = "store_true")
+  parser.add_argument('--subset', help='use with --max_disp_eng after finding the interested subset of all filtered events --find_interested_events', action = "store_true")
   
   parser.add_argument('--eng', help='perform operations on activation and relaxation energy', action="store_true")
   parser.add_argument('--strain', help='perform operations on atomic strain and displacement', action="store_true")

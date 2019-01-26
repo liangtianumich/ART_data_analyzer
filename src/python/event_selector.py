@@ -380,8 +380,10 @@ def find_act_relax_equal_events(path_to_data_dir, input_param, save_results = Tr
 			event_list.append(result[0])
 	
 	if save_results is True:
+		print "saving interested events in subset_events.json!"
 		path_to_event_file = os.path.join(path_to_data_dir,'subset_events.json')
 		json.dump(event_list, open(path_to_event_file,'w'))
+	print "total number of interested events is:", len(event_list)
 	print "done finding all events whose act_eng and relax_eng is equal!"
 	
 	

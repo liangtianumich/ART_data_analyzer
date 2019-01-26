@@ -424,6 +424,14 @@ def eng_max_disp(path_to_data_dir, input_param, subset=False):
 	path_to_rel_max_disp_hist = os.path.join(path_to_data_dir, "max_disp_hist_sad_fin.png")
 	
 	path_to_all_act_relax_eng = os.path.join(path_to_data_dir,"act_relax_eng_filtered_events.json")
+	if subset == True:
+		print ">>> reading subset_events.json in %s"%path_to_data_dir
+		try:
+			path_to_event_file = os.path.join(path_to_data_dir,'subset_events.json')
+			subset_events = json.load(open(path_to_event_file,'r'))
+		except IOError:
+			raise Exception(">>> subset_events.json does not exists!")
+				
 	if os.path.exists(path_to_all_act_relax_eng):
 		list_of_test_id = input_param['list_of_test_id']
 		saved_results = json.load(open(path_to_all_act_relax_eng, 'r'))
@@ -435,9 +443,6 @@ def eng_max_disp(path_to_data_dir, input_param, subset=False):
 			if int(test_id) in list_of_test_id:
 				event_state = result[0]
 				if subset == True:
-					print ">>> reading subset_events.json"
-					path_to_event_file = os.path.join(path_to_data_dir,'subset_events.json')
-					subset_events = json.load(open(path_to_event_file,'r'))
 					if event_state in subset_events:
 						curr_max_disp = event_max_disp(path_to_data_dir, event_state)
 						all_max_disp_A.append(curr_max_disp[0])
@@ -462,9 +467,9 @@ def eng_max_disp(path_to_data_dir, input_param, subset=False):
 					print "relaxation energy:", result[2]
 				
 		print "current data project: %s"%path_to_data_dir
+		print "total number of events is:", len(all_act_eng)
 		print "average of max_disp during init to sad for all events:", np.mean(all_max_disp_A)
 		print "average of max_disp during sad to fin for all events:", np.mean(all_max_disp_B)
-		
 		plot_histogram(path_to_act_max_disp_hist, all_max_disp_A)
 		plot_histogram(path_to_rel_max_disp_hist, all_max_disp_B)
 		
