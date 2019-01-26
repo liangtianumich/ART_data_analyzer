@@ -1111,7 +1111,8 @@ if __name__ == "__main__":
 	
 	if args.max_disp_eng:
 		if args.subset:
-			
+			eng_max_disp(path_to_data_dir, input_param, subset=True)
+			exit()
 		eng_max_disp(path_to_data_dir, input_param)
 		exit()
 	if args.convert_to_ovito:
