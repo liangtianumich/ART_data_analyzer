@@ -871,6 +871,7 @@ if __name__ == "__main__":
   parser.add_argument('--find_triggered_cluster_atoms_index', help='find the initial triggered cluster atoms indexes for all filtered events in list_of_test_id tests, saving cluster atom indexes under each event directory', action = "store_true")
   parser.add_argument('--find_central_index', help='find the central atom index for all filtered events in list_of_test_id tests, saving central atom index under each event directory', action = "store_true")
   parser.add_argument('--find_max_disp_index', help='find the max displaced atom index during the initial to saddle process for all filtered events in list_of_test_id tests, saving max_disp atom index under each event directory',action = "store_true")
+  parser.add_argument('--find_pn_index', help='find the number and indexes of involved atoms by the physical definition of participation number for all filtered events in list_of_test_id tests',action = "store_true")
   
   parser.add_argument('--local', help='invoke calculations on local atoms that are determined by --find_local_index', action="store_true")
   parser.add_argument('--initial', help='invoke calculations on initial triggered cluster atoms that are determined by --find_triggered_cluster_atoms_index', action="store_true")
@@ -1146,7 +1147,9 @@ if __name__ == "__main__":
 	if args.find_max_disp_index:
 		all_events_max_disp_atom_finder(path_to_data_dir, input_param)
 		exit()
-	
+	if args.find_pn_index:
+		pn_calculator_run_all_tests_mp(path_to_data_dir, input_param)
+		exit()
 	if args.events_local_atoms:		
 		events_local_atoms(path_to_data_dir, input_param)
 		exit()
