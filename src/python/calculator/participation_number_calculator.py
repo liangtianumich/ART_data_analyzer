@@ -73,7 +73,7 @@ def single_event_pn_calculator(event_state, path_to_data_dir, save_results = Tru
 			json.dump(pn_index,f)
 			f.close()
 		print "pn results saved into two json files!"
-	return (pn_number,pb_index)
+	return (pn_number,pn_index)
 	
 def get_pn_number_index(all_disp_dict):
 	disp_list = all_disp_dict.values()
@@ -89,7 +89,7 @@ def get_pn_number_index(all_disp_dict):
 	
 	pn_number = math.ceil(1.0/sum(norm_sq))
 	
-	max_indexes = np.argsort(all_disp_dict.values())[-pn_number:]
+	max_indexes = np.argsort(all_disp_dict.values())[-int(pn_number):]
 	
 	pn_indexes = [all_disp_dict.keys()[i] for i in max_indexes]
 	return (pn_number,pn_indexes)
