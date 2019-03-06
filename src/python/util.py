@@ -395,6 +395,94 @@ def event_act_relax_energy(event, path_to_data_dir):
 	act_eng = sad_eng - init_eng
 	relax_eng = sad_eng - fin_eng
 	return (event, act_eng, relax_eng)
+def event_voronoi_volume(event_state, path_to_data_dir):
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	path_to_curr_result = path_to_test_dir + "/results"	
+	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	path_to_volume_results = path_to_curr_event + "/voronoi_volume_results.json"
+	voronoi_vol = json.load(open(path_to_volume_results, "r"))
+	return (sum(voronoi_vol["init"]), sum(voronoi_vol["sad"]), sum(voronoi_vol["fin"]))
+	
+def event_ave_strain_displacement(event_state, path_to_data_dir, atom_list):
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	path_to_curr_result = path_to_test_dir + "/results"	
+	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	path_to_init_sad = path_to_curr_event + "/init_sad"
+	path_to_sad_fin = path_to_curr_event + "/sad_fin"
+	path_to_init_fin = path_to_curr_event + "/init_fin"
+	
+	path_to_all_strain_init_sad = path_to_init_sad + "/strain_results_dict.pkl"
+	path_to_all_disp_init_sad = path_to_init_sad + "/displacement_results_dict.pkl"
+	
+	path_to_all_strain_sad_fin = path_to_sad_fin + "/strain_results_dict.pkl"
+	path_to_all_disp_sad_fin = path_to_sad_fin + "/displacement_results_dict.pkl"
+	
+	path_to_all_strain_init_fin = path_to_init_fin + "/strain_results_dict.pkl"
+	path_to_all_disp_init_fin = path_to_init_fin + "/displacement_results_dict.pkl"
+	
+	
+	all_strains_init_sad = pickle.load(open(path_to_all_strain_init_sad,'r'))
+	all_disp_init_sad = pickle.load(open(path_to_all_disp_init_sad,'r'))
+	
+	all_strains_sad_fin = pickle.load(open(path_to_all_strain_sad_fin,'r'))
+	all_disp_sad_fin = pickle.load(open(path_to_all_disp_sad_fin,'r'))
+	
+	all_strains_init_fin = pickle.load(open(path_to_all_strain_init_fin,'r'))
+	all_disp_init_fin = pickle.load(open(path_to_all_disp_init_fin,'r'))
+	
+	atom_list_init_sad, atom_list_sad_fin, atom_list_init_fin = atom_list["init_sad"], atom_list["sad_fin"], atom_list["init_fin"]
+	
+	strain_init_sad = ave_strain_selected_atoms(all_strains_init_sad,atom_list_init_sad)
+	disp_init_sad = ave_disp_selected_atoms(all_disp_init_sad,atom_list_init_sad)
+	
+	strain_sad_fin = ave_strain_selected_atoms(all_strains_sad_fin,atom_list_sad_fin)
+	disp_sad_fin = ave_disp_selected_atoms(all_disp_sad_fin,atom_list_sad_fin)
+	
+	strain_init_fin = ave_strain_selected_atoms(all_strains_init_fin,atom_list_init_fin)
+	disp_init_fin = ave_disp_selected_atoms(all_disp_init_fin,atom_list_init_fin)
+	
+	vol_strain = {"init_sad":strain_init_sad[0],"sad_fin":strain_sad_fin[0],"init_fin":strain_init_fin[0]}
+	shear_strain = {"init_sad":strain_init_sad[1],"sad_fin":strain_sad_fin[1],"init_fin":strain_init_fin[1]}
+	final_disp = {"init_sad":disp_init_sad,"sad_fin":disp_sad_fin,"init_fin":disp_init_fin}
+	return (vol_strain, shear_strain, final_disp)
+	
+def ave_strain_selected_atoms(all_strains,atom_list):
+	"""
+	input:
+		all_strains: dict
+			strains of all atoms
+		atom_list: list
+			a list of atom item id
+	"""
+	vol_strain = []
+	shear_strain = []
+	for atom in atom_list:
+		vol_strain.append(all_strains[atom][0])
+		shear_strain.append(all_strains[atom][1])
+	return [sum(vol_strain),sum(shear_strain)]
+
+def ave_disp_selected_atoms(all_disp,atom_list):
+	"""
+	input:
+		all_disp: dict
+			displacements of all atoms
+		atom_list: list
+			a list of atom item id
+	"""
+	disp = []
+	for atom in atom_list:
+		disp.append(all_disp[atom])
+	return sum(disp)
 
 def state_energy_barrier(path_to_test_dir, init, state):
 	"""
@@ -560,6 +648,15 @@ def get_list_of_atoms_from_atom_list(path_to_curr_event, initial_config_data, at
 			atom_list_init_fin = max_disp_atoms
 		else:
 			raise Exception("indexes of max displaced atom during init to sad has not been determined, please find the max_disp atom first by --find_max_disp_index")		
+	elif atom_list == "pn":
+		path_to_pn_atom_index = path_to_curr_event + "/pn_index.json"
+		if os.path.exists(path_to_pn_atom_index):
+			pn_index = json.load(open(path_to_pn_atom_index,'r'))
+			atom_list_init_sad = pn_index["init_sad"]
+			atom_list_sad_fin = pn_index["sad_fin"]
+			atom_list_init_fin = pn_index["init_fin"]
+		else:
+			raise Exception("find the involved atoms using pn definition first by --find_pn_index")		
 	elif (atom_list is None) or (atom_list == 'all'):
 		atom_list = (initial_config_data["item"]).tolist()
 		atom_list_init_sad = atom_list

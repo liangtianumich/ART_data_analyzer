@@ -12,6 +12,7 @@ from calculator.voronoi_structural_analysis import run_all_tests_voronoi_calcula
 from calculator.participation_number_calculator import pn_calculator_run_all_tests_mp
 from visualizer.strain_visualizer import events_strain_visualization,strain_events_stats_visualization
 from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp, shear_strain_vol_strain_cluster_all_events,shear_strain_vol_strain_local_atom_all_events
+from correlation_model.generate_correlation_table import generate_correlation_table_mp
 from data_reader import *
 from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no,all_events_triggered_cluster_atoms_finder,all_events_central_atom_finder, all_events_max_disp_atom_finder
 #from lammps.run import run_lammps
@@ -864,7 +865,7 @@ if __name__ == "__main__":
   parser.add_argument('--stats', help='plot results statistics', action="store_true")
   parser.add_argument('--ttest', nargs=3, metavar=('OPTION', 'PATH_1', 'PATH_2'), help='perform t test to check convergence, need three arguments OPTION, PATH_1, PATH_2, OPTION is either ind or rel, PATH_1 is the path string to data dir 1, PATH_2 is the path string to data dir 2')
   parser.add_argument('--classify', help='classify the results', action="store_true")
-  
+  parser.add_argument('--create_data_table', help='create three csv event data files for initial_saddle, saddle_final, initial_final', action="store_true")
   
   
   parser.add_argument('--find_residual', help='find the relative residual threshold for outlier detection in atomic displacement vs strain for all events in specified tests', action = "store_true")
@@ -1184,7 +1185,9 @@ if __name__ == "__main__":
 			run_all_tests_voronoi_classifier(path_to_data_dir,input_param)
 			print "total run time:", time.time() - start_time, "seconds"
 			exit()
-				
+    if args.create_data_table:
+		generate_correlation_table_mp(path_to_data_dir, input_param)
+		exit()	  
   elif args.desc:
 	print_desc_help()
   else:

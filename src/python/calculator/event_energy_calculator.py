@@ -26,6 +26,7 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	path_to_all_act_relax_eng = os.path.join(path_to_data_dir,"act_relax_eng_filtered_events.json")
 	
 	if re_calc is False:
+		# default calculate energy for all filtered events, re_calc == False, plot only energy of list_of_test_id
 		list_of_test_id = input_param['list_of_test_id']
 		if os.path.exists(path_to_all_act_relax_eng):
 			saved_results = json.load(open(path_to_all_act_relax_eng, 'r'))
@@ -74,7 +75,7 @@ def energy_calculator_run_all_tests_mp(path_to_data_dir, input_param, save_resul
 	plot_act_relax_histogram(path_to_eng_plot, [all_act_eng, all_relax_eng])
 	plot_histogram(path_to_act_eng, all_act_eng, 'r')
 	plot_histogram(path_to_relax_eng, all_relax_eng)
-	plot_2d(path_to_act_vs_relax, all_act_eng, all_relax_eng, "activiation energy /eV", "relaxation energy /eV")
+	plot_2d(path_to_act_vs_relax, all_act_eng, all_relax_eng, "activation energy /eV", "relaxation energy /eV")
 	print "done finding all activation energy and relaxation energy for all filtered events in list_of_test_id!"
 	
 	if save_results is True:
