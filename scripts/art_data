@@ -879,7 +879,8 @@ if __name__ == "__main__":
   parser.add_argument('--initial', help='invoke calculations on initial triggered cluster atoms that are determined by --find_triggered_cluster_atoms_index', action="store_true")
   parser.add_argument('--central', help='invoke calculations on central atom that are determined by --find_central_index', action="store_true")
   parser.add_argument('--max_disp', help='invoke calculations on max displaced atoms during init to sad that are determined by --find_max_disp_index', action="store_true")
- 
+  parser.add_argument('--pn', help='invoke calculations on pn atoms that are determined by --find_pn_index', action="store_true")
+  
   parser.add_argument('--cluster_shear_vol', help='combine with --strain --local to plot the local event cluster averaged shear strain vs cluster averaged volumetric strain for all filtered events in list_of_test_id', action="store_true")
   parser.add_argument('--atom_shear_vol', help='combine with --strain --local to plot the shear strain vs volumetric strain of all local atoms for all filtered events in list_of_test_id', action="store_true")
   parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all filtered events in specified tests', action = "store_true")
@@ -1085,8 +1086,8 @@ if __name__ == "__main__":
 			exit()
 	
 	if args.strain:
-		if sum([args.local, args.initial, args.central, args.max_disp])>=2:
-			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp")
+		if sum([args.local, args.initial, args.central, args.max_disp, args.pn])>=2:
+			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn")
 		if args.local:
 			input_param["atom_list"] = "local"
 		elif args.initial:
@@ -1095,6 +1096,8 @@ if __name__ == "__main__":
 			input_param["atom_list"] = "central"
 		elif args.max_disp:
 			input_param["atom_list"] = "max_disp"
+		elif args.pn:
+			input_param["atom_list"] = "pn"
 		
 		if args.cluster_shear_vol:
 			shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param)
@@ -1163,8 +1166,8 @@ if __name__ == "__main__":
 		archive_project(path_to_data_dir)
 		exit()
 	if args.voro:
-		if sum([args.local, args.initial, args.central, args.max_disp])>=2:
-			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp")
+		if sum([args.local, args.initial, args.central, args.max_disp, args.pn])>=2:
+			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn")
 		if args.local:
 			input_param["atom_list"] = "local"
 		elif args.initial:
@@ -1173,6 +1176,8 @@ if __name__ == "__main__":
 			input_param["atom_list"] = "central"
 		elif args.max_disp:
 			input_param["atom_list"] = "max_disp"
+		elif args.pn:
+			input_param["atom_list"] = "pn"
 
 		if args.calc:
 			input_param['cut_off'] = input_param['voro_cut_off']
