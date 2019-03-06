@@ -469,7 +469,7 @@ def ave_strain_selected_atoms(all_strains,atom_list):
 	for atom in atom_list:
 		vol_strain.append(all_strains[atom][0])
 		shear_strain.append(all_strains[atom][1])
-	return [sum(vol_strain),sum(shear_strain)]
+	return [np.mean(vol_strain),np.mean(shear_strain)]
 
 def ave_disp_selected_atoms(all_disp,atom_list):
 	"""
@@ -482,7 +482,7 @@ def ave_disp_selected_atoms(all_disp,atom_list):
 	disp = []
 	for atom in atom_list:
 		disp.append(all_disp[atom])
-	return sum(disp)
+	return np.mean(disp)
 
 def state_energy_barrier(path_to_test_dir, init, state):
 	"""
