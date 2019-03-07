@@ -442,6 +442,12 @@ def event_voronoi_class(event, path_to_data_dir):
 	fin_GUM_frac = Counter(fin_voronoi_class)[2]/float(sum(fin_list))
 	return {"init":[init_ICO_frac,init_ICO_like_frac,init_GUM_frac], "sad":[sad_ICO_frac,sad_ICO_like_frac,sad_GUM_frac],"fin":[fin_ICO_frac,fin_ICO_like_frac,fin_GUM_frac]}	
 
+global ICO
+ICO = [[0,6,0,0],[0,5,2,0],[0,4,4,0],[0,3,6,0],[0,2,8,0],[0,2,8,1],[0,0,12,0],[0,1,10,2],[0,0,12,2],[0,0,12,3],[0,0,12,4],[0,0,12,5]]
+global ICO_LIKE
+ICO_LIKE = [[0,6,0,1],[0,5,2,1],[0,4,4,1],[0,3,6,1],[0,3,6,2],[0,2,8,2],[0,2,8,3],[0,1,10,3],[0,1,10,4],[0,1,10,5],[0,1,10,6],\
+[0,6,0,2],[0,5,2,2],[0,4,4,2],[0,4,4,3],[0,3,6,3],[0,3,6,4],[0,2,8,4],[0,2,8,5],[0,2,8,6],[0,2,8,7]]
+
 def classify_voronoi_index(list_of_voronoi_index):
 	"""
 	this function classify a list of voronoi index into a list of
