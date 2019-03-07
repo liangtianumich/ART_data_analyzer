@@ -4,7 +4,7 @@ import time
 import random
 import multiprocessing as mp
 import argparse
-from util import prompt_yes_no, operation_on_events, data_dir_to_test_dir,get_list_of_atoms_from_atom_list, event_act_relax_energy, event_ave_strain_displacement, event_voronoi_volume
+from util import prompt_yes_no, operation_on_events, data_dir_to_test_dir,get_list_of_atoms_from_atom_list, event_act_relax_energy, event_ave_strain_displacement, event_voronoi_volume, event_voronoi_class
 from data_reader import read_data_from_file
 
 
@@ -12,7 +12,7 @@ def generate_correlation_table_mp(path_to_data_dir, input_param):
 	list_of_test_id = input_param["list_of_test_id"]
 	num_of_proc = input_param["num_of_proc"]
 	atom_list = input_param["atom_list"]
-	
+	print "if atom_list is local or pn, voronoi volume calculation only act on atom_list from init to sad"
 	print "confirm if voronoi_index_results.json is corresponding to the atom_list you just specified:", atom_list
 	if not prompt_yes_no():
 		raise Exception("quitting, re_calc the voronoi indexes for your specified atom_list by --voro --calc --re_calc --local if atom_list is local")
@@ -33,7 +33,7 @@ def single_event_data_extractor(event_state, path_to_data_dir, atom_list):
 	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
 	path_to_curr_result = path_to_test_dir + "/results"	
 	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
-	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin	
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 		
 	print "extracting atom_list:"
 	path_to_file_ini = path_to_test_dir + '/' + init + ".dump"
@@ -56,10 +56,12 @@ def single_event_data_extractor(event_state, path_to_data_dir, atom_list):
 	init_vol, sad_vol, fin_vol = event_voronoi_volume(event_state, path_to_data_dir)
 	init_sad_vol, sad_fin_vol, init_fin_vol = sad_vol - init_vol, fin_vol - sad_vol, fin_vol - init_vol
 	
-	event_init_sad = pd.DataFrame({"event_id":event_state,"atom_list":atom_list_init_sad,"num_of_atoms":atom_num_init_sad,"ave_vol_strain":ave_vol_strain["init_sad"],"ave_shear_strain":ave_shear_strain["init_sad"],"ave_disp":ave_disp["init_sad"],"vol_diff":init_sad_vol,"eng_diff":init_sad_eng})
-	event_sad_fin = pd.DataFrame({"event_id":event_state,"atom_list":atom_list_sad_fin,"num_of_atoms":atom_num_sad_fin,"ave_vol_strain":ave_vol_strain["sad_fin"],"ave_shear_strain":ave_shear_strain["sad_fin"],"ave_disp":ave_disp["sad_fin"],"vol_diff": sad_fin_vol,"eng_diff":sad_fin_eng})
-	event_init_fin = pd.DataFrame({"event_id":event_state,"atom_list":atom_list_init_fin,"num_of_atoms":atom_num_init_fin,"ave_vol_strain":ave_vol_strain["init_fin"],"ave_shear_strain":ave_shear_strain["init_fin"],"ave_disp":ave_disp["init_fin"],"vol_diff": init_fin_vol,"eng_diff":init_fin_eng})
-		
+	event_voro_res = event_voronoi_class(event_state, path_to_data_dir)
+	
+	event_init_sad = pd.DataFrame({"event_id":event_state,"atom_list":atom_list_init_sad,"num_of_atoms":atom_num_init_sad,"ave_vol_strain":ave_vol_strain["init_sad"],"ave_shear_strain":ave_shear_strain["init_sad"],"ave_disp":ave_disp["init_sad"],"start_ICO_frac":event_voro_res["init"][0],"start_ICO_like_frac":event_voro_res["init"][1],"start_GUM_frac":event_voro_res["init"][2],"end_ICO_frac":event_voro_res["sad"][0],"end_ICO_like_frac":event_voro_res["sad"][1],"end_GUM_frac":event_voro_res["sad"][2], "vol_diff":init_sad_vol,"eng_diff":init_sad_eng})
+	event_sad_fin = pd.DataFrame({"event_id":event_state,"atom_list":atom_list_sad_fin,"num_of_atoms":atom_num_sad_fin,"ave_vol_strain":ave_vol_strain["sad_fin"],"ave_shear_strain":ave_shear_strain["sad_fin"],"ave_disp":ave_disp["sad_fin"],"start_ICO_frac":event_voro_res["sad"][0],"start_ICO_like_frac":event_voro_res["sad"][1],"start_GUM_frac":event_voro_res["sad"][2],"end_ICO_frac":event_voro_res["fin"][0],"end_ICO_like_frac":event_voro_res["fin"][1],"end_GUM_frac":event_voro_res["fin"][2],"vol_diff": sad_fin_vol,"eng_diff":sad_fin_eng})
+	event_init_fin = pd.DataFrame({"event_id":event_state,"atom_list":atom_list_init_fin,"num_of_atoms":atom_num_init_fin,"ave_vol_strain":ave_vol_strain["init_fin"],"ave_shear_strain":ave_shear_strain["init_fin"],"ave_disp":ave_disp["init_fin"],"start_ICO_frac":event_voro_res["init"][0],"start_ICO_like_frac":event_voro_res["init"][1],"start_GUM_frac":event_voro_res["init"][2],"end_ICO_frac":event_voro_res["fin"][0],"end_ICO_like_frac":event_voro_res["fin"][1],"end_GUM_frac":event_voro_res["fin"][2],"vol_diff": init_fin_vol,"eng_diff":init_fin_eng})
+	
 	return (event_init_sad,event_sad_fin,event_init_fin)
 	
 def convert_to_csv(path_to_data_dir, result_list):

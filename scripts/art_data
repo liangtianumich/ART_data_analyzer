@@ -1167,7 +1167,7 @@ if __name__ == "__main__":
 		exit()
 	if args.voro:
 		if sum([args.local, args.initial, args.central, args.max_disp, args.pn])>=2:
-			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn")
+			raise Exception("calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn")
 		if args.local:
 			input_param["atom_list"] = "local"
 		elif args.initial:
@@ -1190,7 +1190,20 @@ if __name__ == "__main__":
 			run_all_tests_voronoi_classifier(path_to_data_dir,input_param)
 			print "total run time:", time.time() - start_time, "seconds"
 			exit()
-    if args.create_data_table:
+	if args.create_data_table:
+		if sum([args.local, args.initial, args.central, args.max_disp, args.pn])>=2:
+			raise Exception("calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn")
+		if args.local:
+			input_param["atom_list"] = "local"
+		elif args.initial:
+			input_param["atom_list"] = "initial"
+		elif args.central:
+			input_param["atom_list"] = "central"
+		elif args.max_disp:
+			input_param["atom_list"] = "max_disp"
+		elif args.pn:
+			input_param["atom_list"] = "pn"
+		
 		generate_correlation_table_mp(path_to_data_dir, input_param)
 		exit()	  
   elif args.desc:

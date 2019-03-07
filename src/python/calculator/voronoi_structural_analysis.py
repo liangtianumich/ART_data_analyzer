@@ -280,6 +280,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 	path_to_initial_atom_index = path_to_curr_event + "/initial_cluster_atoms_index.json"
 	path_to_central_atom_index = path_to_curr_event + "/central_atom_index.json"
 	path_to_max_disp_atom_index = path_to_curr_event + "/max_disp_atom_index.json"
+	path_to_pn_index = path_to_curr_event + "/pn_index.json"
 	
 	if atom_list is None:
 		atom_list = (initial_config_data["item"]).tolist()
@@ -323,6 +324,15 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			atom_list = max_disp_atom_list
 		else:
 			raise Exception("max_disp_atom_index.json does not exist in %s"%path_to_curr_event)
+	elif atom_list == "pn":
+		if os.path.exists(path_to_pn_index):
+			print ("\n starting the pn atoms voronoi calculations")
+			pn_atom_list = json.load(open(path_to_pn_index,"r"))
+			if pn_atom_list["init_sad"] == []:
+				return None
+			atom_list = pn_atom_list["init_sad"]
+		else:
+			raise Exception("pn_index.json does not exist in %s"%path_to_curr_event)
 
 	if return_volume is True:
 		init_voronoi_index, init_volumes = single_config_voronoi_calculator(initial_config_data, box_range, cut_off, atom_list=atom_list, max_edge_count = max_edge_count, periodic=periodic, return_volume=True)

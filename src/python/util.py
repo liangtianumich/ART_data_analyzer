@@ -8,8 +8,10 @@ import os
 import json
 import re
 import operator
+from collections import Counter
 from pathos.multiprocessing import ProcessingPool as Pool
 from data_reader import *
+from calculator.voronoi_structural_analysis import classify_voronoi_index
 from periodic_kdtree import PeriodicCKDTree
 from functools import wraps
 import time
@@ -407,6 +409,39 @@ def event_voronoi_volume(event_state, path_to_data_dir):
 	path_to_volume_results = path_to_curr_event + "/voronoi_volume_results.json"
 	voronoi_vol = json.load(open(path_to_volume_results, "r"))
 	return (sum(voronoi_vol["init"]), sum(voronoi_vol["sad"]), sum(voronoi_vol["fin"]))
+
+def event_voronoi_class(event_state, path_to_data_dir):
+	if 'test' in event[0]:
+		test_id = int(event[0][4:])
+	else:
+		test_id = int(event[0])
+	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
+	path_to_curr_result = path_to_test_dir + "/results"
+	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
+	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
+	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
+	
+	voronoi_index = json.load(open(path_to_voro_results,"r"))
+	# classify voronoi index
+	init_voronoi_class = classify_voronoi_index(voronoi_index["init"])
+	sad_voronoi_class = classify_voronoi_index(voronoi_index["sad"])
+	fin_voronoi_class = classify_voronoi_index(voronoi_index["fin"])
+	
+	init_list = Counter(init_voronoi_class).values()
+	init_ICO_frac = Counter(init_voronoi_class)[0]/float(sum(init_list))
+	init_ICO_like_frac = Counter(init_voronoi_class)[1]/float(sum(init_list))
+	init_GUM_frac = Counter(init_voronoi_class)[2]/float(sum(init_list))
+	
+	sad_list = Counter(sad_voronoi_class).values()
+	sad_ICO_frac = Counter(sad_voronoi_class)[0]/float(sum(sad_list))
+	sad_ICO_like_frac = Counter(sad_voronoi_class)[1]/float(sum(sad_list))
+	sad_GUM_frac = Counter(sad_voronoi_class)[2]/float(sum(sad_list))
+	
+	fin_list = Counter(fin_voronoi_class).values()
+	fin_ICO_frac = Counter(fin_voronoi_class)[0]/float(sum(fin_list))
+	fin_ICO_like_frac = Counter(fin_voronoi_class)[1]/float(sum(fin_list))
+	fin_GUM_frac = Counter(fin_voronoi_class)[2]/float(sum(fin_list))
+	return {"init":[init_ICO_frac,init_ICO_like_frac,init_GUM_frac], "sad":[sad_ICO_frac,sad_ICO_like_frac,sad_GUM_frac],"fin":[fin_ICO_frac,fin_ICO_like_frac,fin_GUM_frac]}	
 	
 def event_ave_strain_displacement(event_state, path_to_data_dir, atom_list):
 	if 'test' in event[0]:
