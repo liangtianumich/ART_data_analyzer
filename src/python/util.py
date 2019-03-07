@@ -11,7 +11,6 @@ import operator
 from collections import Counter
 from pathos.multiprocessing import ProcessingPool as Pool
 from data_reader import *
-from calculator.voronoi_structural_analysis import classify_voronoi_index
 from periodic_kdtree import PeriodicCKDTree
 from functools import wraps
 import time
@@ -397,27 +396,27 @@ def event_act_relax_energy(event, path_to_data_dir):
 	act_eng = sad_eng - init_eng
 	relax_eng = sad_eng - fin_eng
 	return (event, act_eng, relax_eng)
-def event_voronoi_volume(event_state, path_to_data_dir):
+def event_voronoi_volume(event, path_to_data_dir):
 	if 'test' in event[0]:
 		test_id = int(event[0][4:])
 	else:
 		test_id = int(event[0])
 	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
 	path_to_curr_result = path_to_test_dir + "/results"	
-	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
+	init, sad, fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_volume_results = path_to_curr_event + "/voronoi_volume_results.json"
 	voronoi_vol = json.load(open(path_to_volume_results, "r"))
 	return (sum(voronoi_vol["init"]), sum(voronoi_vol["sad"]), sum(voronoi_vol["fin"]))
 
-def event_voronoi_class(event_state, path_to_data_dir):
+def event_voronoi_class(event, path_to_data_dir):
 	if 'test' in event[0]:
 		test_id = int(event[0][4:])
 	else:
 		test_id = int(event[0])
 	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
 	path_to_curr_result = path_to_test_dir + "/results"
-	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
+	init, sad, fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
 	
@@ -442,15 +441,38 @@ def event_voronoi_class(event_state, path_to_data_dir):
 	fin_ICO_like_frac = Counter(fin_voronoi_class)[1]/float(sum(fin_list))
 	fin_GUM_frac = Counter(fin_voronoi_class)[2]/float(sum(fin_list))
 	return {"init":[init_ICO_frac,init_ICO_like_frac,init_GUM_frac], "sad":[sad_ICO_frac,sad_ICO_like_frac,sad_GUM_frac],"fin":[fin_ICO_frac,fin_ICO_like_frac,fin_GUM_frac]}	
-	
-def event_ave_strain_displacement(event_state, path_to_data_dir, atom_list):
+
+def classify_voronoi_index(list_of_voronoi_index):
+	"""
+	this function classify a list of voronoi index into a list of
+	ico, ico-like, GUMs
+	"""
+	list_of_voronoi_class = []
+	for x in list_of_voronoi_index:
+		if len(x) < 6:
+			raise Exception("can not classify voronoi index vector whose length is less than 6")
+		else:
+			truncated_x = x[2:6]
+		
+		if truncated_x in ICO:
+			#list_of_voronoi_class.append('ico')
+			list_of_voronoi_class.append(0)
+		elif truncated_x in ICO_LIKE:
+			#list_of_voronoi_class.append('ico_like')
+			list_of_voronoi_class.append(1)
+		else:
+			#list_of_voronoi_class.append('GUM')
+			list_of_voronoi_class.append(2)
+	return list_of_voronoi_class
+
+def event_ave_strain_displacement(event, path_to_data_dir, atom_list):
 	if 'test' in event[0]:
 		test_id = int(event[0][4:])
 	else:
 		test_id = int(event[0])
 	path_to_test_dir = data_dir_to_test_dir(path_to_data_dir, test_id)
 	path_to_curr_result = path_to_test_dir + "/results"	
-	init, sad, fin = event_state[1][0], event_state[1][1], event_state[1][2]
+	init, sad, fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_init_sad = path_to_curr_event + "/init_sad"
 	path_to_sad_fin = path_to_curr_event + "/sad_fin"

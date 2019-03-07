@@ -42,8 +42,8 @@ def single_event_data_extractor(event_state, path_to_data_dir, atom_list):
 	atom_num_init_sad, atom_num_sad_fin, atom_num_init_fin = len(atom_list_init_sad),len(atom_list_sad_fin),len(atom_list_init_fin)
 	
 	print "extracting energy data:"
-	(event, act_eng, relax_eng) = event_act_relax_energy(event_state, path_to_data_dir)
-	(init_sad_eng, sad_fin_eng, init_fin_eng) = (act_eng, -relax_eng, act_eng - relax_eng)	
+	event, act_eng, relax_eng = event_act_relax_energy(event_state, path_to_data_dir)
+	init_sad_eng, sad_fin_eng, init_fin_eng = act_eng, -relax_eng, act_eng - relax_eng)	
 	
 	print "extracting strain and displacement data:"
 	# strain = {"init_sad":[], "sad_fin":[], "init_fin:[]"}

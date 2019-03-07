@@ -8,7 +8,7 @@ import pandas as pd
 import json
 from collections import Counter
 from data_reader import *
-from util import operation_on_events, event_local_atom_index, read_from_art_input_file, data_dir_to_test_dir
+from util import operation_on_events, event_local_atom_index, read_from_art_input_file, data_dir_to_test_dir, classify_voronoi_index
 from visualizer.voronoi_visualizer import plot_voronoi_histogram_3, plot_dynamic_transition_matrix
 # voronoi index classification from Evan Ma paper "Tuning order in disorder"
 global ICO
@@ -508,30 +508,7 @@ def df_range_pbc(axis,raw_range, dim_range, config):
 	elif raw_range[1] <= dim_range[0]:
 		return config.loc[(config[axis] >= raw_range[0] + dim_range[1] - dim_range[0]) & (config[axis] <= raw_range[1] + dim_range[1] - dim_range[0])]
 	else:
-		raise Exception("either specified data range or simulation box range is wrong!")
-
-def classify_voronoi_index(list_of_voronoi_index):
-	"""
-	this function classify a list of voronoi index into a list of
-	ico, ico-like, GUMs
-	"""
-	list_of_voronoi_class = []
-	for x in list_of_voronoi_index:
-		if len(x) < 6:
-			raise Exception("can not classify voronoi index vector whose length is less than 6")
-		else:
-			truncated_x = x[2:6]
-		
-		if truncated_x in ICO:
-			#list_of_voronoi_class.append('ico')
-			list_of_voronoi_class.append(0)
-		elif truncated_x in ICO_LIKE:
-			#list_of_voronoi_class.append('ico_like')
-			list_of_voronoi_class.append(1)
-		else:
-			#list_of_voronoi_class.append('GUM')
-			list_of_voronoi_class.append(2)
-	return list_of_voronoi_class			
+		raise Exception("either specified data range or simulation box range is wrong!")			
 
 def count_faces(results, max_edge_count=8, return_volume=False, tool="tess"):
 	if tool == "tess":
