@@ -9,6 +9,11 @@ This python package is originally developed by Dr Lin Li group at University of 
 Lead developer: Dr Liang Tian.
 Contact: liangtianisu@gmail.com
 
+
+Cite this software:
+Liang Tian, Lin Li, Jun Ding, Normand Mousseau, 
+"ART_data_analyzer: automating parallelized computations to study the evolution of materials”, Software X, (in press)
+
 License:
 This package is under GNU General Public License v3.0
 

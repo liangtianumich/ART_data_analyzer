@@ -181,7 +181,12 @@ def print_desc_help():
 	including but not limited to: save all most necessary calculations in files, 
 	, extract data for automated pretty plotting, perform correlation analysis between
 	physical quantities.
-		
+	
+	Cite this software: 
+	Liang Tian, Lin Li, Jun Ding, Normand Mousseau, 
+	"ART_data_analyzer: automating parallelized computations to study the evolution of materials"
+	Software X, (in press)
+	
 	>>> automate running ART in parallel:
 	This package has been written in a general way to be robust to a wide range of
 	homogeneous and heterogenous samples, e.g. crystal, interface, grain boundary,amorphous materials. 
@@ -558,10 +563,10 @@ def print_desc_help():
 	 for all filtered events in tests stored in list_of_test_id, 
 	 implemented in function calculator.strain_calculator.strain_calculator_run_all_tests_mp
 	 
-	 --strain --calc can be combined with any of --local, --central, --initial, --max_disp
+	 --strain --calc can be combined with any of --local, --central, --initial, --max_disp, --pn
 	 to select desired list of atoms to calculate strain and displacements. However,
-	 usage of --local, --central, --initial, --max_disp need to run --find_local_index,
-	 --find_central_index, --find_triggered_cluster_atoms_index, --find_max_disp_index first
+	 usage of --local, --central, --initial, --max_disp, --pn need to run --find_local_index,
+	 --find_central_index, --find_triggered_cluster_atoms_index, --find_max_disp_index, --find_pn_index first
 	 
 	 "art_data -s SETTINGS --strain -v" will plot the event level quantities after strain calculation on the selected atom_list
 	 
@@ -606,7 +611,7 @@ def print_desc_help():
 	 
 	 -p or --path option applied, -np and --re_calc does not apply
 	 
-	 5) find all interested atoms indexes (e.g. local atoms, central atom, initial triggered cluster atoms, max_disp atom) 
+	 5) find all interested atoms indexes (e.g. local atoms, central atom, initial triggered cluster atoms, max_disp atom, pn atoms) 
 	 for each of filtered events
 	 
 	 art_data -s SETTINGS --find_local_index rel_residual_threshold,
@@ -631,6 +636,10 @@ def print_desc_help():
 	 the initial to saddle process for each of all filtered events in interested tests list_of_test_id, 
 	 and save them in a file called max_disp_atom_index.json
 	 
+	 art_data -s SETTINGS --find_pn_index will calculate the PN for init_sad, sad_fin, init_fin and save the
+	 PN number of max displaced atoms' indexes into a file called pn_index.json, pn_number.json
+	 The PN calculation can be checked from Swayamjyoti et al 2014, "Local structural excitations in model glasses"
+	 
 	 -p/--path, -np, --re_calc option applied
 
 	 6) if --strain --calc run on all atoms before,
@@ -651,7 +660,7 @@ def print_desc_help():
 	 with atom_list = 'local',
 	 which will read all local atom indexs saved in local_atoms_index.json
 	 
-	 Similar to --local, --central, --initial, --max_disp also apply here
+	 Similar to --local, --central, --initial, --max_disp, --pn also apply here
 	 
 	 7) correlation analysis
 	 
@@ -666,7 +675,7 @@ def print_desc_help():
 	 It will also fit a LinearRegression model on volumetric strain
 	 to shear strain data, print out the slope as the beta parameter, i.e. 
 	 the ratio of dilation to shear strain. 
-	 Similar to --local, --central, --initial, --max_disp also apply here for
+	 Similar to --local, --central, --initial, --max_disp, --pn also apply here for
 	 other type of atom_list
 	 
 	 art_data -s SETTINGS --max_disp_eng will plot the activation energy vs max_disp
@@ -680,7 +689,7 @@ def print_desc_help():
 	 If --return_volume is used and re_calc is False, both voronoi_index_results.json 
 	 and voronoi_volume_results.json must exist in the event directory.
 	 
-	 If we want to re_calc for different atom_list (--central, --initial, --max_disp),
+	 If we want to re_calc for different atom_list (--central, --initial, --max_disp, --pn),
 	 use this arguments with --re_calc, e.g.
 	 art_data -s SETTINGS --initial --voro --calc --re_calc will read
 	 local_atoms_index.json and calculate local atoms voronoi index for all filtered events
@@ -718,7 +727,18 @@ def print_desc_help():
 	 check if the triggered central atom is the max displacement atom in all 
 	 filtered events in list_of_test_id
 	 
+	 > save data in a csv file for correlation analysis:
+	 Before using this function, if users want to act on atom_list == 'initial', they
+	 need to ensure that voronoi results are also calculated based on atom_list is "local".
+	 If not sure about this, run art_data -s SETTINGS --initial --voro --calc --return_volume --re_calc
+	 to redo and override the existing calculations.
 	 
+	 art_data -s SETTINGS --initial --create_data_table
+	 will create a data table with atom_list being initial triggered cluster of atoms
+	 and output relevant physical quantities. For physical quantities that are atom-by-atom based,
+	 the saved physical quantities act on this group of atom_list by averaging, normalizing, difference of summation
+	 
+	 User can extract this data csv file from each sample and perform correlation analysis on multiple samples as needed.
 	"""
 def get_central_atom_list(path_to_data_dir, path_to_input_files, sample_name, sample_type, n_tests):
 	path_to_interested_atom_list = os.path.join(path_to_data_dir,"interested_atom_list.json")
