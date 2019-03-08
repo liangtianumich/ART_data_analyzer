@@ -406,6 +406,8 @@ def event_voronoi_volume(event, path_to_data_dir):
 	init, sad, fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_volume_results = path_to_curr_event + "/voronoi_volume_results.json"
+	if not os.path.exists(path_to_volume_results):
+		return (0.0,0.0,0.0)
 	voronoi_vol = json.load(open(path_to_volume_results, "r"))
 	return (sum(voronoi_vol["init"]), sum(voronoi_vol["sad"]), sum(voronoi_vol["fin"]))
 
@@ -419,7 +421,9 @@ def event_voronoi_class(event, path_to_data_dir):
 	init, sad, fin = event[1][0], event[1][1], event[1][2]
 	path_to_curr_event = path_to_curr_result + "/event_" + init + "_" + sad + "_" + fin
 	path_to_voro_results = path_to_curr_event + "/voronoi_index_results.json"
-	
+	if not os.path.exists(path_to_voro_results):
+		return {"init":[0.0,0.0,0.0],"sad":[0.0,0.0,0.0],"fin":[0.0,0.0,0.0]}
+
 	voronoi_index = json.load(open(path_to_voro_results,"r"))
 	# classify voronoi index
 	init_voronoi_class = classify_voronoi_index(voronoi_index["init"])
@@ -529,6 +533,8 @@ def ave_strain_selected_atoms(all_strains,atom_list):
 	"""
 	vol_strain = []
 	shear_strain = []
+	if atom_list == []:
+		return [0.0,0.0]
 	for atom in atom_list:
 		vol_strain.append(all_strains[atom][0])
 		shear_strain.append(all_strains[atom][1])
@@ -543,6 +549,8 @@ def ave_disp_selected_atoms(all_disp,atom_list):
 			a list of atom item id
 	"""
 	disp = []
+	if atom_list == []:
+		return 0.0
 	for atom in atom_list:
 		disp.append(all_disp[atom])
 	return np.mean(disp)
