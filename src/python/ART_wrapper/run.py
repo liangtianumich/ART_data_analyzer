@@ -192,7 +192,10 @@ def check_tests_status(path_to_data_dir, input_param):
 	tests_not_done = []
 	tests_done = []
 	for test in central_atom_list:
-		path_to_test = data_dir_to_test_dir(path_to_data_dir, test)
+		try:
+			path_to_test = data_dir_to_test_dir(path_to_data_dir, test)
+		except Exception:
+			tests_not_done.append(test)
 		# check if this test contains the final configuration file
 		# based on max_num_events
 		final_min_id = 1000 + max_num_events

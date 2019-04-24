@@ -14,7 +14,7 @@ from visualizer.strain_visualizer import events_strain_visualization,strain_even
 from correlation_model.correlation_model import residual_threshold_finder, all_events_local_atoms_finder, events_local_atoms, eng_max_disp, shear_strain_vol_strain_cluster_all_events,shear_strain_vol_strain_local_atom_all_events
 from correlation_model.generate_correlation_table import generate_correlation_table_mp
 from data_reader import *
-from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no,all_events_triggered_cluster_atoms_finder,all_events_central_atom_finder, all_events_max_disp_atom_finder
+from util import run_tests_triggered_atom_is_max_disp,nostdout,prompt_yes_no,all_events_triggered_cluster_atoms_finder,all_events_central_atom_finder, all_events_max_disp_atom_finder, sync_central_atom_list_w_curr_subdir
 #from lammps.run import run_lammps
 from ART_wrapper.run import run_art_mp, set_up_input_files, delete_art_tests_files, delete_art_tests, check_tests_status, delete_unused_events_data
 from ART_wrapper.run_slurm import run_art_cluster_slurm
@@ -523,6 +523,12 @@ def print_desc_help():
 	  Run more tests until you achieve the convergence.
 	  This command will update the central_atom_list.json as well.
 	  
+	  If user happen to interrupt the command --run_more, the central_atom_list.json file
+	  has already been updated. Then they need to use art_data -s SETTINGS --sync_central_atoms
+	  to sync the central_atoms_list.json with current central atoms in path_to_data_dir before
+	  using --run_more ever again. Then use --update_input to update the central_atom_list 
+	  and list_of_test_id key in the input SETTINGS file
+	  
 	  Each time using --art --run_more command, user need to update the
 	  input SETTINGS file 'central_atom_list' and 'list_of_test_id' by
 	  art_data -s SETTINGS --update_input
@@ -930,7 +936,7 @@ if __name__ == "__main__":
   parser.add_argument('--run', help='begin running simulations after --lammps or --art mode', action="store_true")
   
   parser.add_argument('--run_more', nargs=1, metavar=('NUM_OF_TESTS'), help='running more ART simulations if ART data is not converged', type=int)
-  
+  parser.add_argument('--sync_central_atoms',help='sync the central_atom_list.json to be the subdir name in path_to_data_dir',action="store_true")
   parser.add_argument('--delete_tests', help='combine with --art to delete all test directories whose test id stored in central_atom_list of input SETTINGS file', action="store_true")
   parser.add_argument('--delete_unused_events', help='combine with --art to delete all unused events configuration files that are not saved in final_selected_events.json', action="store_true")
   parser.add_argument('--check_tests_status', help='combine with --art to check the status of all tests whose test id stored in central_atom_list of input SETTINGs file', action="store_true")
@@ -959,8 +965,8 @@ if __name__ == "__main__":
   if args.lammps:
 	  if args.run:
 		  run_lammps(args.run[0])
-		  exit()
-		  
+		  exit()  
+	  	  
   if args.settings:
 	if args.verbose:
 		print "Loading", args.settings[0]
@@ -990,7 +996,9 @@ if __name__ == "__main__":
 		input_param["re_calc"] = False
 	if args.re_calc:
 		input_param["re_calc"] = True
-	
+	if args.sync_central_atoms:
+		sync_central_atom_list_w_curr_subdir(path_to_data_dir)
+		exit()
 	if args.art:
 		if args.run:
 		  print "being setting up the ART input files!"

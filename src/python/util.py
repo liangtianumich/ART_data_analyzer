@@ -848,6 +848,18 @@ def update_central_atom_list(path_to_data_dir,new_central_atom_list):
 	with open(path_to_central_atom_list, 'w') as f:
 		json.dump(new_central_atom_list,f)
 
+def sync_central_atom_list_w_curr_subdir(path_to_data_dir):
+	d = path_to_data_dir
+	curr_central_atom_list = []
+	for o in os.listdir(d):
+		if os.path.isdir(os.path.join(d,o)):
+			if o.startswith('test') and o[4:].isdigit():
+				curr_central_atom_list.append(int(o[4:]))
+			if o.isdigit():
+				curr_central_atom_list.append(int(o))
+	
+	update_central_atom_list(path_to_data_dir, curr_central_atom_list)
+	
 def update_central_atom_list_from_final_filtered_events(path_to_data_dir):
 	"""
 	this function update the central_atom_list.json file to be the tests id saved in final_selected_events.json
