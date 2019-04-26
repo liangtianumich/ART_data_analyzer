@@ -529,12 +529,14 @@ def print_desc_help():
 	  using --run_more ever again. Then use --update_input to update the central_atom_list 
 	  and list_of_test_id key in the input SETTINGS file
 	  
-	  Each time using --art --run_more command, user need to update the
-	  input SETTINGS file 'central_atom_list' and 'list_of_test_id' by
-	  art_data -s SETTINGS --update_input
+	  Each time using --art --run_more command, it will also update the
+	  input SETTINGS file 'central_atom_list' and 'list_of_test_id' key to be those
+	  in central_atom_list.json.  If user want to manually update input SETTINGS, 
+	  they can always do it by art_data -s SETTINGS --update_input
 	  
-	  After these --run_more and --update_input commands, user need to repeat 
-	  the event filtering, energy calculation and checking the convergence again.
+	  After these --run_more commands, user need to repeat 
+	  the event filtering (always use --filter --re_calc if user do --art --delete_unused_events after previous --run_more), 
+	  energy calculation and checking the convergence again.
 	  
 	  If user only run more tests without changing filtering criteria, 
 	  user need to use "art_data -s SETTINGS --filter" to filter new calculated tests.

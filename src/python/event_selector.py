@@ -351,9 +351,11 @@ def single_event_2_criteria(list_of_path, list_of_energy, box_dim):
 	are small, then the final state is identical to the initial state, should be eliminated
 	in details, this happens if dE < 0.02 (eV) AND distance < 1
 	"""
-	
-	init_config = Configuration(list_of_path[0],box_dim)
-	fin_config = Configuration(list_of_path[2],box_dim)
+	try:
+		init_config = Configuration(list_of_path[0],box_dim)
+		fin_config = Configuration(list_of_path[2],box_dim)
+	except Exception:
+		return False
 	
 	# criteria 1
 	if list_of_energy[1] - list_of_energy[0] < 0 or list_of_energy[1] - list_of_energy[2] < 0:
