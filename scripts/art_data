@@ -571,10 +571,10 @@ def print_desc_help():
 	 for all filtered events in tests stored in list_of_test_id, 
 	 implemented in function calculator.strain_calculator.strain_calculator_run_all_tests_mp
 	 
-	 --strain --calc can be combined with any of --local, --central, --initial, --max_disp, --pn
+	 --strain --calc can be combined with any of --local, --central, --initial, --max_disp, --pn, --pn_non_affine
 	 to select desired list of atoms to calculate strain and displacements. However,
-	 usage of --local, --central, --initial, --max_disp, --pn need to run --find_local_index,
-	 --find_central_index, --find_triggered_cluster_atoms_index, --find_max_disp_index, --find_pn_index first
+	 usage of --local, --central, --initial, --max_disp, --pn, --pn_non_affine need to run --find_local_index,
+	 --find_central_index, --find_triggered_cluster_atoms_index, --find_max_disp_index, --find_pn_index, --find_pn_non_affine_index first
 	 
 	 "art_data -s SETTINGS --strain -v" will plot the event level quantities after strain calculation on the selected atom_list
 	 
@@ -619,7 +619,7 @@ def print_desc_help():
 	 
 	 -p or --path option applied, -np and --re_calc does not apply
 	 
-	 5) find all interested atoms indexes (e.g. local atoms, central atom, initial triggered cluster atoms, max_disp atom, pn atoms) 
+	 5) find all interested atoms indexes (e.g. local atoms, central atom, initial triggered cluster atoms, max_disp atom, pn atoms, pn_non_affine atoms) 
 	 for each of filtered events
 	 
 	 art_data -s SETTINGS --find_local_index rel_residual_threshold,
@@ -648,6 +648,9 @@ def print_desc_help():
 	 PN number of max displaced atoms' indexes into a file called pn_index.json, pn_number.json
 	 The PN calculation can be checked from Swayamjyoti et al 2014, "Local structural excitations in model glasses"
 	 
+	 art_data -s SETTINGS --find_pn_non_affine_index will calculate the PN based on atomic shear strain and save the
+	 PN number of max absolute shear strain atoms' indexes into a file called pn_index.json, pn_number.json
+	 
 	 -p/--path, -np, --re_calc option applied
 
 	 6) if --strain --calc run on all atoms before,
@@ -668,7 +671,7 @@ def print_desc_help():
 	 with atom_list = 'local',
 	 which will read all local atom indexs saved in local_atoms_index.json
 	 
-	 Similar to --local, --central, --initial, --max_disp, --pn also apply here
+	 Similar to --local, --central, --initial, --max_disp, --pn, --pn_non_affine also apply here
 	 
 	 7) correlation analysis
 	 
@@ -683,7 +686,7 @@ def print_desc_help():
 	 It will also fit a LinearRegression model on volumetric strain
 	 to shear strain data, print out the slope as the beta parameter, i.e. 
 	 the ratio of dilation to shear strain. 
-	 Similar to --local, --central, --initial, --max_disp, --pn also apply here for
+	 Similar to --local, --central, --initial, --max_disp, --pn, --pn_non_affine also apply here for
 	 other type of atom_list
 	 
 	 art_data -s SETTINGS --max_disp_eng will plot the activation energy vs max_disp
@@ -697,7 +700,7 @@ def print_desc_help():
 	 If --return_volume is used and re_calc is False, both voronoi_index_results.json 
 	 and voronoi_volume_results.json must exist in the event directory.
 	 
-	 If we want to re_calc for different atom_list (--central, --initial, --max_disp, --pn),
+	 If we want to re_calc for different atom_list (--central, --initial, --max_disp, --pn, --pn_non_affine),
 	 use this arguments with --re_calc, e.g.
 	 art_data -s SETTINGS --initial --voro --calc --re_calc will read
 	 local_atoms_index.json and calculate local atoms voronoi index for all filtered events
@@ -902,12 +905,14 @@ if __name__ == "__main__":
   parser.add_argument('--find_central_index', help='find the central atom index for all filtered events in list_of_test_id tests, saving central atom index under each event directory', action = "store_true")
   parser.add_argument('--find_max_disp_index', help='find the max displaced atom index during the initial to saddle process for all filtered events in list_of_test_id tests, saving max_disp atom index under each event directory',action = "store_true")
   parser.add_argument('--find_pn_index', help='find the number and indexes of involved atoms by the physical definition of participation number for all filtered events in list_of_test_id tests',action = "store_true")
+  parser.add_argument('--find_pn_non_affine_index', help='find the number and indexes of involved atoms by the physical definition of participation number using atomic shear strain for all filtered events in list_of_test_id tests',action = "store_true")
   
   parser.add_argument('--local', help='invoke calculations on local atoms that are determined by --find_local_index', action="store_true")
   parser.add_argument('--initial', help='invoke calculations on initial triggered cluster atoms that are determined by --find_triggered_cluster_atoms_index', action="store_true")
   parser.add_argument('--central', help='invoke calculations on central atom that are determined by --find_central_index', action="store_true")
   parser.add_argument('--max_disp', help='invoke calculations on max displaced atoms during init to sad that are determined by --find_max_disp_index', action="store_true")
   parser.add_argument('--pn', help='invoke calculations on pn atoms that are determined by --find_pn_index', action="store_true")
+  parser.add_argument('--pn_non_affine', help='invoke calculations on pn atoms that are determined by --find_pn_non_affine_index', action="store_true")
   
   parser.add_argument('--cluster_shear_vol', help='combine with --strain --local to plot the local event cluster averaged shear strain vs cluster averaged volumetric strain for all filtered events in list_of_test_id', action="store_true")
   parser.add_argument('--atom_shear_vol', help='combine with --strain --local to plot the shear strain vs volumetric strain of all local atoms for all filtered events in list_of_test_id', action="store_true")
@@ -1116,8 +1121,8 @@ if __name__ == "__main__":
 			exit()
 	
 	if args.strain:
-		if sum([args.local, args.initial, args.central, args.max_disp, args.pn])>=2:
-			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn")
+		if sum([args.local, args.initial, args.central, args.max_disp, args.pn, args.pn_non_affine])>=2:
+			raise Exception("strain calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn, --pn_non_affine")
 		if args.local:
 			input_param["atom_list"] = "local"
 		elif args.initial:
@@ -1128,6 +1133,8 @@ if __name__ == "__main__":
 			input_param["atom_list"] = "max_disp"
 		elif args.pn:
 			input_param["atom_list"] = "pn"
+		elif args.pn_non_affine:
+			input_param["atom_list"] = "pn_non_affine"
 		
 		if args.cluster_shear_vol:
 			shear_strain_vol_strain_cluster_all_events(path_to_data_dir, input_param)
@@ -1185,6 +1192,9 @@ if __name__ == "__main__":
 	if args.find_pn_index:
 		pn_calculator_run_all_tests_mp(path_to_data_dir, input_param)
 		exit()
+	if args.find_pn_non_affine_index:
+		pn_calculator_run_all_tests_mp(path_to_data_dir, input_param, is_non_affine = True)
+		exit()
 	if args.events_local_atoms:		
 		events_local_atoms(path_to_data_dir, input_param)
 		exit()
@@ -1196,8 +1206,8 @@ if __name__ == "__main__":
 		archive_project(path_to_data_dir)
 		exit()
 	if args.voro:
-		if sum([args.local, args.initial, args.central, args.max_disp, args.pn])>=2:
-			raise Exception("calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn")
+		if sum([args.local, args.initial, args.central, args.max_disp, args.pn, args.pn_non_affine])>=2:
+			raise Exception("calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn, --pn_non_affine")
 		if args.local:
 			input_param["atom_list"] = "local"
 		elif args.initial:
@@ -1208,6 +1218,8 @@ if __name__ == "__main__":
 			input_param["atom_list"] = "max_disp"
 		elif args.pn:
 			input_param["atom_list"] = "pn"
+		elif args.pn_non_affine:
+			input_param["atom_list"] = "pn_non_affine"
 
 		if args.calc:
 			input_param['cut_off'] = input_param['voro_cut_off']
@@ -1221,8 +1233,8 @@ if __name__ == "__main__":
 			print "total run time:", time.time() - start_time, "seconds"
 			exit()
 	if args.create_data_table:
-		if sum([args.local, args.initial, args.central, args.max_disp, args.pn])>=2:
-			raise Exception("calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn")
+		if sum([args.local, args.initial, args.central, args.max_disp, args.pn, args.pn_non_affine])>=2:
+			raise Exception("calculations can only act on 1 set of atoms, use only one of --local, --initial, --central, --max_disp, --pn, --pn_non_affine")
 		if args.local:
 			input_param["atom_list"] = "local"
 		elif args.initial:
@@ -1233,9 +1245,11 @@ if __name__ == "__main__":
 			input_param["atom_list"] = "max_disp"
 		elif args.pn:
 			input_param["atom_list"] = "pn"
+		elif args.pn_non_affine:
+			input_param["atom_list"] = "pn_non_affine"
 		
 		generate_correlation_table_mp(path_to_data_dir, input_param)
-		exit()	  
+		exit()
   elif args.desc:
 	print_desc_help()
   else:

@@ -13,7 +13,7 @@ def generate_correlation_table_mp(path_to_data_dir, input_param):
 	list_of_test_id = input_param["list_of_test_id"]
 	num_of_proc = input_param["num_of_proc"]
 	atom_list = input_param["atom_list"]
-	print "if atom_list is local or pn, voronoi volume calculation only act on atom_list from init to sad"
+	print "if atom_list is local or pn or pn_non_affine, voronoi volume calculation only act on atom_list from init to sad"
 	print "confirm if voronoi_index_results.json is corresponding to the atom_list you just specified:", atom_list
 	if not prompt_yes_no():
 		raise Exception("quitting, re_calc the voronoi indexes for your specified atom_list by --voro --calc --re_calc --local if atom_list is local")

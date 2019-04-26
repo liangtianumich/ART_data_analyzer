@@ -12,7 +12,7 @@ Contact: liangtianisu@gmail.com
 
 Cite this software:
 Liang Tian, Lin Li, Jun Ding, Normand Mousseau, 
-"ART_data_analyzer: automating parallelized computations to study the evolution of materials”, Software X, (in press)
+"ART_data_analyzer: automating parallelized computations to study the evolution of materials”, Software X, 9(2019), 238-243.
 
 License:
 This package is under GNU General Public License v3.0

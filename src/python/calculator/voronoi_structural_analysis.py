@@ -324,7 +324,7 @@ def single_event_voronoi_calculator(event_state, path_to_data_dir, box_range, cu
 			atom_list = max_disp_atom_list
 		else:
 			raise Exception("max_disp_atom_index.json does not exist in %s"%path_to_curr_event)
-	elif atom_list == "pn":
+	elif atom_list == "pn" or atom_list == "pn_non_affine":
 		if os.path.exists(path_to_pn_index):
 			print ("\n starting the pn atoms voronoi calculations")
 			pn_atom_list = json.load(open(path_to_pn_index,"r"))
