@@ -445,6 +445,8 @@ def eng_max_disp(path_to_data_dir, input_param, subset=False):
 				if subset == True:
 					if event_state in subset_events:
 						curr_max_disp = event_max_disp(path_to_data_dir, event_state)
+						if curr_max_disp == []:
+							continue
 						all_max_disp_A.append(curr_max_disp[0])
 						all_max_disp_B.append(curr_max_disp[1])
 						all_act_eng.append(result[1])

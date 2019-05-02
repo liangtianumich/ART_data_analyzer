@@ -916,7 +916,7 @@ if __name__ == "__main__":
   
   parser.add_argument('--cluster_shear_vol', help='combine with --strain --local to plot the local event cluster averaged shear strain vs cluster averaged volumetric strain for all filtered events in list_of_test_id', action="store_true")
   parser.add_argument('--atom_shear_vol', help='combine with --strain --local to plot the shear strain vs volumetric strain of all local atoms for all filtered events in list_of_test_id', action="store_true")
-  parser.add_argument('--events_local_atoms', help='calculate the average local atoms and their statistics in all filtered events in specified tests', action = "store_true")
+  parser.add_argument('--events_local_atoms',nargs=1,metavar=('rel_residual_threshold'), type=float, help='calculate the average local atoms and their statistics in all filtered events in specified tests at a user specified residual threshold')
   parser.add_argument('--central_atom_max_disp', help='check if the central atom is the maximum displacement atom for all filtered events in specified tests', action = "store_true")
   parser.add_argument('--max_disp_eng', help='plot max displacement vs activation energy and relaxation energy', action = "store_true")
   parser.add_argument('--convert_to_ovito', help='convert a single event configuration files from refconfig type into lammps data type for Ovito visualization', nargs=4, metavar=('test_id', 'init', 'sad','fin'))
@@ -1195,8 +1195,9 @@ if __name__ == "__main__":
 	if args.find_pn_non_affine_index:
 		pn_calculator_run_all_tests_mp(path_to_data_dir, input_param, is_non_affine = True)
 		exit()
-	if args.events_local_atoms:		
-		events_local_atoms(path_to_data_dir, input_param)
+	if args.events_local_atoms:
+		residual_threshold = args.events_local_atoms[0]
+		events_local_atoms(path_to_data_dir, input_param, residual_threshold)
 		exit()
 		
 	if args.central_atom_max_disp:
