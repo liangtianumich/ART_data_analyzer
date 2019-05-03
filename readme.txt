@@ -44,9 +44,12 @@ For Linux Ubuntu OS,
 Install easy_install and pip by >>> sudo apt-get install python-pip python-dev build-essential
 For Mac, install pip by >>> sudo easy_install pip
 
-install previous mentioned python package by >>> python -m pip install --user numpy scipy matplotlib jupyter pandas scikit-learn pyvoro pathos tess. 
+install previous mentioned python package by >>> python -m pip install --user numpy scipy matplotlib pandas scikit-learn pyvoro pathos tess. 
 
-After installation of these dependencies, if there is no issue using art_data command line tool later, then it is good to go.
+After installation of these dependencies, if there is no issue using art_data command line tool later, then it is good to go. 
+
+However, sometimes it is common to see some errors due to the fact that some python packages, e.g. scikit-learn depends on another python package numpy and their version is not compatible. Solution: >>> pip install --upgrade --ignore-installed —-user numpy scipy matplotlib pandas scikit-learn pyvoro pathos tess
+as seen in https://stackoverflow.com/questions/15418949/pip-wont-install-python-packages-locally-with-user . In this case, pip install --ignore-installed --user numpy will install a local user copy of numpy into $HOME/.local/lib/python2.7/site-packages, while ignoring the global copy of numpy located generally in /usr/lib/python2.7/site-packages. If for some specific cases, it needs a specific version of the package, we can do >>> pip install --user --force-reinstall numpy==1.15.4
 
 If there is any error relating to any of the installed python packages mentioned above, check the bottom section on common issue while installing dependent python packages
 

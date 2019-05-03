@@ -129,7 +129,10 @@ def print_input_help():
 	  # keys below are used for the machine learning outlier detection of local atoms
 	  
 	  model: sklearn machine learning model used to do outlier detection
-		default "LinearSVR"
+		default "LinearSVR", option: "linear_model", "linear_RANSAC" and "LinearSVR"
+		"linear_model" is regular least square linear regression that maximize the probability of observing the training data
+		"linear_RANSAC" and "LinearSVR" see scikit-learn description.
+		
 	  
 	  feature: features used as input
 		default "displacement", feature used for outlier detection of local atoms

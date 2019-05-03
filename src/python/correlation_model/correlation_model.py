@@ -605,7 +605,7 @@ def all_events_local_atoms_finder(path_to_data_dir, input_param, residual_thresh
 	target: str
 		Now allow "shear_strain" option
 	Model: str
-		Now alow "linear_model" and "LinearSVR" option, which is also adopted when model is None
+		Now alow "linear_model", "linear_RANSAC", "LinearSVR"option, "linear_model" adopted when model is None
 	"""
 	list_of_test_id = input_param["list_of_test_id"]
 	model = input_param["model"]
@@ -628,7 +628,7 @@ def events_local_atoms(path_to_data_dir, input_param, residual_threshold = 0.5):
 	target: str
 		Now allow "shear_strain" option
 	Model: str
-		Now alow "linear_model" option, which is also adopted when model is None
+		Now alow "linear_model", "linear_RANSAC", "LinearSVR"option, "linear_model" adopted when model is None
 	"""
 	list_of_test_id = input_param["list_of_test_id"]
 	model = input_param["model"]
@@ -787,6 +787,8 @@ def outlier_detector(path,feature,target,model=None,residual_threshold = 0.5,ret
 	if model == "LinearSVR":
 		# use SVM classification to find inliers, then count outliers
 		return outlier_linearSVR_detector(path,feature,target,residual_threshold,return_index)
+	if model == "linear_RANSAC":
+		return outlier_linear_RANSAC_detector(path,feature,target,residual_threshold,return_index)
 
 def outlier_linear_detector(path,feature, target, residual_threshold = 0.5, return_index = False):
 	"""
@@ -800,18 +802,41 @@ def outlier_linear_detector(path,feature, target, residual_threshold = 0.5, retu
 	Output:
 		num_of_outliers:
 			the number of outliers that are predicted by the model
-		
-		r_cut:
-		
-		
-		regression model: sklearn machine leanring class object
-			class object of sklearn machine learning model that fits the data
+	"""	
+	residual_threshold = (np.max(target) -np.min(target))*residual_threshold
+	model = linear_model.LinearRegression()
+	model.fit(feature,target)
+	predict_data = model.predict(feature)
+	
+	i=0
+	num_of_outlier = 0
+	outlier_index = []
+	for x in predict_data:
+		delta = x-target[i]
+		if abs(delta) > residual_threshold:
+			num_of_outlier = num_of_outlier + 1	
+			outlier_index.append(i)
+		i=i+1
+	slope = model.coef_[0]
+	
+	if return_index is False:
+		return (num_of_outlier, slope)
+	else:
+		return outlier_index
+
+def outlier_linear_RANSAC_detector(path,feature, target, residual_threshold = 0.5, return_index = False):
 	"""
-	
-	#base_model = linear_model.LinearRegression()
-	#If base_estimator is None, then base_estimator=sklearn.linear_model.LinearRegression() is used 
-	# for target values of dtype float
-	
+	Input argument:
+		model: str
+			str that specified which sklearn model to use between feature and target
+		feature: np.array or pd.dataframe
+			the numpy array or pandas.Dataframe that specifies the feature vector or matrix
+		target: np.array or pd.dataframe
+			the numpy array or pandas.Dataframe that specifies the target value or vector
+	Output:
+		num_of_outliers:
+			the number of outliers that are predicted by the model
+	"""	
 	residual_threshold = (np.max(target) -np.min(target))*residual_threshold
 	model = linear_model.RANSACRegressor(random_state=1,min_samples=0.1,residual_threshold=residual_threshold)
 	model.fit(feature,target)
