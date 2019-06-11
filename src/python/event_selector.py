@@ -8,7 +8,7 @@ import os
 import numpy as np
 import multiprocessing as mp
 from functools import partial
-from util import event_energy, Configuration, event_distance, fn_timer, get_list_of_selected_events_str, data_dir_to_test_dir
+from util import event_energy, Configuration, event_distance, fn_timer, get_list_of_selected_events_str, data_dir_to_test_dir, read_temperature_from_bart
 
 
 
@@ -312,11 +312,12 @@ def event_select_accept(path_to_test_dir = None, save_results=True):
 	if os.path.exists(path_to_accepted_events):
 		return json.load(open(path_to_accepted_events,'r'))
 		
-	
-	events = pd.read_csv(path_to_events_list,sep='\s+', header=None)
+	events = pd.read_csv(path_to_events_list,sep='\s+', header=None)	
 	events.columns = ["ini","sad","fin","status"]
 	accepted_events = events.loc[events["status"] == "accepted"]
 	
+	if read_temperature_from_bart(path_to_test_dir) <= 0:
+		accepted_events = events
 	if accepted_events.empty:
 		return None
 	

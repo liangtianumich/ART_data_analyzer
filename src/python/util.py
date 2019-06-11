@@ -1083,6 +1083,18 @@ def read_cluster_radius_from_bart(path_to_test_dir):
 	match = re.search(pattern, string)
 	return float(match.group(1))
 
+def read_temperature_from_bart(path_to_test_dir):
+	bart_file = [os.path.join(path_to_test_dir, "bart.sh"), os.path.join(path_to_test_dir, "mod_bart.sh")]
+	for it in bart_file:
+		if os.path.exists(it):
+			bart_exist = it
+			break
+	f=open(bart_exist)
+	string=f.read()
+	pattern = "setenv[\s]+Temperature[\s]+([-.0-9]+)"
+	match = re.search(pattern, string)
+	return float(match.group(1))
+
 class results(object):
 	def __init__(self, path_test_dir, path_to_data):
 		
