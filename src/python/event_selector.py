@@ -244,7 +244,7 @@ def event_selection(path_to_test_dir = None, box_dim = None, save_results=True, 
 			except ValueError:
 				return None
 	print "starting selecting events based on two criteria"
-	accepted_events = event_select_accept(path_to_test_dir)
+	accepted_events = event_select_accept(path_to_test_dir, re_calc=re_calc)
 	if accepted_events is None:
 		return None
 	# event_energy is a function in util.py that extract energy from log.file.1 using regex module
@@ -275,7 +275,7 @@ def event_selection(path_to_test_dir = None, box_dim = None, save_results=True, 
 		json.dump(selected_events, open(path_to_selected_events,"w"))
 	return selected_events
 
-def event_select_accept(path_to_test_dir = None, save_results=True):
+def event_select_accept(path_to_test_dir = None, re_calc = False, save_results=True):
 	"""
 	this function filter a single event, i.e. initial configuration, saddle
 	configuration and final configuration based on whether this event has been accepted
@@ -309,15 +309,15 @@ def event_select_accept(path_to_test_dir = None, save_results=True):
 	path_to_events_list = path_to_test_dir + "/events.list"
 	
 	path_to_accepted_events = path_to_test_dir + "/results/accepted_events.json"
-	if os.path.exists(path_to_accepted_events):
-		return json.load(open(path_to_accepted_events,'r'))
+	if re_calc is False:
+		if os.path.exists(path_to_accepted_events):
+			return json.load(open(path_to_accepted_events,'r'))
 		
 	events = pd.read_csv(path_to_events_list,sep='\s+', header=None)	
 	events.columns = ["ini","sad","fin","status"]
 	accepted_events = events.loc[events["status"] == "accepted"]
-	
 	if read_temperature_from_bart(path_to_test_dir) <= 0:
-		accepted_events = events
+		accepted_events = events.loc[events["fin"]!='min_push_failed']
 	if accepted_events.empty:
 		return None
 	
@@ -388,7 +388,6 @@ def find_act_relax_equal_events(path_to_data_dir, input_param, save_results = Tr
 		json.dump(event_list, open(path_to_event_file,'w'))
 	print "total number of interested events is:", len(event_list)
 	print "done finding all events whose act_eng and relax_eng is equal!"
-	
 	
 	
 	
