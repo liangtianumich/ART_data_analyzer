@@ -1016,7 +1016,7 @@ if __name__ == "__main__":
 		  set_up_input_files(path_to_data_dir, input_param)
 		  print "starting running art in parallel"
 		  if args.slurm:
-			  input_param['num_of_proc'] = args.slurm
+			  input_param['num_of_proc'] = args.slurm[0]
 			  run_art_cluster_slurm(path_to_data_dir, input_param)
 		  else:
 			  run_art_mp(path_to_data_dir, input_param)
@@ -1033,7 +1033,7 @@ if __name__ == "__main__":
 		  set_up_input_files(path_to_data_dir, input_param)
 		  print ">>>starting running art for new central_atom_list in parallel!"
 		  if args.slurm:
-			  input_param['num_of_proc'] = args.slurm
+			  input_param['num_of_proc'] = args.slurm[0]
 			  run_art_cluster_slurm(path_to_data_dir, input_param)
 		  else:
 			  run_art_mp(path_to_data_dir, input_param)
