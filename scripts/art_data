@@ -345,7 +345,8 @@ def print_desc_help():
 	art_data -s input_sample_id.json --art --run now also support running in slurm cluster environment.
 	However, user need to coordinate with the slurm admistrator to set up the necessary environment
 	for running artn before running in slurm environment.
-	This can be done by art_data -s input_sample_id.json --art --run --slurm
+	This can be done by art_data -s input_sample_id.json --art --run --slurm 4
+	will use 4 compute nodes
 	Now the num_of_proc key in input_sample_id.json means the number of compute nodes
 	user requested to submit their jobs to. This will split all central atoms in central_atom_list key
 	into num_of_proc folds. Each fold will be allocated to one compute node 
@@ -938,7 +939,7 @@ if __name__ == "__main__":
   # to be implemented in the future
   # integration with running art
   parser.add_argument('--art', help='setting up ART input files, and running art in parallel with np specified in SETTINGS file', action='store_true')
-  parser.add_argument('--slurm', help='running simulations by submitting jobs in slurm cluster', action='store_true')
+  parser.add_argument('--slurm', nargs=1, help='number of compute nodes to use for running simulations by submitting jobs in slurm cluster', type=int)
   
   # integration with lammps
   parser.add_argument('--lammps',help='begin lammps mode for generating initial ART samples, to be implemented',action="store_true")
@@ -1015,6 +1016,7 @@ if __name__ == "__main__":
 		  set_up_input_files(path_to_data_dir, input_param)
 		  print "starting running art in parallel"
 		  if args.slurm:
+			  input_param['num_of_proc'] = args.slurm
 			  run_art_cluster_slurm(path_to_data_dir, input_param)
 		  else:
 			  run_art_mp(path_to_data_dir, input_param)
@@ -1031,6 +1033,7 @@ if __name__ == "__main__":
 		  set_up_input_files(path_to_data_dir, input_param)
 		  print ">>>starting running art for new central_atom_list in parallel!"
 		  if args.slurm:
+			  input_param['num_of_proc'] = args.slurm
 			  run_art_cluster_slurm(path_to_data_dir, input_param)
 		  else:
 			  run_art_mp(path_to_data_dir, input_param)
