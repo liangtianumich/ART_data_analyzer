@@ -5,7 +5,7 @@ from pele.storage import Database
 from data_reader import *
 import numpy as np
 import matplotlib.pyplot as plt
-from util import operation_on_events, data_dir_to_test_dir, event_energy
+from util import operation_on_events, data_dir_to_test_dir, event_energy, get_list_of_final_filtered_events_str
 
 def make_graph(path_to_data_dir,database):
     # make a graph from the database
@@ -22,13 +22,11 @@ def plot_disconnectivity_graph(path_to_data_dir, input_param):
 	path_to_db = os.path.join(path_to_data_dir,'pele_database.db')
 	db = Database(db=path_to_db, accuracy=0.001, createdb=True)
 	
-	list_of_test_id = input_param["list_of_test_id"]
-	num_of_proc = input_param["num_of_proc"]
-	
-	operation = lambda x: single_event_adder(x, path_to_data_dir,db)
-	
-	result_list = operation_on_events(path_to_data_dir, list_of_test_id, operation, num_of_proc = num_of_proc)
-	
+	list_event_str = get_list_of_final_filtered_events_str(path_to_data_dir)
+	for event_state in list_event_str:
+		print "event_state:", event_state
+		single_event_adder(event_state, path_to_data_dir,db)
+		
 	make_graph(path_to_data_dir,db)
 	
 	print ("done adding all final selected events into pele database and plotting their disconnectivity graph!")
