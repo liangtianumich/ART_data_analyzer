@@ -3,10 +3,11 @@ This ART data analyzer package is a python package containing a easy-to-use comm
 1) parallel computation of running Activation and Relaxation Techniques (ART) simulation jobs to generate ART data wrapped by python
 2) post-processing ART data by filtering, calculating, visualizing, correlating various physical quantities change for large amount of event searches.
 
-Currently, version 1.1 supports the automation of parallel ART simulations running and post-processing of ART data, archive and clean ART data for researchers to share data. Future versions should implement the automation of integrating with LAMMPS, Ovito, pymatgen.
+Currently, version 1.1 supports the automation of parallel ART simulations running and post-processing of ART data, archive and clean ART data for researchers to share data.
+Now ART_data_analyzer support the visualization of potential energy landscape in terms of disconnectivity graph by integrating with pele package developed by David Wales group at Cambridge University (https://github.com/pele-python/pele). Future versions should implement the automation of integrating with LAMMPS, Ovito, pymatgen.
 
-This python package is originally developed by Dr Lin Li group at University of Alabama and now has been integrated into part of artn project in gitlab.
-Lead developer: Dr Liang Tian.
+This python package is developed by Dr Liang Tian while he was originally at Dr Lin Li group at University of Alabama and now has been integrated into part of artn project in gitlab.
+Developer: Dr Liang Tian.
 Contact: liangtianisu@gmail.com
 
 
@@ -52,6 +53,13 @@ However, sometimes it is common to see some errors due to the fact that some pyt
 as seen in https://stackoverflow.com/questions/15418949/pip-wont-install-python-packages-locally-with-user . In this case, pip install --ignore-installed --user numpy will install a local user copy of numpy into $HOME/.local/lib/python2.7/site-packages, while ignoring the global copy of numpy located generally in /usr/lib/python2.7/site-packages. If for some specific cases, it needs a specific version of the package, we can do >>> pip install --user --force-reinstall numpy==1.15.4
 
 If there is any error relating to any of the installed python packages mentioned above, check the bottom section on common issue while installing dependent python packages
+
+If user want to use ART_data_analyzer to visualize the potential energy landscape by plotting disconnectivity graph, they should also install pele package by the following link: https://github.com/pele-python/pele. In Linux Ubuntu, following steps are needed:
+1) pip install —-user networkx==2.2 sqlalchemy hungarian pyro4 brewer2mpl cython
+2) git clone or download zip file of the repository from https://github.com/pele-python/pele
+3) python setup.py build --fcompiler=gfortran
+4) python setup.py install --user
+After these steps, it should build fortran library for python package to use. The installed pele package will be located at $HOME/.local/lib/python2.7/site-packages/
 
 For Windows O.S user, check the bottom section on setting up python environment for Windows users.
 
