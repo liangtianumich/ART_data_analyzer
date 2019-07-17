@@ -54,11 +54,13 @@ as seen in https://stackoverflow.com/questions/15418949/pip-wont-install-python-
 
 If there is any error relating to any of the installed python packages mentioned above, check the bottom section on common issue while installing dependent python packages
 
-If user want to use ART_data_analyzer to visualize the potential energy landscape by plotting disconnectivity graph, they should also install pele package by the following link: https://github.com/pele-python/pele. In Linux Ubuntu, following steps are needed:
-1) pip install —-user networkx==2.2 sqlalchemy hungarian pyro4 brewer2mpl cython
-2) git clone or download zip file of the repository from https://github.com/pele-python/pele
-3) python setup.py build --fcompiler=gfortran
-4) python setup.py install --user
+Mandatory installation of pele package:
+Now ART_data_analyzer can visualize the potential energy landscape by plotting disconnectivity graph, they have to install pele package by the following link: https://github.com/pele-python/pele. In Linux Ubuntu, following steps are needed:
+1) pip install --user networkx==2.2 sqlalchemy hungarian pyro4 brewer2mpl cython
+2) download zip file of the repository from https://github.com/pele-python/pele
+3) extract the zip file and cd into this repository
+4) python setup.py build --fcompiler=gfortran
+5) python setup.py install --user
 After these steps, it should build fortran library for python package to use. The installed pele package will be located at $HOME/.local/lib/python2.7/site-packages/
 
 For Windows O.S user, check the bottom section on setting up python environment for Windows users.

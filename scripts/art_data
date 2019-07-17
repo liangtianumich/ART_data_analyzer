@@ -268,6 +268,11 @@ def print_desc_help():
 	Central_Atom in bart.sh do not need to be modified since art_data will automatically load
 	each central atom in central_atom_list key in input SETTINGS file as Central_Atom
 	
+	Even though the atom index number in conf.lammps (lammps data file format) is not ordered in terms of 1,2,3,4...,
+	refconfig type of file min1000 will ignore the column of atom index number and has the same atomic order as conf.lammps,
+	setenv Central_Atom 1 will still trigger the atom index number 1 in conf.lammps, which is not necessarily
+	the 1st atom in conf.lammps
+	
 	a few important parameters to converge to the true saddle point are:
 	Exit_Force_Threshold should be less than 0.1
 	Incremental_Size 0.1, the atom move step size during artn running the saddle state convergence algorithm
@@ -571,8 +576,8 @@ def print_desc_help():
 	 3) run calculations and visualizations:
 	 
 	 "art_data -s SETTINGS --pele_disc_graph" visualize the potential energy landscape
-	 based on all final selected events in terms of disconnectivity graph 
-	 by integrating with pele package
+	 based on all final selected events saved in final_selected_events.json 
+	 in terms of disconnectivity graph by integrating with pele package
 	 
 	 "art_data -s SETTINGS --strain --calc" will invoke the strain and displacement calculations on specified atom_list
 	 and automatically plots results for individual event and statistics
