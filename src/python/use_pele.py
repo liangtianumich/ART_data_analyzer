@@ -16,16 +16,20 @@ def make_graph(path_to_data_dir,database):
     print "number of minima:", dg.tree_graph.number_of_leaves()
     dg.plot()
     path_to_file = os.path.join(path_to_data_dir,"Disconnectivity_graph.png")
-    plt.savefig(path_to_file)
+    plt.savefig(path_to_file,dpi=600)
     
 def plot_disconnectivity_graph(path_to_data_dir, input_param):
 	path_to_db = os.path.join(path_to_data_dir,'pele_database.db')
 	db = Database(db=path_to_db, accuracy=0.001, createdb=True)
-	
-	list_event_str = get_list_of_final_filtered_events_str(path_to_data_dir)
-	for event_state in list_event_str:
-		print "event_state:", event_state
-		single_event_adder(event_state, path_to_data_dir,db)
+	re_calc = input_param["re_calc"]
+	if (not os.path.exists(path_to_db)) or (re_calc is True):
+		if re_calc is True and os.path.exists(path_to_db):
+				os.remove(path_to_db)
+		db = Database(db=path_to_db, accuracy=0.001, createdb=True)
+		list_event_str = get_list_of_final_filtered_events_str(path_to_data_dir)
+		for event_state in list_event_str:
+			print "event_state:", event_state
+			single_event_adder(event_state, path_to_data_dir,db)
 		
 	make_graph(path_to_data_dir,db)
 	

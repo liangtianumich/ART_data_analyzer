@@ -6,6 +6,10 @@ This ART data analyzer package is a python package containing a easy-to-use comm
 Currently, version 1.1 supports the automation of parallel ART simulations running and post-processing of ART data, archive and clean ART data for researchers to share data.
 Now ART_data_analyzer support the visualization of potential energy landscape in terms of disconnectivity graph by integrating with pele package developed by David Wales group at Cambridge University (https://github.com/pele-python/pele). Future versions should implement the automation of integrating with LAMMPS, Ovito, pymatgen.
 
+ART_data_analyzer software support parallelization on cluster, currently on slurm resource manager https://slurm.schedmd.com/quickstart.html. A detailed manual of all commands usage of ART_data_analyzer can be found by art_data --desc
+For generating artn simulation data in cluster, art_data -s INPUT_SETTINGS --art --run --slurm 3.  This will submit 3 jobs corresponding to 3 compute nodes (default 32 cores on each node specified by ART_data_analyzer/src/python/ART_wrapper/submit_slurm.sh). Edit the parameters in submit_slurm.sh for your cluster configurations.
+For running post processing tasks in cluster, now user need to create a sbatch job submission script to submit the post-processing task as a job running on a single node (only specify cores number #SBATCH -c)
+
 This python package is developed by Dr Liang Tian while he was originally at Dr Lin Li group at University of Alabama and now has been integrated into part of artn project in gitlab.
 Developer: Dr Liang Tian.
 Contact: liangtianisu@gmail.com
